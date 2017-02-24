@@ -1,4 +1,4 @@
-package acco.isac.ui;
+package acco.isac.debugui;
 
 import java.awt.Dimension;
 import java.awt.Graphics;

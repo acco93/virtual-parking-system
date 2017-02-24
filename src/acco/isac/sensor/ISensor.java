@@ -1,24 +1,25 @@
 package acco.isac.sensor;
 
-import acco.isac.environment.Position;
-
 /**
  * 
  * A generic sensor interface.
  * 
  * @author acco
+ * @param <T>
  *
  */
-public interface ISensor {
-	
+public interface ISensor<T> {
+
 	/**
-	 * 
+	 * Retrieve the sensor unique id.
+	 * @return the uid.
 	 */
-	Position getPosition();
+	String getId();
 	
 	/**
 	 * Sense action.
+	 * @return the sensed information.
 	 */
-	void sense();
+	T sense();
 
 }

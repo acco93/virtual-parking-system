@@ -2,8 +2,6 @@ package acco.isac.environment;
 
 import java.util.Optional;
 
-import acco.isac.sensor.ISensor;
-
 /**
  * 
  * A cell is an element of the grid-world-environment. It may contain a
@@ -15,41 +13,41 @@ import acco.isac.sensor.ISensor;
  */
 public class Cell {
 
-	private Optional<ISensor> sensor;
+	private Optional<IEnvironmentElement> element;
 
 	/**
 	 * Create an empty cell.
 	 */
 	public Cell() {
-		this.sensor = Optional.empty();
+		this.element = Optional.empty();
 	}
 
 	/**
 	 * 
 	 * Inject the component if the cell is not already occupied.
 	 * 
-	 * @param newSensor
+	 * @param newElement
 	 *            the component to inject.
 	 * @return true if successfully injected, false otherwise.
 	 */
-	public boolean inject(ISensor newSensor) {
+	public boolean inject(IEnvironmentElement newElement) {
 
-		if (this.sensor.isPresent()) {
+		if (this.element.isPresent()) {
 			return false;
 		} else {
-			this.sensor = Optional.of(newSensor);
+			this.element = Optional.of(newElement);
 			return true;
 		}
 
 	}
 	
 	public boolean isEmpty(){
-		return !this.sensor.isPresent();
+		return !this.element.isPresent();
 	}
 
 	@Override
 	public String toString() {
-		return "Cell [component=" + sensor + "]";
+		return "Cell [component=" + element + "]";
 	}
 	
 	

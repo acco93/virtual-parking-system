@@ -1,14 +1,15 @@
 package acco.isac.environment;
 
-import java.util.Arrays;
-
-import acco.isac.sensor.ISensor;
+import acco.isac.sharedknowledge.R;
 
 public class Environment {
 
+	private static Environment instance = new Environment();
+
 	private int width;
 	private int height;
-	private Cell[][] grid;
+	private Cell[][] sensorsLayer;
+	private boolean[][] carsLayer;
 
 	/**
 	 * 
@@ -17,43 +18,47 @@ public class Environment {
 	 * @param width
 	 * @param height
 	 */
-	public Environment(int width, int height) {
-		this.width = width;
-		this.height = height;
+	public Environment() {
+		this.width = R.ENV_WIDTH;
+		this.height = R.ENV_HEIGHT;
 
-		this.grid = new Cell[this.width][this.height];
+		this.sensorsLayer = new Cell[this.width][this.height];
+		this.carsLayer = new boolean[this.width][this.height];
 
 		for (int i = 0; i < this.width; i++) {
 			for (int j = 0; j < this.height; j++) {
-				this.grid[i][j] = new Cell();
+				this.sensorsLayer[i][j] = new Cell();
+				this.carsLayer[i][j] = false;
 			}
 		}
 
 	}
 
+	public static Environment getInstance() {
+		return Environment.instance;
+	}
+
 	/**
-	 * Inject a sensor in position (x,y)
+	 * Inject an element in position (x,y)
 	 * 
-	 * @param sensor
-	 *            the sensor
+	 * @param element
+	 *            the element
 	 * @param x
 	 *            x-value
 	 * @param y
 	 *            y-value
 	 * @return true if the operation successfully completes, false otherwise.
 	 */
-	public boolean inject(ISensor sensor, int x, int y) {
+	public boolean inject(IEnvironmentElement element) {
+
+		int x = element.getPosition().getX();
+		int y = element.getPosition().getY();
 
 		if (x < 0 || x > this.width || y < 0 || y > this.height) {
 			return false;
 		}
 
-		return this.grid[x][y].inject(sensor);
-	}
-
-	@Override
-	public String toString() {
-		return "Environment [width=" + width + ", height=" + height + ", grid=" + Arrays.deepToString(grid) + "]";
+		return this.sensorsLayer[x][y].inject(element);
 	}
 
 	public int getWidth() {
@@ -64,10 +69,12 @@ public class Environment {
 		return height;
 	}
 
-	public Cell[][] getGrid() {
-		return grid;
+	public Cell[][] getSensorsLayer() {
+		return sensorsLayer;
 	}
 
-	
-	
+	public boolean[][] getCarsLayer() {
+		return carsLayer;
+	}
+
 }

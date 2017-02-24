@@ -1,4 +1,4 @@
-package acco.isac.ui;
+package acco.isac.debugui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -38,7 +38,7 @@ public class UserInterface extends JFrame implements IUserInterface {
 
 	@Override
 	public void setEnvironment(Environment e) {
-		this.setGrid(e.getGrid(), e.getWidth(), e.getHeight());
+		this.setGrid(e.getSensorsLayer(), e.getWidth(), e.getHeight());
 
 	}
 
