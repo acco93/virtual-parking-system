@@ -12,12 +12,12 @@ public class R {
 	/**
 	 * Environment width.
 	 */
-	public final static int ENV_WIDTH = 14;
+	public static int ENV_WIDTH = 14;
 	
 	/**
 	 * Environment height.
 	 */
-	public final static int ENV_HEIGHT = 10;
+	public static int ENV_HEIGHT = 10;
 	
 	/**
 	 * Parking server queue name.

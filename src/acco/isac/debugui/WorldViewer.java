@@ -1,5 +1,6 @@
 package acco.isac.debugui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ComponentEvent;
@@ -12,6 +13,7 @@ import acco.isac.environment.Cell;
 
 public class WorldViewer extends JPanel implements ComponentListener {
 
+	private static final int OFFSET = 5;
 	private static final long serialVersionUID = 1L;
 	private Cell[][] grid;
 	private int gridWidth;
@@ -34,9 +36,13 @@ public class WorldViewer extends JPanel implements ComponentListener {
 			for (int i = 0; i < gridWidth; i++) {
 				for (int j = 0; j < gridHeight; j++) {
 					if(this.grid[i][j].isEmpty()){
-						g.drawRect(this.cellWidth * i, this.cellHeight * j, this.cellWidth, this.cellHeight);						
+						//g.setColor(Color.GRAY);
+						//g.drawRect(this.cellWidth * i, this.cellHeight * j, this.cellWidth, this.cellHeight);						
 					} else {
-						g.fillRect(this.cellWidth * i, this.cellHeight * j, this.cellWidth, this.cellHeight);
+						g.setColor(Color.GREEN);
+						g.fillRect(this.cellWidth * i +OFFSET, this.cellHeight * j +OFFSET, this.cellWidth-OFFSET, this.cellHeight-OFFSET);
+						g.setColor(Color.BLACK);
+						g.drawRect(this.cellWidth * i +OFFSET, this.cellHeight * j +OFFSET, this.cellWidth-OFFSET, this.cellHeight-OFFSET);
 					}
 
 				}

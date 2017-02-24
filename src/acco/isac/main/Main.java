@@ -3,6 +3,7 @@ package acco.isac.main;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+import acco.isac.configurator.Configurator;
 import acco.isac.debugui.UserInterface;
 import acco.isac.environment.Environment;
 import acco.isac.sensor.ParkingSensor;
@@ -13,7 +14,14 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		Environment e = new Environment();
+
+		Configurator configurator = new Configurator("maps/example.txt");
+		boolean ok = configurator.load();
+		
+		if(!ok){
+			System.err.println("Error while loading file.");
+			System.exit(1);
+		}
 
 		try {
 			new Server();
@@ -22,20 +30,11 @@ public class Main {
 			e1.printStackTrace();
 		}
 		
-		ParkingSensor s0 = new ParkingSensor(2, 2, "s0");
-		ParkingSensor s1 = new ParkingSensor(5, 7, "s1");
 		
-		
-		e.inject(s0);
-		e.inject(s1);
-
-		
-		new ParkingSensorController(s0, 50).start();
-		new ParkingSensorController(s1, 500).start();
 
 		UserInterface ui = new UserInterface();
 
-		ui.setEnvironment(e);
+		ui.setEnvironment(Environment.getInstance());
 
 	}
 
