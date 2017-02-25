@@ -1,6 +1,7 @@
 package acco.isac.sensor;
 
 import java.io.IOException;
+import java.util.Random;
 import java.util.concurrent.TimeoutException;
 
 import com.rabbitmq.client.Channel;
@@ -11,12 +12,18 @@ import acco.isac.sharedknowledge.R;
 
 public abstract class AbstractSensorController extends Thread {
 
+	private static final int DELAY_FACTOR = 2;
 	private int delayTime;
 	private Channel channel;
+	private Random random;
+	private double serviceDisruptionProbability;
+	private boolean working;
 
 	public AbstractSensorController(int delayTime) {
 		this.delayTime = delayTime;
-
+		this.random = new Random();
+		this.serviceDisruptionProbability = 0.001;
+		this.working= true;
 		// setup rabbitmq
 		this.rabbitMQSetup();
 	}
@@ -24,7 +31,7 @@ public abstract class AbstractSensorController extends Thread {
 	@Override
 	public void run() {
 
-		while (true) {
+		while (working) {
 
 			Object value = this.sense();
 
@@ -34,6 +41,10 @@ public abstract class AbstractSensorController extends Thread {
 
 			this.delay();
 
+			if(random.nextDouble() <= this.serviceDisruptionProbability){
+				this.working = false;
+			}
+			
 		}
 
 	}
@@ -46,7 +57,6 @@ public abstract class AbstractSensorController extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("Sending: " + bytes);
 
 	}
 
@@ -55,8 +65,11 @@ public abstract class AbstractSensorController extends Thread {
 	protected abstract Object sense();
 
 	private void delay() {
+		
+		int randomDelay = this.delayTime + random.nextInt(this.delayTime*DELAY_FACTOR);
+
 		try {
-			Thread.sleep(this.delayTime);
+			Thread.sleep(randomDelay);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

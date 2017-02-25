@@ -9,13 +9,10 @@ public class ParkingSensorController extends AbstractSensorController {
 
 	private ParkingSensor sensor;
 
-	private double serviceDisruptionProbability;
-
 
 	public ParkingSensorController(ParkingSensor sensor, int delayTime) {
 		super(delayTime);
 		this.sensor = sensor;
-		this.serviceDisruptionProbability = 0.1;
 	}
 
 	
@@ -27,16 +24,14 @@ public class ParkingSensorController extends AbstractSensorController {
 	}
 
 	@Override
-	protected byte[] process(Object value) {
+	protected byte[] process(Object busy) {
 		// create a json message
 
-		boolean booleanValue = (boolean) value;
+		boolean booleanValue = !(boolean) busy;
 		
 		SensorMessage msg = new SensorMessage(this.sensor.getId(), this.sensor.getPosition(), booleanValue);
 		Gson gson = new GsonBuilder().create();
 		String json = gson.toJson(msg);
-
-		System.out.println("Created: " + json);
 
 		return json.getBytes();
 	}

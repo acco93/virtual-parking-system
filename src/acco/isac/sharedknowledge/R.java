@@ -23,5 +23,10 @@ public class R {
 	 * Parking server queue name.
 	 */
 	public final static String QUEUE_NAME = "parkingServer";
+
+	/**
+	 * Max reception delay (in ms) after which the server consider the sensor dead.
+	 */
+	public static final long MAX_SENSOR_DELAY = 5000;
 	
 }

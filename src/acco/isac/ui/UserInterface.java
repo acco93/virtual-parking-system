@@ -1,12 +1,13 @@
-package acco.isac.debugui;
+package acco.isac.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
-import acco.isac.environment.Cell;
-import acco.isac.environment.Environment;
+import acco.isac.server.SensorRepresentation;
 
 public class UserInterface extends JFrame implements IUserInterface {
 
@@ -17,10 +18,9 @@ public class UserInterface extends JFrame implements IUserInterface {
 
 		this.setTitle("Virtual car parking world");
 		this.setSize(new Dimension(800, 600));
-		//this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		// this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		
+
 		this.setLayout(new BorderLayout());
 
 		worldViewer = new WorldViewer();
@@ -30,16 +30,12 @@ public class UserInterface extends JFrame implements IUserInterface {
 
 	}
 
-	@Override
-	public void setGrid(Cell[][] grid, int width, int height) {
-		worldViewer.updateGrid(grid, width, height);
 
-	}
+	public void updateSensors(ConcurrentHashMap<String, SensorRepresentation> storage) {
+		SwingUtilities.invokeLater(() -> {
+			worldViewer.updateSensors(storage);
 
-	@Override
-	public void setEnvironment(Environment e) {
-		this.setGrid(e.getSensorsLayer(), e.getWidth(), e.getHeight());
-
+		});	
 	}
 
 }
