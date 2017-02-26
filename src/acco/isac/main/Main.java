@@ -7,22 +7,13 @@ public class Main {
 
 	public static void main(String[] args) {
 
-
+		/*
+		 * Setup the environment and star the sensors.
+		 */
 		Configurator configurator = new Configurator("maps/example.txt");
-		boolean ok = configurator.load();
-		
-		if(!ok){
-			System.err.println("Error while loading file.");
-			System.exit(1);
-		}
+		configurator.load();
 
 		new Server().start();
-		
-		
-
-		// UserInterface ui = new UserInterface();
-
-		// ui.setEnvironment(Environment.getInstance());
 
 	}
 

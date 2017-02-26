@@ -9,9 +9,12 @@ import acco.isac.core.EventLoop;
 import acco.isac.datastructures.Edge;
 import acco.isac.datastructures.Graph;
 import acco.isac.datastructures.Vertex;
-import acco.isac.datastructures.VertexType;
 import acco.isac.environment.Position;
 import acco.isac.sensor.SensorMessage;
+import acco.isac.server.inforepresentation.EnvironmentInfo;
+import acco.isac.server.inforepresentation.InfoType;
+import acco.isac.server.inforepresentation.SensorRepresentation;
+import acco.isac.server.inforepresentation.StreetRepresentation;
 
 public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 
@@ -53,70 +56,69 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 			rep.updateState(msg.isFree());
 		}
 
-		// ui.updateSensors(storage);
-
 	}
 
 	private void updateMaxPosition(Position position) {
 
-		int x = position.getX();
-		int y = position.getY();
-
-		if (x > this.storage.getMaxWorldWidth()) {
-			this.storage.setMaxWorldWidth(x + 1);
+		int row = position.getRow();
+		int column = position.getColumn();
+		
+		if (column > this.storage.getWorldColumns()) {
+			this.storage.setWorldColumns(column);
 		}
 
-		if (y > this.storage.getMaxWorldHeight()) {
-			this.storage.setMaxWorldHeight(y + 1);
+		if (row > this.storage.getWorldRows()) {
+			this.storage.setWorldRows(row);
 		}
 
 	}
 
-	private void rebuildMap() {
+	private void oldrebuildMap() {
 
 		// +1 because if it is 0
 		// ArrayOutOfBoundsException
 		// it doesn't exist a 0-sized matrix
-		int maxHeight = this.storage.getMaxWorldHeight() + 1;
-		int maxWidth = this.storage.getMaxWorldWidth() + 1;
+		int maxHeight = this.storage.getWorldRows();
+		int maxWidth = this.storage.getWorldColumns();
 
-		// intermediate mapping in a matrix
-		boolean[][] matrix = new boolean[maxHeight][maxWidth];
+		if (maxHeight == 0) {
+			maxHeight = 1;
+		}
+
+		if (maxWidth == 0) {
+			maxWidth = 1;
+		}
+
+		// intermediate mapping in a matrix of EnvironmentInfo
+		EnvironmentInfo[][] matrix = new EnvironmentInfo[maxHeight][maxWidth];
 		for (int i = 0; i < maxHeight; i++) {
 			for (int j = 0; j < maxWidth; j++) {
-				matrix[i][j] = new Boolean(false);
+				// at the beginning everything is street
+				matrix[i][j] = new StreetRepresentation(new Position(i, j));
 			}
 		}
 
-		for (SensorRepresentation sensor : this.storage.getSensors().values()) {
-			int x = sensor.getPosition().getX();
-			int y = sensor.getPosition().getY();
-			matrix[y][x] = true;
+		for (EnvironmentInfo element : this.storage.getSensors().values()) {
+			int x = element.getPosition().getRow();
+			int y = element.getPosition().getColumn();
+			matrix[y][x] = element;
 		}
 
-		// define a matrix of nodes
+		// define a matrix of Vertex
 
 		Vertex[][] edgesMatrix = new Vertex[maxHeight][maxWidth];
-		List<Vertex> sensorNodes = new LinkedList<Vertex>();
-		List<Vertex> streetNodes = new LinkedList<Vertex>();
 		List<Vertex> nodes = new LinkedList<Vertex>();
 
 		for (int i = 0; i < maxHeight; i++) {
 			for (int j = 0; j < maxWidth; j++) {
 
-				if (matrix[i][j] == true) {
-					edgesMatrix[i][j] = new Vertex(i + "_" + j, "sensor", VertexType.SENSOR);
-					sensorNodes.add(edgesMatrix[i][j]);
-				} else {
-					edgesMatrix[i][j] = new Vertex(i + "_" + j, "street", VertexType.STREET);
-					streetNodes.add(edgesMatrix[i][j]);
-				}
+				edgesMatrix[i][j] = new Vertex(i + "_" + j, "node", matrix[i][j]);
+				nodes.add(edgesMatrix[i][j]);
 
 			}
 		}
 
-		nodes.addAll(streetNodes);
-		nodes.addAll(sensorNodes);
+		System.out.println(nodes.size());
 
 		List<Edge> edges = new LinkedList<Edge>();
 
@@ -132,10 +134,11 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 					// if not at the grid-right border
 					source = edgesMatrix[i][j];
 					destination = edgesMatrix[i][j + 1];
-					if (source.getType() == VertexType.STREET || destination.getType() == VertexType.STREET) {
+					if (source.getInfo().getType() == InfoType.STREET
+							|| destination.getInfo().getType() == InfoType.STREET) {
 
 						int weight = STREET_WEIGHT;
-						if (destination.getType() == VertexType.SENSOR) {
+						if (destination.getInfo().getType() == InfoType.SENSOR) {
 							weight = SENSOR_WEIGHT;
 						}
 
@@ -143,7 +146,8 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 								destination, weight);
 						edges.add(edgeSD);
 
-						Edge edgeDS = new Edge("link_(" + i + "," + (j + 1) + ")_(" + i + "," + j + ")", destination, source, weight);
+						Edge edgeDS = new Edge("link_(" + i + "," + (j + 1) + ")_(" + i + "," + j + ")", destination,
+								source, weight);
 						edges.add(edgeDS);
 
 					}
@@ -154,17 +158,20 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 					// if not at the grid-bottom border
 					source = edgesMatrix[i][j];
 					destination = edgesMatrix[i + 1][j];
-					if (source.getType() == VertexType.STREET || destination.getType() == VertexType.STREET) {
+					if (source.getInfo().getType() == InfoType.STREET
+							|| destination.getInfo().getType() == InfoType.STREET) {
 
 						int weight = STREET_WEIGHT;
-						if (destination.getType() == VertexType.SENSOR) {
+						if (destination.getInfo().getType() == InfoType.SENSOR) {
 							weight = SENSOR_WEIGHT;
 						}
 
-						Edge edgeSD = new Edge("link_(" + i + "," + j + ")_(" + (i+1) + "," + j + ")", source, destination, weight);
+						Edge edgeSD = new Edge("link_(" + i + "," + j + ")_(" + (i + 1) + "," + j + ")", source,
+								destination, weight);
 						edges.add(edgeSD);
 
-						Edge edgeDS = new Edge("link_(" + (i+1) + "," + j + ")_(" + i + "," + j + ")", destination, source, weight);
+						Edge edgeDS = new Edge("link_(" + (i + 1) + "," + j + ")_(" + i + "," + j + ")", destination,
+								source, weight);
 						edges.add(edgeDS);
 					}
 
@@ -175,14 +182,24 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 
 		storage.setMap(new Graph(nodes, edges));
 
-		/*if (maxWidth > 10 && maxHeight > 7) {
-			DijkstraAlgorithm d = new DijkstraAlgorithm(new Graph(nodes, edges));
-			d.execute(edgesMatrix[0][0]);
-			LinkedList<Vertex> p = d.getPath(edgesMatrix[6][0]);
-			for (Vertex vertex : p) {
-				System.out.println(vertex);
-			}
-		}*/
+		/*
+		 * if (maxWidth > 3 && maxHeight > 3) { DijkstraAlgorithm d = new
+		 * DijkstraAlgorithm(new Graph(nodes, edges));
+		 * d.execute(edgesMatrix[1][0]); LinkedList<Vertex> p =
+		 * d.getPath(edgesMatrix[0][2]); for (Vertex vertex : p) {
+		 * System.out.println(vertex); } }
+		 */
+	}
+
+	private void rebuildMap() {
+
+		int rows = this.storage.getWorldRows() + 1;
+		int columns = this.storage.getWorldColumns() + 1;
+		// +1 because the count starts from 0
+
+		// define a matrix of street nodes
+		EnvironmentInfo[][] matrix = new EnvironmentInfo[rows][columns];
+
 	}
 
 }

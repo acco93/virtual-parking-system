@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 public class UserInterface extends JFrame implements IUserInterface {
 
 	private static final long serialVersionUID = 1L;
-	private ParkViewer worldViewer;
+
 
 	public UserInterface() {
 
@@ -19,13 +19,12 @@ public class UserInterface extends JFrame implements IUserInterface {
 
 		this.setLayout(new BorderLayout());
 
-		// worldViewer = new ParkViewer();
-		// this.add(worldViewer, BorderLayout.CENTER);
+		ParkViewer parkViewer = new ParkViewer();
+		this.add(parkViewer, BorderLayout.CENTER);
 
-		GraphViewer graphViewer = new GraphViewer();
-		this.add(graphViewer, BorderLayout.CENTER);
+		/*GraphViewer graphViewer = new GraphViewer();
+		this.add(graphViewer, BorderLayout.CENTER);*/
 
-		
 		ToolBar toolbar = new ToolBar();
 
 		this.add(toolbar, BorderLayout.NORTH);

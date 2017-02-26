@@ -1,4 +1,4 @@
-package acco.isac.server;
+package acco.isac.server.inforepresentation;
 
 import java.util.Date;
 
@@ -12,7 +12,7 @@ import acco.isac.sharedknowledge.R;
  * @author acco
  *
  */
-public class SensorRepresentation {
+public class SensorRepresentation implements EnvironmentInfo{
 
 	private String name;
 	private Position position;
@@ -65,6 +65,11 @@ public class SensorRepresentation {
 		this.free=free;
 		this.lastHeartbeat = new Date().getTime();
 		
+	}
+
+	@Override
+	public InfoType getType() {
+		return InfoType.SENSOR;
 	}
 	
 	

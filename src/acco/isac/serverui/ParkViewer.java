@@ -10,8 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import acco.isac.server.SensorRepresentation;
 import acco.isac.server.Storage;
+import acco.isac.server.inforepresentation.SensorRepresentation;
 import acco.isac.sharedknowledge.R;
 
 public class ParkViewer extends JPanel {
@@ -23,15 +23,11 @@ public class ParkViewer extends JPanel {
 	private int gridHeight;
 	private int cellWidth;
 	private int cellHeight;
-	private ConcurrentHashMap<String, SensorRepresentation> sensors;
 	private Storage serverStorage;
 
 	public ParkViewer() {
 
 		this.serverStorage = Storage.getInstance();
-
-		// just to avoid the null-check each time in paintComponent
-		this.sensors = this.serverStorage.getSensors();
 
 		new Thread(() -> {
 
@@ -60,27 +56,27 @@ public class ParkViewer extends JPanel {
 		
 		
 
-		for (SensorRepresentation sensor : sensors.values()) {
+		for (SensorRepresentation sensor : serverStorage.getSensors().values()) {
 
-			int x = sensor.getPosition().getX();
-			int y = sensor.getPosition().getY();
+			int row = sensor.getPosition().getRow();
+			int column = sensor.getPosition().getColumn();
 
 			
 			
 			if (sensor.isDead()) {
 				g.setColor(Color.red);
-				g.fillRect(this.cellWidth * x + OFFSET, this.cellHeight * y + OFFSET, this.cellWidth - OFFSET,
+				g.fillRect(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET, this.cellWidth - OFFSET,
 						this.cellHeight - OFFSET);
 			} else {
 				// is alive
 				if (sensor.isFree()) {
 					g.setColor(Color.green);
-					g.fillRect(this.cellWidth * x + OFFSET, this.cellHeight * y + OFFSET, this.cellWidth - OFFSET,
+					g.fillRect(this.cellWidth * column + OFFSET,this.cellHeight * row + OFFSET,  this.cellWidth - OFFSET,
 							this.cellHeight - OFFSET);
 
 				} else {
 					g.setColor(Color.orange);
-					g.fillRect(this.cellWidth * x + OFFSET, this.cellHeight * y + OFFSET, this.cellWidth - OFFSET,
+					g.fillRect( this.cellWidth * column + OFFSET,this.cellHeight * row + OFFSET, this.cellWidth - OFFSET,
 							this.cellHeight - OFFSET);
 
 				}
@@ -92,7 +88,7 @@ public class ParkViewer extends JPanel {
 				Color color = new Color(255-colorValue,colorValue,0);
 				
 				g.setColor(color);
-				g.fillRect(this.cellWidth * x + OFFSET, this.cellHeight * y + OFFSET, this.cellWidth/3 - OFFSET,
+				g.fillRect( this.cellWidth * column + OFFSET,this.cellHeight * row + OFFSET, this.cellWidth/3 - OFFSET,
 						this.cellHeight/3 - OFFSET);
 						
 				
@@ -100,7 +96,7 @@ public class ParkViewer extends JPanel {
 			}
 
 			g.setColor(Color.BLACK);
-			g.drawRect(this.cellWidth * x + OFFSET, this.cellHeight * y + OFFSET, this.cellWidth - OFFSET,
+			g.drawRect( this.cellWidth * column + OFFSET,this.cellHeight * row + OFFSET, this.cellWidth - OFFSET,
 					this.cellHeight - OFFSET);
 
 		}
@@ -109,18 +105,16 @@ public class ParkViewer extends JPanel {
 	
 
 	private void setUpDimensions() {
-		this.gridWidth = serverStorage.getMaxWorldWidth();
-		this.gridHeight = serverStorage.getMaxWorldHeight();
+		this.gridWidth = serverStorage.getWorldColumns() +1;
+		this.gridHeight = serverStorage.getWorldRows() + 1;
+		// +1 because the drawings starts from the upper left corner
+		
 		Dimension panelSize = this.getSize();
-
+		
 		this.cellWidth = (int) (panelSize.getWidth() / this.gridWidth);
 		this.cellHeight = (int) (panelSize.getHeight() / this.gridHeight);
 	}
 
 
-	public void updateSensors(ConcurrentHashMap<String, SensorRepresentation> storage) {
-		this.sensors = storage;
-		this.repaint();
-	}
 
 }

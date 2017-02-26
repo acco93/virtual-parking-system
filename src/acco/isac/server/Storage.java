@@ -6,56 +6,57 @@ import java.util.concurrent.ConcurrentHashMap;
 import acco.isac.datastructures.Edge;
 import acco.isac.datastructures.Graph;
 import acco.isac.datastructures.Vertex;
+import acco.isac.server.inforepresentation.SensorRepresentation;
 
 public class Storage {
 
 	private static Storage instance = new Storage();
 
-	private int maxWorldWidth;
-	private int maxWorldHeight;
+	private int worldColumns;
+	private int worldRows;
 	private ConcurrentHashMap<String, SensorRepresentation> sensors;
 	private Graph map;
 
 	private Storage() {
-		this.maxWorldHeight = 0;
-		this.maxWorldWidth = 0;
+		this.worldRows = -1;
+		this.worldColumns = -1;
 		this.sensors = new ConcurrentHashMap<String, SensorRepresentation>();
-		this.map = new Graph(new LinkedList<Vertex>(),new LinkedList<Edge>());
+		this.map = new Graph(new LinkedList<Vertex>(), new LinkedList<Edge>());
 	}
 
 	public static Storage getInstance() {
 		return Storage.instance;
 	}
 
-	public int getMaxWorldWidth() {
-		return maxWorldWidth;
+	public synchronized int getWorldColumns() {
+		return worldColumns;
 	}
 
-	public void setMaxWorldWidth(int maxWorldWidth) {
-		this.maxWorldWidth = maxWorldWidth;
+	public synchronized void setWorldColumns(int worldColumns) {
+		this.worldColumns = worldColumns;
 	}
 
-	public int getMaxWorldHeight() {
-		return maxWorldHeight;
+	public synchronized int getWorldRows() {
+		return worldRows;
 	}
 
-	public void setMaxWorldHeight(int maxWorldHeight) {
-		this.maxWorldHeight = maxWorldHeight;
+	public synchronized void setWorldRows(int worldRows) {
+		this.worldRows = worldRows;
 	}
 
-	public ConcurrentHashMap<String, SensorRepresentation> getSensors() {
+	public synchronized ConcurrentHashMap<String, SensorRepresentation> getSensors() {
 		return sensors;
 	}
 
-	public void setSensors(ConcurrentHashMap<String, SensorRepresentation> sensors) {
+	public synchronized void setSensors(ConcurrentHashMap<String, SensorRepresentation> sensors) {
 		this.sensors = sensors;
 	}
 
-	public Graph getMap() {
+	public synchronized Graph getMap() {
 		return map;
 	}
 
-	public void setMap(Graph map) {
+	public synchronized void setMap(Graph map) {
 		this.map = map;
 	}
 

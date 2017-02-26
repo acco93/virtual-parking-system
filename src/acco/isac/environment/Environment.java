@@ -6,8 +6,8 @@ public class Environment {
 
 	private static Environment instance = new Environment();
 
-	private int width;
-	private int height;
+	private int columns;
+	private int rows;
 	private Cell[][] sensorsLayer;
 	private boolean[][] carsLayer;
 
@@ -15,18 +15,20 @@ public class Environment {
 	 * 
 	 * Create an empty environment.
 	 * 
-	 * @param width
-	 * @param height
+	 * @param columns
+	 * @param rows
 	 */
 	public Environment() {
-		this.width = R.ENV_WIDTH;
-		this.height = R.ENV_HEIGHT;
+		this.columns = R.ENV_COLUMNS;
+		this.rows = R.ENV_ROWS;
 
-		this.sensorsLayer = new Cell[this.width][this.height];
-		this.carsLayer = new boolean[this.width][this.height];
+		System.out.println(this.columns+" "+this.rows);
+		
+		this.sensorsLayer = new Cell[this.rows][this.columns];
+		this.carsLayer = new boolean[this.rows][this.columns];
 
-		for (int i = 0; i < this.width; i++) {
-			for (int j = 0; j < this.height; j++) {
+		for (int i = 0; i < this.rows; i++) {
+			for (int j = 0; j < this.columns; j++) {
 				this.sensorsLayer[i][j] = new Cell();
 				this.carsLayer[i][j] = false;
 			}
@@ -51,22 +53,22 @@ public class Environment {
 	 */
 	public boolean inject(IEnvironmentElement element) {
 
-		int x = element.getPosition().getX();
-		int y = element.getPosition().getY();
+		int row = element.getPosition().getRow();
+		int column = element.getPosition().getColumn();
 
-		if (x < 0 || x > this.width || y < 0 || y > this.height) {
+		if (row < 0 || row > this.rows-1 || column < 0 || column > this.columns-1) {
 			return false;
 		}
 
-		return this.sensorsLayer[x][y].inject(element);
+		return this.sensorsLayer[row][column].inject(element);
 	}
 
-	public int getWidth() {
-		return width;
+	public int getColumns() {
+		return columns;
 	}
 
-	public int getHeight() {
-		return height;
+	public int getRows() {
+		return rows;
 	}
 
 	public Cell[][] getSensorsLayer() {

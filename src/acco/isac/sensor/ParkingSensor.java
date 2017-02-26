@@ -20,19 +20,19 @@ public class ParkingSensor implements ISensor<Boolean>, IEnvironmentElement {
 	/**
 	 * The constructor.
 	 * 
-	 * @param x
-	 *            x-position in a 2d grid-world
-	 * @param y
-	 *            y-position in a 2d grid-world
+	 * @param row
+	 *            row-position in a 2d grid-world
+	 * @param column
+	 *            column-position in a 2d grid-world
 	 */
-	public ParkingSensor(int x, int y, String uid) {
-		this.position = new Position(x, y);
+	public ParkingSensor(int row, int column, String uid) {
+		this.position = new Position(row, column);
 		this.uid = uid;
 	}
 
 	@Override
 	public Boolean sense() {
-		return Environment.getInstance().getCarsLayer()[this.position.getX()][this.position.getY()];
+		return Environment.getInstance().getCarsLayer()[this.position.getRow()][this.position.getColumn()];
 	}
 
 	@Override

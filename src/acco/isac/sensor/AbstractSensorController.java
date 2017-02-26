@@ -44,7 +44,8 @@ public abstract class AbstractSensorController extends Thread {
 			
 
 			if(random.nextDouble() <= this.serviceDisruptionProbability){
-				this.working = false;
+				//this.working = false;
+				
 			}
 			
 		}

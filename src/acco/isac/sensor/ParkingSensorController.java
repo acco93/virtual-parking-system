@@ -5,10 +5,7 @@ import com.google.gson.GsonBuilder;
 
 public class ParkingSensorController extends AbstractSensorController {
 
-
-
 	private ParkingSensor sensor;
-
 
 	public ParkingSensorController(ParkingSensor sensor, int delayTime) {
 		super(delayTime);
@@ -32,7 +29,7 @@ public class ParkingSensorController extends AbstractSensorController {
 		SensorMessage msg = new SensorMessage(this.sensor.getId(), this.sensor.getPosition(), booleanValue);
 		Gson gson = new GsonBuilder().create();
 		String json = gson.toJson(msg);
-
+		
 		return json.getBytes();
 	}
 

@@ -1,5 +1,8 @@
 package acco.isac.datastructures;
 
+import acco.isac.server.inforepresentation.EnvironmentInfo;
+import acco.isac.server.inforepresentation.InfoType;
+
 /**
  *
  * @author http://www.vogella.com/tutorials/JavaAlgorithmsDijkstra/article.html
@@ -10,12 +13,12 @@ public class Vertex {
 
 	final private String id;
 	final private String name;
-	private VertexType type;
+	private EnvironmentInfo info;
 
-	public Vertex(String id, String name, VertexType type) {
+	public Vertex(String id, String name, EnvironmentInfo info) {
 		this.id = id;
 		this.name = name;
-		this.type = type;
+		this.info = info;
 	}
 
 	public String getId() {
@@ -26,13 +29,14 @@ public class Vertex {
 		return name;
 	}
 
-	public VertexType getType() {
-		return type;
+
+	public EnvironmentInfo getInfo() {
+		return info;
 	}
 
 	@Override
 	public String toString() {
-		return "Vertex [id=" + id + ", name=" + name + ", type=" + type + "]";
+		return "Vertex [id=" + id + ", name=" + name + "]";
 	}
 
 	@Override
@@ -41,7 +45,6 @@ public class Vertex {
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
 
@@ -64,9 +67,9 @@ public class Vertex {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (type != other.type)
-			return false;
 		return true;
 	}
+
+
 
 }

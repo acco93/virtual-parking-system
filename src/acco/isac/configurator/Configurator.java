@@ -4,59 +4,100 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
+import acco.isac.core.Loggable;
 import acco.isac.environment.Environment;
 import acco.isac.sensor.ParkingSensor;
 import acco.isac.sensor.ParkingSensorController;
 import acco.isac.sharedknowledge.R;
 
-public class Configurator {
+/**
+ * 
+ * Define the environment from a file. The file should contain an (m x n) matrix
+ * of symbols: - s: for a parking sensor element - x: for a street element
+ * 
+ * @author acco
+ *
+ */
+public class Configurator implements Loggable {
 
 	private String filePath;
+	private int lineNumber;
+	private int lineDimension;
 
 	public Configurator(String filePath) {
 
+		log("started");
+
 		this.filePath = filePath;
+
+		this.lineNumber = 0;
+		this.lineDimension = 0;
+
+		log("file path setted: " + filePath);
 
 	}
 
+	/**
+	 * Set up the environment.
+	 * 
+	 * @return
+	 */
 	public boolean load() {
 
-		List<String[]> charMatrix = this.readFromFile();
+		log("trying to load " + this.filePath);
 
-		R.ENV_HEIGHT = charMatrix.size();
-		R.ENV_WIDTH = charMatrix.get(0).length;
+		char[][] charMatrix = this.readFromFile();
 
-		for (int i = 0; i < charMatrix.size(); i++) {
+		if (lineNumber == 0 || lineDimension == -1) {
+			log("are you trying to load an empty file?");
+			System.exit(1);
+		}
 
-			String[] row = charMatrix.get(i);
+		R.ENV_COLUMNS = lineDimension;
+		R.ENV_ROWS = lineNumber;
 
-			for (int j = 0; j < row.length; j++) {
+		for (int i = 0; i < this.lineNumber; i++) {
 
-				if (row[j].equals("s")) {
+			for (int j = 0; j < this.lineDimension; j++) {
 
-					ParkingSensor s = new ParkingSensor(j, i, "s" + j + i);
+				if (charMatrix[i][j] == 's') {
+
+					ParkingSensor s = new ParkingSensor(i, j, "s" + i +"_"+ j);
 					new ParkingSensorController(s, 1000).start();
-					Environment.getInstance().inject(s);
+					boolean ok = Environment.getInstance().inject(s);
 
+					if(!ok){
+						log("failed to inject sensor "+i+","+j);
+							
+					}
+					
 				}
 
 			}
 
 		}
 
+		log("successfully loaded!");
 		return true;
 
 	}
 
-	private List<String[]> readFromFile() {
+	/**
+	 * Read the file and return a char matrix
+	 * 
+	 * @return the char matrix
+	 */
+	private char[][] readFromFile() {
+
 		BufferedReader reader = null;
 
 		List<String[]> temporaryStorage = new LinkedList<>();
+
+		this.lineNumber = 0;
+		this.lineDimension = -1;
 
 		try {
 
@@ -67,7 +108,19 @@ public class Configurator {
 			String line = reader.readLine();
 
 			while (line != null) {
+				lineNumber++;
 				String[] splittedLine = line.split(" ");
+
+				if (lineDimension == -1) {
+					// not already set
+					// the first line determines the grid width
+					lineDimension = splittedLine.length;
+				} else if (lineDimension != splittedLine.length) {
+					// malformed file
+					log("malformed file. Line " + lineNumber + " has " + splittedLine.length + " characters instead of "
+							+ lineDimension);
+					System.exit(1);
+				}
 
 				temporaryStorage.add(splittedLine);
 
@@ -86,7 +139,21 @@ public class Configurator {
 			}
 		}
 
-		return temporaryStorage;
+		// map this strange structure to a char matrix
+
+		char[][] matrix = new char[lineNumber + 1][lineDimension + 1];
+		for (int i = 0; i < lineNumber; i++) {
+			for (int j = 0; j < lineDimension; j++) {
+				matrix[i][j] = temporaryStorage.get(i)[j].charAt(0);
+			}
+		}
+
+		return matrix;
+	}
+
+	@Override
+	public void log(String string) {
+		System.out.println("[" + this.getClass().getSimpleName() + "] " + string);
 	}
 
 }
