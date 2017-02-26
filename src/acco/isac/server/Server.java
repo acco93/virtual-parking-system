@@ -1,6 +1,6 @@
 package acco.isac.server;
 
-import acco.isac.serverui.UserInterface;
+import acco.isac.server.ui.UserInterface;
 
 /**
  * 

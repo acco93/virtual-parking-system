@@ -1,4 +1,4 @@
-package acco.isac.serverui;
+package acco.isac.server.ui;
 
 public interface IUserInterface {
 

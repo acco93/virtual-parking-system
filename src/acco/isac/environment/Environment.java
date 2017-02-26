@@ -21,8 +21,6 @@ public class Environment {
 	public Environment() {
 		this.columns = R.ENV_COLUMNS;
 		this.rows = R.ENV_ROWS;
-
-		System.out.println(this.columns+" "+this.rows);
 		
 		this.sensorsLayer = new Cell[this.rows][this.columns];
 		this.carsLayer = new boolean[this.rows][this.columns];

@@ -1,4 +1,4 @@
-package acco.isac.serverui;
+package acco.isac.server.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -20,7 +20,7 @@ public class GraphViewer extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final int OFFSET = 5;
+	private static final int OFFSET = 20;
 
 	private Storage serverStorage;
 	private int gridWidth;
@@ -58,56 +58,61 @@ public class GraphViewer extends JPanel {
 
 		Graph map = this.serverStorage.getMap();
 
+		for (Edge edge : map.getEdges()) {
+			EnvironmentInfo source = edge.getSource().getInfo();
+			EnvironmentInfo destination = edge.getDestination().getInfo();
+
+			int row1 = source.getPosition().getRow();
+			int column1 = source.getPosition().getColumn();
+
+			int row2 = destination.getPosition().getRow();
+			int column2 = destination.getPosition().getColumn();
+
+			g.drawLine((this.cellHeight * column1) + this.cellHeight / 3  + OFFSET, this.cellWidth * row1 + this.cellWidth / 3  + OFFSET,
+					this.cellHeight * column2 + this.cellHeight / 3  + OFFSET, this.cellWidth * row2 + this.cellWidth / 3  + OFFSET);
+
+		}
+		
 		for (Vertex node : map.getVertexes()) {
 
-			int x = node.getInfo().getPosition().getRow();
-			int y = node.getInfo().getPosition().getColumn();
+			int row = node.getInfo().getPosition().getRow();
+			int column = node.getInfo().getPosition().getColumn();
 
 			if (node.getInfo().getType() == InfoType.SENSOR) {
 				// sensor
 				SensorRepresentation sensor = (SensorRepresentation) node.getInfo();
 
 				g.setColor(Color.BLUE);
-				g.fillOval(this.cellWidth * x + OFFSET, this.cellHeight * y + OFFSET, this.cellWidth - 5*OFFSET,
-						this.cellHeight - 5*OFFSET);
+
+				g.fillOval(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET,
+						this.cellWidth - OFFSET, this.cellHeight - OFFSET);
 
 			} else {
 				// street
 				StreetRepresentation street = (StreetRepresentation) node.getInfo();
 				g.setColor(Color.WHITE);
-				g.fillOval(this.cellWidth * x + OFFSET, this.cellHeight * y + OFFSET, this.cellWidth - 5*OFFSET,
-						this.cellHeight - 5*OFFSET);
+				
+				g.fillOval(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET,
+						this.cellWidth -  OFFSET, this.cellHeight - OFFSET);
+
+				 
 			}
 
 			g.setColor(Color.BLACK);
-			g.drawOval(this.cellWidth * x + OFFSET, this.cellHeight * y + OFFSET, this.cellWidth - 5 * OFFSET,
-					this.cellHeight - 5 * OFFSET);
+			g.drawOval(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET, this.cellWidth - OFFSET,
+					this.cellHeight - OFFSET);
 
 		}
 
 		
-		/*for (Edge edge : map.getEdges()) {
-			EnvironmentInfo source = edge.getSource().getInfo();
-			EnvironmentInfo destination = edge.getDestination().getInfo();
-			
-			int x1 = source.getPosition().getX();
-			int y1 = source.getPosition().getY();
-			
-			int x2 = destination.getPosition().getX();
-			int y2 = destination.getPosition().getY();
-			
-			//System.out.println("("+x1+","+y1+") -> ("+x2+","+y2+")");
-			
-			g.drawLine(this.cellWidth*x1, this.cellHeight*y1, this.cellWidth*x2, this.cellHeight*y2);
-			
-		}*/
 
 	}
 
 	private void setUpDimensions() {
-		// rows and columns are exchange between graphics and code
-		this.gridWidth = serverStorage.getWorldRows();
-		this.gridHeight = serverStorage.getWorldColumns();
+		this.gridWidth = serverStorage.getWorldColumns() + 1;
+		this.gridHeight = serverStorage.getWorldRows() + 1;
+		// +1 because the drawings starts from the upper left corner
+
 		Dimension panelSize = this.getSize();
 
 		this.cellWidth = (int) (panelSize.getWidth() / this.gridWidth);

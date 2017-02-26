@@ -62,7 +62,7 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 
 		int row = position.getRow();
 		int column = position.getColumn();
-		
+
 		if (column > this.storage.getWorldColumns()) {
 			this.storage.setWorldColumns(column);
 		}
@@ -197,8 +197,90 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 		int columns = this.storage.getWorldColumns() + 1;
 		// +1 because the count starts from 0
 
-		// define a matrix of street nodes
-		EnvironmentInfo[][] matrix = new EnvironmentInfo[rows][columns];
+		// define a matrix of vertices
+		Vertex[][] matrix = new Vertex[rows][columns];
+
+		// first:
+		// set street everywhere
+		for (int r = 0; r < rows; r++) {
+			for (int c = 0; c < columns; c++) {
+				StreetRepresentation street = new StreetRepresentation(new Position(r, c));
+				matrix[r][c] = new Vertex("v_" + r + "_" + c, "streetnode", street);
+			}
+		}
+
+		// then:
+		// set the sensors in the correct position
+		for (SensorRepresentation sensor : this.storage.getSensors().values()) {
+			int row = sensor.getPosition().getRow();
+			int column = sensor.getPosition().getColumn();
+			matrix[row][column] = new Vertex("v_" + row + "_" + column, "streetnode", sensor);
+		}
+
+		List<Vertex> nodes = new LinkedList<>();
+		List<Edge> edges = new LinkedList<>();
+
+		// build the graph from the matrix
+		for (int r = 0; r < rows; r++) {
+			for (int c = 0; c < columns; c++) {
+				// add all nodes to the node list
+				nodes.add(matrix[r][c]);
+
+				// link the nodes
+				Vertex source, destination;
+
+				// left to right
+				if (c + 1 < columns) {
+					// if not at the grid-right border
+					source = matrix[r][c];
+					destination = matrix[r][c + 1];
+					if (source.getInfo().getType() == InfoType.STREET
+							|| destination.getInfo().getType() == InfoType.STREET) {
+
+						int weight = STREET_WEIGHT;
+						if (destination.getInfo().getType() == InfoType.SENSOR) {
+							weight = SENSOR_WEIGHT;
+						}
+
+						Edge edgeSD = new Edge("link_(" + r + "," + c + ")_(" + r + "," + (c + 1) + ")", source,
+								destination, weight);
+						edges.add(edgeSD);
+
+						Edge edgeDS = new Edge("link_(" + r + "," + (c + 1) + ")_(" + r + "," + c + ")", destination,
+								source, weight);
+						edges.add(edgeDS);
+
+					}
+				}
+
+				// top to bottom
+				if (r + 1 < rows) {
+					// if not at the grid-bottom border
+					source = matrix[r][c];
+					destination = matrix[r + 1][c];
+					if (source.getInfo().getType() == InfoType.STREET
+							|| destination.getInfo().getType() == InfoType.STREET) {
+
+						int weight = STREET_WEIGHT;
+						if (destination.getInfo().getType() == InfoType.SENSOR) {
+							weight = SENSOR_WEIGHT;
+						}
+
+						Edge edgeSD = new Edge("link_(" + r + "," + c + ")_(" + (r + 1) + "," + c + ")", source,
+								destination, weight);
+						edges.add(edgeSD);
+
+						Edge edgeDS = new Edge("link_(" + (r + 1) + "," + c + ")_(" + r + "," + c + ")", destination,
+								source, weight);
+						edges.add(edgeDS);
+					}
+
+				}
+			}
+		}
+
+		Graph map = new Graph(nodes, edges);
+		this.storage.setMap(map);
 
 	}
 

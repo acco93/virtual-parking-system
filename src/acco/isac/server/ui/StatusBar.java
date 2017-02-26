@@ -1,4 +1,4 @@
-package acco.isac.serverui;
+package acco.isac.server.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

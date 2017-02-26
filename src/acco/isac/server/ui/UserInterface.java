@@ -1,4 +1,4 @@
-package acco.isac.serverui;
+package acco.isac.server.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -19,11 +19,11 @@ public class UserInterface extends JFrame implements IUserInterface {
 
 		this.setLayout(new BorderLayout());
 
-		ParkViewer parkViewer = new ParkViewer();
-		this.add(parkViewer, BorderLayout.CENTER);
+		/*ParkViewer parkViewer = new ParkViewer();
+		this.add(parkViewer, BorderLayout.CENTER);*/
 
-		/*GraphViewer graphViewer = new GraphViewer();
-		this.add(graphViewer, BorderLayout.CENTER);*/
+		GraphViewer graphViewer = new GraphViewer();
+		this.add(graphViewer, BorderLayout.CENTER);
 
 		ToolBar toolbar = new ToolBar();
 

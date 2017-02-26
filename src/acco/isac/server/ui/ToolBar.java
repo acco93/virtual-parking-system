@@ -1,4 +1,4 @@
-package acco.isac.serverui;
+package acco.isac.server.ui;
 
 import javax.swing.JButton;
 import javax.swing.JToolBar;
