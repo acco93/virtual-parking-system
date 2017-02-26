@@ -1,7 +1,6 @@
 package acco.isac.server;
 
 import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
 
 import com.google.gson.Gson;
@@ -16,20 +15,18 @@ import com.rabbitmq.client.Envelope;
 
 import acco.isac.sensor.SensorMessage;
 import acco.isac.sharedknowledge.R;
-import acco.isac.ui.UserInterface;
 
 public class SensorHandler {
 
 	private Channel channel;
-	private UserInterface ui;
-	private ConcurrentHashMap<String, SensorRepresentation> storage;
+	private SensorMessageProcessor msgProcessor;
 
-	public SensorHandler(){
-		ui = new UserInterface();
+	public SensorHandler() {
+
+		this.msgProcessor = new SensorMessageProcessor();
+		this.msgProcessor.start();
 
 		this.setupRabbitMQ();
-
-		storage = new ConcurrentHashMap<String, SensorRepresentation>();
 
 	}
 
@@ -42,8 +39,7 @@ public class SensorHandler {
 			connection = factory.newConnection();
 			channel = connection.createChannel();
 
-			channel.queueDeclare(R.QUEUE_NAME, false, false, false, null);
-
+			channel.queueDeclare(R.SENSOR_TO_SERVER_QUEUE, false, false, false, null);
 
 		} catch (IOException | TimeoutException e) {
 
@@ -66,22 +62,18 @@ public class SensorHandler {
 				Gson gson = new GsonBuilder().create();
 				SensorMessage msg = gson.fromJson(message, SensorMessage.class);
 
-				SensorRepresentation rep = new SensorRepresentation(msg.getSensorId(), msg.getPosition(),
-						msg.isFree());
-
-				storage.put(msg.getSensorId(), rep);
-
-				ui.updateSensors(storage);
+				msgProcessor.appendSensorMessage(msg);
 
 			}
+
 		};
 
 		// Register to it
 		try {
-			channel.basicConsume(R.QUEUE_NAME, true, consumer);
+			channel.basicConsume(R.SENSOR_TO_SERVER_QUEUE, true, consumer);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 }

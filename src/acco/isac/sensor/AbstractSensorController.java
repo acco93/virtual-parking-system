@@ -12,7 +12,7 @@ import acco.isac.sharedknowledge.R;
 
 public abstract class AbstractSensorController extends Thread {
 
-	private static final int DELAY_FACTOR = 2;
+	private static final int DELAY_FACTOR = 3;
 	private int delayTime;
 	private Channel channel;
 	private Random random;
@@ -33,13 +33,15 @@ public abstract class AbstractSensorController extends Thread {
 
 		while (working) {
 
+			this.delay();
+			
 			Object value = this.sense();
 
 			byte[] processedValue = this.process(value);
 
 			this.send(processedValue);
 
-			this.delay();
+			
 
 			if(random.nextDouble() <= this.serviceDisruptionProbability){
 				this.working = false;
@@ -52,7 +54,7 @@ public abstract class AbstractSensorController extends Thread {
 	protected void send(byte[] bytes) {
 
 		try {
-			channel.basicPublish("", R.QUEUE_NAME, null, bytes);
+			channel.basicPublish("", R.SENSOR_TO_SERVER_QUEUE, null, bytes);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -84,7 +86,7 @@ public abstract class AbstractSensorController extends Thread {
 			Connection connection;
 			connection = factory.newConnection();
 			channel = connection.createChannel();
-			channel.queueDeclare(R.QUEUE_NAME, false, false, false, null);
+			channel.queueDeclare(R.SENSOR_TO_SERVER_QUEUE, false, false, false, null);
 
 		} catch (IOException | TimeoutException e) {
 			// TODO Auto-generated catch block

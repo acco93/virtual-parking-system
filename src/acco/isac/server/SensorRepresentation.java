@@ -60,6 +60,12 @@ public class SensorRepresentation {
 	public boolean isFree() {
 		return this.free;
 	}
+
+	public void updateState(boolean free) {
+		this.free=free;
+		this.lastHeartbeat = new Date().getTime();
+		
+	}
 	
 	
 }

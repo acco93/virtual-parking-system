@@ -1,5 +1,7 @@
 package acco.isac.server;
 
+import acco.isac.serverui.UserInterface;
+
 /**
  * 
  * The server knows everything but may be offline!
@@ -11,11 +13,13 @@ public class Server {
 
 	private SensorHandler sensorsHandler;
 	private RequestsHandler requestsHandler;
-
+	private UserInterface ui;
+	
 	public Server() {
 
 		sensorsHandler = new SensorHandler();
 		requestsHandler = new RequestsHandler();
+		this.ui = new UserInterface();
 	}
 
 	public void start() {
