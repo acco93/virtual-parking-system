@@ -36,7 +36,7 @@ public class DijkstraAlgorithm {
 		this.queue.addAll(this.graph.getNodes());
 
 		while (!this.queue.isEmpty()) {
-			// sorting each time is not very efficient ...
+			// sorting each time is not very efficient ... maybe an heap?
 			Collections.sort(this.queue, (u, v) -> {
 				return u.getShortestPathEstimate() - v.getShortestPathEstimate();
 			});

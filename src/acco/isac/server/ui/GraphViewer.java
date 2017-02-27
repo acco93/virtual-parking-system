@@ -3,6 +3,8 @@ package acco.isac.server.ui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -59,48 +61,50 @@ public class GraphViewer extends JPanel {
 		super.paintComponent(g);
 
 		this.setUpDimensions();
-
+		Graphics2D g2 = (Graphics2D)g;
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+			    RenderingHints.VALUE_ANTIALIAS_ON);
+		
 		Graph<ShortestPathVertex> map = this.serverStorage.getMap();
 
 		// draw edges
 
-				for (ShortestPathVertex vertex : map.getNodes()) {
-					EnvironmentVertex envVertex = (EnvironmentVertex) vertex;
-					
-					int row = envVertex.getInfo().getPosition().getRow();
-					int column = envVertex.getInfo().getPosition().getColumn();
-					
-					for (Vertex adj : envVertex.getAdjecents()) {
-						Position adjPosition = ((EnvironmentVertex) adj).getInfo().getPosition();
-						int adjRow = adjPosition.getRow();
-						int adjColumn = adjPosition.getColumn();
+		for (ShortestPathVertex vertex : map.getNodes()) {
+			EnvironmentVertex envVertex = (EnvironmentVertex) vertex;
 
-						// g.drawLine((this.cellHeight * column) + this.cellHeight / 3 +
-						// OFFSET,
-						// this.cellWidth * row + this.cellWidth / 3 + OFFSET,
-						// this.cellHeight * adjColumn + this.cellHeight / 3 + OFFSET,
-						// this.cellWidth * adjRow + this.cellWidth / 3 + OFFSET);
+			int row = envVertex.getInfo().getPosition().getRow();
+			int column = envVertex.getInfo().getPosition().getColumn();
 
-						int x1 = this.cellWidth * column + OFFSET + this.cellWidth/3 ;
-						int y1 = this.cellHeight * row + OFFSET + this.cellHeight/3;
+			for (Vertex adj : envVertex.getAdjecents()) {
+				Position adjPosition = ((EnvironmentVertex) adj).getInfo().getPosition();
+				int adjRow = adjPosition.getRow();
+				int adjColumn = adjPosition.getColumn();
 
-						//System.out.println(x1+" "+y1);
-						
-						if (adjColumn > column) {
-							g.drawLine(x1, y1, x1 + this.cellWidth, y1);
-						} else if(adjColumn < column) {
-							g.drawLine(x1 - this.cellWidth, y1, x1, y1);
-						}
+				// g.drawLine((this.cellHeight * column) + this.cellHeight / 3 +
+				// OFFSET,
+				// this.cellWidth * row + this.cellWidth / 3 + OFFSET,
+				// this.cellHeight * adjColumn + this.cellHeight / 3 + OFFSET,
+				// this.cellWidth * adjRow + this.cellWidth / 3 + OFFSET);
 
-						if (adjRow > row) {
-							g.drawLine(x1, y1, x1, y1 + this.cellHeight);
-						} else if(adjRow < row) {
-							g.drawLine(x1, y1 - this.cellHeight, x1, y1);
-						}
+				int x1 = this.cellWidth * column + OFFSET + this.cellWidth / 3;
+				int y1 = this.cellHeight * row + OFFSET + this.cellHeight / 3;
 
-					}
+				// System.out.println(x1+" "+y1);
+
+				if (adjColumn > column) {
+					g.drawLine(x1, y1, x1 + this.cellWidth, y1);
+				} else if (adjColumn < column) {
+					g.drawLine(x1 - this.cellWidth, y1, x1, y1);
 				}
-		
+
+				if (adjRow > row) {
+					g.drawLine(x1, y1, x1, y1 + this.cellHeight);
+				} else if (adjRow < row) {
+					g.drawLine(x1, y1 - this.cellHeight, x1, y1);
+				}
+
+			}
+		}
 
 		for (ShortestPathVertex vertex : map.getNodes()) {
 			EnvironmentVertex envVertex = (EnvironmentVertex) vertex;
@@ -115,15 +119,15 @@ public class GraphViewer extends JPanel {
 				// R.MAX_SENSOR_DELAY : 255 = remainingTime : x
 				long remainingTime = sensor.remainingTime();
 				int colorValue = 255 - (int) (remainingTime * 255 / (R.MAX_SENSOR_DELAY));
-				if(colorValue < 0){
+				if (colorValue < 0) {
 					colorValue = 0;
 				}
-				Color color = new Color(255-colorValue,colorValue,0);
-				
+				Color color = new Color(255 - colorValue, colorValue, 0);
+
 				g.setColor(color);
 				g.fillOval(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET, this.cellWidth - OFFSET,
 						this.cellHeight - OFFSET);
-				
+
 			} else {
 				// street
 				StreetRepresentation street = (StreetRepresentation) envVertex.getInfo();
@@ -138,28 +142,8 @@ public class GraphViewer extends JPanel {
 			g.drawOval(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET, this.cellWidth - OFFSET,
 					this.cellHeight - OFFSET);
 
-			
 		}
 
-		
-		if (serverStorage.getWorldRows() > 6 && serverStorage.getWorldColumns() > 10) {
-			DijkstraAlgorithm da = new DijkstraAlgorithm(map, (ShortestPathVertex) map.getVertexFromId("v_0_0"));
-			List<ShortestPathVertex> path = da.getPath((ShortestPathVertex) map.getVertexFromId("v_2_0"));
-			
-			for(ShortestPathVertex node:path){
-				int row = ((EnvironmentVertex)node).getInfo().getPosition().getRow();
-				int column = ((EnvironmentVertex)node).getInfo().getPosition().getColumn();
-
-				g.setColor(Color.BLUE);
-				g.fillOval(this.cellWidth * column + OFFSET+this.cellWidth/4, this.cellHeight * row + OFFSET + this.cellHeight/4, this.cellWidth/2 - OFFSET,
-						this.cellHeight/2 - OFFSET);
-			}
-			
-		}
-		
-		
-		
-		
 	}
 
 	private void setUpDimensions() {

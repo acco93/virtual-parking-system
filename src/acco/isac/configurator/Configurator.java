@@ -59,13 +59,20 @@ public class Configurator {
 		R.ENV_COLUMNS = lineDimension;
 		R.ENV_ROWS = lineNumber;
 
+		char letter = 'A';
+		int inc = 0;
+		
 		for (int i = 0; i < this.lineNumber; i++) {
 
 			for (int j = 0; j < this.lineDimension; j++) {
 
 				if (charMatrix[i][j] == 's') {
-
-					ParkingSensor s = new ParkingSensor(i, j, "s" + i + "_" + j);
+					inc ++;
+					if(inc==10){
+						letter++;
+						inc = 0;
+					}
+					ParkingSensor s = new ParkingSensor(i, j, ""+letter+""+inc);
 					new ParkingSensorController(s).start();
 					boolean ok = Environment.getInstance().inject(s);
 
