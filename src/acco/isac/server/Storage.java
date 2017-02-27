@@ -3,9 +3,8 @@ package acco.isac.server;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
-import acco.isac.datastructures.Edge;
-import acco.isac.datastructures.OldGraph;
-import acco.isac.datastructures.OldVertex;
+import acco.isac.datastructures.Graph;
+import acco.isac.datastructures.ShortestPathVertex;
 import acco.isac.server.inforepresentation.SensorRepresentation;
 
 public class Storage {
@@ -15,13 +14,13 @@ public class Storage {
 	private int worldColumns;
 	private int worldRows;
 	private ConcurrentHashMap<String, SensorRepresentation> sensors;
-	private OldGraph map;
+	private Graph<ShortestPathVertex> map;
 
 	private Storage() {
 		this.worldRows = -1;
 		this.worldColumns = -1;
 		this.sensors = new ConcurrentHashMap<String, SensorRepresentation>();
-		this.map = new OldGraph(new LinkedList<OldVertex>(), new LinkedList<Edge>());
+		this.map = new Graph<>(new LinkedList<ShortestPathVertex>());
 	}
 
 	public static Storage getInstance() {
@@ -52,11 +51,11 @@ public class Storage {
 		this.sensors = sensors;
 	}
 
-	public synchronized OldGraph getMap() {
+	public synchronized Graph<ShortestPathVertex> getMap() {
 		return map;
 	}
 
-	public synchronized void setMap(OldGraph map) {
+	public synchronized void setMap(Graph<ShortestPathVertex> map) {
 		this.map = map;
 	}
 

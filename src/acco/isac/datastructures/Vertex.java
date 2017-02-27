@@ -25,7 +25,6 @@ public class Vertex {
 	}
 
 	public void addAdjacent(Vertex vertex, int weight) {
-		System.out.println("adding");
 		this.adjacents.add(vertex);
 		this.weights.put(vertex.getId(), weight);
 	}

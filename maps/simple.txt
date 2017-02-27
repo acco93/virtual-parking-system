@@ -1,3 +1,4 @@
-s s x s s s s x s s
-x x x x x x x x x x 
-s s s s s s s s s s
+x x x s
+s s x s
+s s x s
+x x x s

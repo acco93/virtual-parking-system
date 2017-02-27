@@ -7,11 +7,12 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import acco.isac.datastructures.Edge;
-import acco.isac.datastructures.OldGraph;
-import acco.isac.datastructures.OldVertex;
+import acco.isac.datastructures.EnvironmentVertex;
+import acco.isac.datastructures.Graph;
+import acco.isac.datastructures.ShortestPathVertex;
+import acco.isac.datastructures.Vertex;
+import acco.isac.environment.Position;
 import acco.isac.server.Storage;
-import acco.isac.server.inforepresentation.EnvironmentInfo;
 import acco.isac.server.inforepresentation.InfoType;
 import acco.isac.server.inforepresentation.SensorRepresentation;
 import acco.isac.server.inforepresentation.StreetRepresentation;
@@ -56,46 +57,71 @@ public class GraphViewer extends JPanel {
 
 		this.setUpDimensions();
 
-		OldGraph map = this.serverStorage.getMap();
+		Graph<ShortestPathVertex> map = this.serverStorage.getMap();
 
-		for (Edge edge : map.getEdges()) {
-			EnvironmentInfo source = edge.getSource().getInfo();
-			EnvironmentInfo destination = edge.getDestination().getInfo();
+		// draw edges
 
-			int row1 = source.getPosition().getRow();
-			int column1 = source.getPosition().getColumn();
+				for (ShortestPathVertex vertex : map.getNodes()) {
+					EnvironmentVertex envVertex = (EnvironmentVertex) vertex;
+					
+					int row = envVertex.getInfo().getPosition().getRow();
+					int column = envVertex.getInfo().getPosition().getColumn();
+					
+					for (Vertex adj : envVertex.getAdjecents()) {
+						Position adjPosition = ((EnvironmentVertex) adj).getInfo().getPosition();
+						int adjRow = adjPosition.getRow();
+						int adjColumn = adjPosition.getColumn();
 
-			int row2 = destination.getPosition().getRow();
-			int column2 = destination.getPosition().getColumn();
+						// g.drawLine((this.cellHeight * column) + this.cellHeight / 3 +
+						// OFFSET,
+						// this.cellWidth * row + this.cellWidth / 3 + OFFSET,
+						// this.cellHeight * adjColumn + this.cellHeight / 3 + OFFSET,
+						// this.cellWidth * adjRow + this.cellWidth / 3 + OFFSET);
 
-			g.drawLine((this.cellHeight * column1) + this.cellHeight / 3  + OFFSET, this.cellWidth * row1 + this.cellWidth / 3  + OFFSET,
-					this.cellHeight * column2 + this.cellHeight / 3  + OFFSET, this.cellWidth * row2 + this.cellWidth / 3  + OFFSET);
+						int x1 = this.cellWidth * column + OFFSET + this.cellWidth/3 ;
+						int y1 = this.cellHeight * row + OFFSET + this.cellHeight/3;
 
-		}
+						//System.out.println(x1+" "+y1);
+						
+						if (adjColumn > column) {
+							g.drawLine(x1, y1, x1 + this.cellWidth, y1);
+						} else if(adjColumn < column) {
+							g.drawLine(x1 - this.cellWidth, y1, x1, y1);
+						}
+
+						if (adjRow > row) {
+							g.drawLine(x1, y1, x1, y1 + this.cellHeight);
+						} else if(adjRow < row) {
+							g.drawLine(x1, y1 - this.cellHeight, x1, y1);
+						}
+
+					}
+				}
 		
-		for (OldVertex node : map.getVertexes()) {
 
-			int row = node.getInfo().getPosition().getRow();
-			int column = node.getInfo().getPosition().getColumn();
+		for (ShortestPathVertex vertex : map.getNodes()) {
+			EnvironmentVertex envVertex = (EnvironmentVertex) vertex;
 
-			if (node.getInfo().getType() == InfoType.SENSOR) {
+			int row = envVertex.getInfo().getPosition().getRow();
+			int column = envVertex.getInfo().getPosition().getColumn();
+
+			if (envVertex.getInfo().getType() == InfoType.SENSOR) {
 				// sensor
-				SensorRepresentation sensor = (SensorRepresentation) node.getInfo();
+				SensorRepresentation sensor = (SensorRepresentation) envVertex.getInfo();
 
 				g.setColor(Color.BLUE);
 
-				g.fillOval(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET,
-						this.cellWidth - OFFSET, this.cellHeight - OFFSET);
+				g.fillOval(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET, this.cellWidth - OFFSET,
+						this.cellHeight - OFFSET);
 
 			} else {
 				// street
-				StreetRepresentation street = (StreetRepresentation) node.getInfo();
+				StreetRepresentation street = (StreetRepresentation) envVertex.getInfo();
 				g.setColor(Color.WHITE);
-				
-				g.fillOval(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET,
-						this.cellWidth -  OFFSET, this.cellHeight - OFFSET);
 
-				 
+				g.fillOval(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET, this.cellWidth - OFFSET,
+						this.cellHeight - OFFSET);
+
 			}
 
 			g.setColor(Color.BLACK);
@@ -105,7 +131,6 @@ public class GraphViewer extends JPanel {
 		}
 
 		
-
 	}
 
 	private void setUpDimensions() {

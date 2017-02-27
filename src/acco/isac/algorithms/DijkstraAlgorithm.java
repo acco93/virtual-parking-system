@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.PriorityQueue;
 
 import acco.isac.datastructures.Graph;
 import acco.isac.datastructures.ShortestPathVertex;
@@ -15,27 +14,29 @@ public class DijkstraAlgorithm {
 	private Graph<ShortestPathVertex> graph;
 	private ShortestPathVertex source;
 	private HashSet<ShortestPathVertex> set;
-	private PriorityQueue<ShortestPathVertex> queue;
+	private List<ShortestPathVertex> queue;
 
 	public DijkstraAlgorithm(Graph<ShortestPathVertex> graph, ShortestPathVertex source) {
 		this.graph = graph;
 		this.source = source;
 		this.set = new HashSet<ShortestPathVertex>();
-		this.queue = new PriorityQueue<ShortestPathVertex>((u, v) -> {
-			return u.getShortestPathEstimate() - v.getShortestPathEstimate();
-		});
+		this.queue = new LinkedList<ShortestPathVertex>();
 		this.initializeSingleSource();
 
 		// add all nodes to the queue
 		this.queue.addAll(this.graph.getNodes());
 
 		while (!this.queue.isEmpty()) {
-			ShortestPathVertex u = this.queue.remove();
+			Collections.sort(this.queue, (u, v) -> {
+				return u.getShortestPathEstimate() - v.getShortestPathEstimate();
+			});
+			ShortestPathVertex u = this.queue.remove(0);
 			this.set.add(u);
 			for (Vertex v : u.getAdjecents()) {
-				System.out.println("qua");
 				this.relax(u, (ShortestPathVertex) v);
 			}
+			System.out.println("queue:");
+			System.out.println(this.queue);
 		}
 	}
 
@@ -58,11 +59,14 @@ public class DijkstraAlgorithm {
 		List<ShortestPathVertex> path = new LinkedList<>();
 
 		ShortestPathVertex node = destination;
+
+		// System.out.println(node.getAdjecents());
+
 		while (node.getPredecessor() != null) {
 			path.add(node);
 			node = node.getPredecessor();
 		}
-		
+
 		// append the source node
 		path.add(source);
 		Collections.reverse(path);
