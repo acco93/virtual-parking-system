@@ -8,8 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import acco.isac.datastructures.Edge;
-import acco.isac.datastructures.Graph;
-import acco.isac.datastructures.Vertex;
+import acco.isac.datastructures.OldGraph;
+import acco.isac.datastructures.OldVertex;
 import acco.isac.server.Storage;
 import acco.isac.server.inforepresentation.EnvironmentInfo;
 import acco.isac.server.inforepresentation.InfoType;
@@ -56,7 +56,7 @@ public class GraphViewer extends JPanel {
 
 		this.setUpDimensions();
 
-		Graph map = this.serverStorage.getMap();
+		OldGraph map = this.serverStorage.getMap();
 
 		for (Edge edge : map.getEdges()) {
 			EnvironmentInfo source = edge.getSource().getInfo();
@@ -73,7 +73,7 @@ public class GraphViewer extends JPanel {
 
 		}
 		
-		for (Vertex node : map.getVertexes()) {
+		for (OldVertex node : map.getVertexes()) {
 
 			int row = node.getInfo().getPosition().getRow();
 			int column = node.getInfo().getPosition().getColumn();

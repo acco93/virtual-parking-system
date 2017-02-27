@@ -3,34 +3,23 @@ package acco.isac.datastructures;
 import java.util.List;
 
 /**
-*
-* @author http://www.vogella.com/tutorials/JavaAlgorithmsDijkstra/article.html
-*
-*/
+ * 
+ * A graph is a set of nodes and edges. The edges are implicit in the Vertex
+ * definition.
+ * 
+ * @author acco
+ *
+ */
+public class Graph<T extends Vertex> {
 
-public class Graph {
+	private List<T> nodes;
 
-	private final List<Vertex> vertexes;
-	private final List<Edge> edges;
-
-	public Graph(List<Vertex> vertexes, List<Edge> edges) {
-		this.vertexes = vertexes;
-		this.edges = edges;
+	public Graph(List<T> nodes) {
+		this.nodes = nodes;
 	}
 
-	public List<Vertex> getVertexes() {
-		return vertexes;
+	public List<T> getNodes() {
+		return this.nodes;
 	}
-
-	public List<Edge> getEdges() {
-		return edges;
-	}
-
-	@Override
-	public String toString() {
-		return "Graph [edges=" + edges + "]";
-	}
-	
-	
 
 }

@@ -7,8 +7,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import acco.isac.algorithms.DijkstraAlgorithm;
 import acco.isac.core.EventLoop;
 import acco.isac.datastructures.Edge;
+import acco.isac.datastructures.EnvironmentVertex;
 import acco.isac.datastructures.Graph;
-import acco.isac.datastructures.Vertex;
+import acco.isac.datastructures.OldGraph;
+import acco.isac.datastructures.OldVertex;
+import acco.isac.datastructures.ShortestPathVertex;
 import acco.isac.environment.Position;
 import acco.isac.sensor.SensorMessage;
 import acco.isac.server.inforepresentation.EnvironmentInfo;
@@ -106,13 +109,13 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 
 		// define a matrix of Vertex
 
-		Vertex[][] edgesMatrix = new Vertex[maxHeight][maxWidth];
-		List<Vertex> nodes = new LinkedList<Vertex>();
+		OldVertex[][] edgesMatrix = new OldVertex[maxHeight][maxWidth];
+		List<OldVertex> nodes = new LinkedList<OldVertex>();
 
 		for (int i = 0; i < maxHeight; i++) {
 			for (int j = 0; j < maxWidth; j++) {
 
-				edgesMatrix[i][j] = new Vertex(i + "_" + j, "node", matrix[i][j]);
+				edgesMatrix[i][j] = new OldVertex(i + "_" + j, "node", matrix[i][j]);
 				nodes.add(edgesMatrix[i][j]);
 
 			}
@@ -127,7 +130,7 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 		for (int i = 0; i < maxHeight; i++) {
 			for (int j = 0; j < maxWidth; j++) {
 
-				Vertex source, destination;
+				OldVertex source, destination;
 
 				// left to right
 				if (j + 1 < maxWidth) {
@@ -180,7 +183,7 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 			}
 		}
 
-		storage.setMap(new Graph(nodes, edges));
+		storage.setMap(new OldGraph(nodes, edges));
 
 		/*
 		 * if (maxWidth > 3 && maxHeight > 3) { DijkstraAlgorithm d = new
@@ -191,21 +194,21 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 		 */
 	}
 
-	private void rebuildMap() {
+	private void ololrebuildMap() {
 
 		int rows = this.storage.getWorldRows() + 1;
 		int columns = this.storage.getWorldColumns() + 1;
 		// +1 because the count starts from 0
 
 		// define a matrix of vertices
-		Vertex[][] matrix = new Vertex[rows][columns];
+		OldVertex[][] matrix = new OldVertex[rows][columns];
 
 		// first:
 		// set street everywhere
 		for (int r = 0; r < rows; r++) {
 			for (int c = 0; c < columns; c++) {
 				StreetRepresentation street = new StreetRepresentation(new Position(r, c));
-				matrix[r][c] = new Vertex("v_" + r + "_" + c, "streetnode", street);
+				matrix[r][c] = new OldVertex("v_" + r + "_" + c, "streetnode", street);
 			}
 		}
 
@@ -214,10 +217,10 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 		for (SensorRepresentation sensor : this.storage.getSensors().values()) {
 			int row = sensor.getPosition().getRow();
 			int column = sensor.getPosition().getColumn();
-			matrix[row][column] = new Vertex("v_" + row + "_" + column, "streetnode", sensor);
+			matrix[row][column] = new OldVertex("v_" + row + "_" + column, "streetnode", sensor);
 		}
 
-		List<Vertex> nodes = new LinkedList<>();
+		List<OldVertex> nodes = new LinkedList<>();
 		List<Edge> edges = new LinkedList<>();
 
 		// build the graph from the matrix
@@ -227,7 +230,7 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 				nodes.add(matrix[r][c]);
 
 				// link the nodes
-				Vertex source, destination;
+				OldVertex source, destination;
 
 				// left to right
 				if (c + 1 < columns) {
@@ -279,8 +282,106 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 			}
 		}
 
-		Graph map = new Graph(nodes, edges);
+		OldGraph map = new OldGraph(nodes, edges);
 		this.storage.setMap(map);
+
+	}
+
+	private void rebuildMap() {
+		int rows = this.storage.getWorldRows() + 1;
+		int columns = this.storage.getWorldColumns() + 1;
+		// +1 because the count starts from 0
+
+		// define a matrix of vertices
+		EnvironmentVertex[][] matrix = new EnvironmentVertex[rows][columns];
+
+		// first:
+		// set street everywhere
+		for (int r = 0; r < rows; r++) {
+			for (int c = 0; c < columns; c++) {
+				StreetRepresentation street = new StreetRepresentation(new Position(r, c));
+				matrix[r][c] = new EnvironmentVertex("v_" + r + "_" + c, street);
+			}
+		}
+
+		// then:
+		// set the sensors in the correct position
+		for (SensorRepresentation sensor : this.storage.getSensors().values()) {
+			int row = sensor.getPosition().getRow();
+			int column = sensor.getPosition().getColumn();
+			matrix[row][column] = new EnvironmentVertex("v_" + row + "_" + column, sensor);
+		}
+
+		List<ShortestPathVertex> nodes = new LinkedList<>();
+
+		// build the graph from the matrix
+		for (int r = 0; r < rows; r++) {
+			for (int c = 0; c < columns; c++) {
+				nodes.add(matrix[r][c]);
+
+				// street nodes are connected everywhere (within 1-grid block)
+				if (matrix[r][c].getInfo().getType() == InfoType.STREET) {
+					connectLeft(matrix, rows, columns, r, c);
+					connectRight(matrix, rows, columns, r, c);
+					connectUp(matrix, rows, columns, r, c);
+					connectBottom(matrix, rows, columns, r, c);
+				} else {
+					// sensor nodes are connected just to street nodes
+				}
+
+			}
+		}
+
+		Graph<ShortestPathVertex> map = new Graph<>(nodes);
+
+		if (rows > 3 && columns > 3) {
+			DijkstraAlgorithm da = new DijkstraAlgorithm(map, matrix[0][0]);
+			System.out.println(da.getPath(matrix[0][3]));
+		}
+	}
+
+	private void connectBottom(EnvironmentVertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow,
+			int sourceColumn) {
+
+		this.connect(matrix, matrixRows, matrixColumns, sourceRow, sourceColumn, sourceRow - 1, sourceColumn);
+
+	}
+
+	private void connectUp(EnvironmentVertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow,
+			int sourceColumn) {
+
+		this.connect(matrix, matrixRows, matrixColumns, sourceRow, sourceColumn, sourceRow + 1, sourceColumn);
+
+	}
+
+	private void connectRight(EnvironmentVertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow,
+			int sourceColumn) {
+		this.connect(matrix, matrixRows, matrixColumns, sourceRow, sourceColumn, sourceRow, sourceColumn + 1);
+
+	}
+
+	private void connectLeft(EnvironmentVertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow,
+			int sourceColumn) {
+		this.connect(matrix, matrixRows, matrixColumns, sourceRow, sourceColumn, sourceRow, sourceColumn - 1);
+
+	}
+
+	private void connect(EnvironmentVertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow,
+			int sourceColumn, int destinationRow, int destinationColumn) {
+
+		System.out.println(destinationRow + " " + destinationColumn);
+
+		if (destinationRow < 0 || destinationRow >= matrixRows || destinationColumn < 0
+				|| destinationColumn >= matrixColumns) {
+			return;
+		}
+
+		int weight = STREET_WEIGHT;
+		if (matrix[destinationRow][destinationColumn].getInfo().getType() == InfoType.SENSOR) {
+			weight = SENSOR_WEIGHT;
+		}
+
+		matrix[sourceRow][sourceColumn].addAdjacent(matrix[destinationRow][destinationColumn], weight);
 
 	}
 

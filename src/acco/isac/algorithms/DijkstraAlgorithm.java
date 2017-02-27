@@ -1,129 +1,70 @@
 package acco.isac.algorithms;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.PriorityQueue;
 
-import acco.isac.datastructures.Edge;
 import acco.isac.datastructures.Graph;
+import acco.isac.datastructures.ShortestPathVertex;
 import acco.isac.datastructures.Vertex;
-
-/**
- *
- * @author http://www.vogella.com/tutorials/JavaAlgorithmsDijkstra/article.html
- *
- */
 
 public class DijkstraAlgorithm {
 
-	private final List<Vertex> nodes;
-	private final List<Edge> edges;
-	private Set<Vertex> settledNodes;
-	private Set<Vertex> unSettledNodes;
-	private Map<Vertex, Vertex> predecessors;
-	private Map<Vertex, Integer> distance;
+	private Graph<ShortestPathVertex> graph;
+	private ShortestPathVertex source;
+	private HashSet<ShortestPathVertex> set;
+	private PriorityQueue<ShortestPathVertex> queue;
 
-	public DijkstraAlgorithm(Graph graph) {
-		// create a copy of the array so that we can operate on this array
-		this.nodes = new ArrayList<Vertex>(graph.getVertexes());
-		this.edges = new ArrayList<Edge>(graph.getEdges());
-	}
+	public DijkstraAlgorithm(Graph<ShortestPathVertex> graph, ShortestPathVertex source) {
+		this.graph = graph;
+		this.source = source;
+		this.set = new HashSet<ShortestPathVertex>();
+		this.queue = new PriorityQueue<ShortestPathVertex>((u, v) -> {
+			return u.getShortestPathEstimate() - v.getShortestPathEstimate();
+		});
+		this.initializeSingleSource();
 
-	public void execute(Vertex source) {
-		settledNodes = new HashSet<Vertex>();
-		unSettledNodes = new HashSet<Vertex>();
-		distance = new HashMap<Vertex, Integer>();
-		predecessors = new HashMap<Vertex, Vertex>();
-		distance.put(source, 0);
-		unSettledNodes.add(source);
-		while (unSettledNodes.size() > 0) {
-			Vertex node = getMinimum(unSettledNodes);
-			settledNodes.add(node);
-			unSettledNodes.remove(node);
-			findMinimalDistances(node);
-		}
-	}
+		// add all nodes to the queue
+		this.queue.addAll(this.graph.getNodes());
 
-	private void findMinimalDistances(Vertex node) {
-		List<Vertex> adjacentNodes = getNeighbors(node);
-		for (Vertex target : adjacentNodes) {
-			if (getShortestDistance(target) > getShortestDistance(node) + getDistance(node, target)) {
-				distance.put(target, getShortestDistance(node) + getDistance(node, target));
-				predecessors.put(target, node);
-				unSettledNodes.add(target);
+		while (!this.queue.isEmpty()) {
+			ShortestPathVertex u = this.queue.remove();
+			this.set.add(u);
+			for (Vertex v : u.getAdjecents()) {
+				System.out.println("qua");
+				this.relax(u, (ShortestPathVertex) v);
 			}
 		}
-
 	}
 
-	private int getDistance(Vertex node, Vertex target) {
-		for (Edge edge : edges) {
-			if (edge.getSource().equals(node) && edge.getDestination().equals(target)) {
-				return edge.getWeight();
-			}
+	private void initializeSingleSource() {
+		for (ShortestPathVertex vertex : this.graph.getNodes()) {
+			vertex.reset();
 		}
-		throw new RuntimeException("Should not happen");
+		source.setShortestPathEstimate(0);
 	}
 
-	private List<Vertex> getNeighbors(Vertex node) {
-		List<Vertex> neighbors = new ArrayList<Vertex>();
-		for (Edge edge : edges) {
-			if (edge.getSource().equals(node) && !isSettled(edge.getDestination())) {
-				neighbors.add(edge.getDestination());
-			}
-		}
-		return neighbors;
-	}
+	private void relax(ShortestPathVertex u, ShortestPathVertex v) {
 
-	private Vertex getMinimum(Set<Vertex> vertexes) {
-		Vertex minimum = null;
-		for (Vertex vertex : vertexes) {
-			if (minimum == null) {
-				minimum = vertex;
-			} else {
-				if (getShortestDistance(vertex) < getShortestDistance(minimum)) {
-					minimum = vertex;
-				}
-			}
-		}
-		return minimum;
-	}
-
-	private boolean isSettled(Vertex vertex) {
-		return settledNodes.contains(vertex);
-	}
-
-	private int getShortestDistance(Vertex destination) {
-		Integer d = distance.get(destination);
-		if (d == null) {
-			return Integer.MAX_VALUE;
-		} else {
-			return d;
+		if (v.getShortestPathEstimate() > u.getShortestPathEstimate() + u.distanceFrom(v)) {
+			v.setShortestPathEstimate(u.getShortestPathEstimate() + u.distanceFrom(v));
+			v.setPredecessor(u);
 		}
 	}
 
-	/*
-	 * This method returns the path from the source to the selected target and
-	 * NULL if no path exists
-	 */
-	public LinkedList<Vertex> getPath(Vertex target) {
-		LinkedList<Vertex> path = new LinkedList<Vertex>();
-		Vertex step = target;
-		// check if a path exists
-		if (predecessors.get(step) == null) {
-			return null;
+	public List<ShortestPathVertex> getPath(ShortestPathVertex destination) {
+		List<ShortestPathVertex> path = new LinkedList<>();
+
+		ShortestPathVertex node = destination;
+		while (node.getPredecessor() != null) {
+			path.add(node);
+			node = node.getPredecessor();
 		}
-		path.add(step);
-		while (predecessors.get(step) != null) {
-			step = predecessors.get(step);
-			path.add(step);
-		}
-		// Put it into the correct order
+		
+		// append the source node
+		path.add(source);
 		Collections.reverse(path);
 		return path;
 	}
