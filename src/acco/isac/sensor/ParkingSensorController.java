@@ -7,8 +7,7 @@ public class ParkingSensorController extends AbstractSensorController {
 
 	private ParkingSensor sensor;
 
-	public ParkingSensorController(ParkingSensor sensor, int delayTime) {
-		super(delayTime);
+	public ParkingSensorController(ParkingSensor sensor) {
 		this.sensor = sensor;
 	}
 

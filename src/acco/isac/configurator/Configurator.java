@@ -65,15 +65,15 @@ public class Configurator implements Loggable {
 
 				if (charMatrix[i][j] == 's') {
 
-					ParkingSensor s = new ParkingSensor(i, j, "s" + i +"_"+ j);
-					new ParkingSensorController(s, 1000).start();
+					ParkingSensor s = new ParkingSensor(i, j, "s" + i + "_" + j);
+					new ParkingSensorController(s).start();
 					boolean ok = Environment.getInstance().inject(s);
 
-					if(!ok){
-						log("failed to inject sensor "+i+","+j);
-							
+					if (!ok) {
+						log("failed to inject sensor " + i + "," + j);
+
 					}
-					
+
 				}
 
 			}

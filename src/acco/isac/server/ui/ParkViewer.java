@@ -79,18 +79,7 @@ public class ParkViewer extends JPanel {
 					g.fillRect( this.cellWidth * column + OFFSET,this.cellHeight * row + OFFSET, this.cellWidth - OFFSET,
 							this.cellHeight - OFFSET);
 
-				}
-
-				// R.MAX_SENSOR_DELAY : 255 = remainingTime : x
-				long remainingTime = sensor.remainingTime();
-				int colorValue = 255 - (int) (remainingTime * 255 / (R.MAX_SENSOR_DELAY));
-				
-				Color color = new Color(255-colorValue,colorValue,0);
-				
-				g.setColor(color);
-				g.fillRect( this.cellWidth * column + OFFSET,this.cellHeight * row + OFFSET, this.cellWidth/3 - OFFSET,
-						this.cellHeight/3 - OFFSET);
-						
+				}					
 				
 				
 			}

@@ -12,18 +12,15 @@ import acco.isac.sharedknowledge.R;
 
 public abstract class AbstractSensorController extends Thread {
 
-	private static final int DELAY_FACTOR = 3;
-	private int delayTime;
 	private Channel channel;
 	private Random random;
 	private double serviceDisruptionProbability;
 	private boolean working;
 
-	public AbstractSensorController(int delayTime) {
-		this.delayTime = delayTime;
+	public AbstractSensorController() {
 		this.random = new Random();
 		this.serviceDisruptionProbability = 0.001;
-		this.working= true;
+		this.working = true;
 		// setup rabbitmq
 		this.rabbitMQSetup();
 	}
@@ -34,20 +31,17 @@ public abstract class AbstractSensorController extends Thread {
 		while (working) {
 
 			this.delay();
-			
+
 			Object value = this.sense();
 
 			byte[] processedValue = this.process(value);
 
 			this.send(processedValue);
 
-			
-
-			if(random.nextDouble() <= this.serviceDisruptionProbability){
-				//this.working = false;
-				
+			if (random.nextDouble() <= this.serviceDisruptionProbability) {
+				this.working = false;
 			}
-			
+
 		}
 
 	}
@@ -68,8 +62,8 @@ public abstract class AbstractSensorController extends Thread {
 	protected abstract Object sense();
 
 	private void delay() {
-		
-		int randomDelay = this.delayTime + random.nextInt(this.delayTime*DELAY_FACTOR);
+
+		int randomDelay = random.nextInt(R.MAX_SENSOR_DELAY);
 
 		try {
 			Thread.sleep(randomDelay);

@@ -18,6 +18,7 @@ import acco.isac.server.Storage;
 import acco.isac.server.inforepresentation.InfoType;
 import acco.isac.server.inforepresentation.SensorRepresentation;
 import acco.isac.server.inforepresentation.StreetRepresentation;
+import acco.isac.sharedknowledge.R;
 
 public class GraphViewer extends JPanel {
 
@@ -111,11 +112,18 @@ public class GraphViewer extends JPanel {
 				// sensor
 				SensorRepresentation sensor = (SensorRepresentation) envVertex.getInfo();
 
-				g.setColor(Color.BLUE);
-
+				// R.MAX_SENSOR_DELAY : 255 = remainingTime : x
+				long remainingTime = sensor.remainingTime();
+				int colorValue = 255 - (int) (remainingTime * 255 / (R.MAX_SENSOR_DELAY));
+				if(colorValue < 0){
+					colorValue = 0;
+				}
+				Color color = new Color(255-colorValue,colorValue,0);
+				
+				g.setColor(color);
 				g.fillOval(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET, this.cellWidth - OFFSET,
 						this.cellHeight - OFFSET);
-
+				
 			} else {
 				// street
 				StreetRepresentation street = (StreetRepresentation) envVertex.getInfo();
@@ -130,23 +138,26 @@ public class GraphViewer extends JPanel {
 			g.drawOval(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET, this.cellWidth - OFFSET,
 					this.cellHeight - OFFSET);
 
+			
 		}
 
 		
 		if (serverStorage.getWorldRows() > 6 && serverStorage.getWorldColumns() > 10) {
 			DijkstraAlgorithm da = new DijkstraAlgorithm(map, (ShortestPathVertex) map.getVertexFromId("v_0_0"));
-			List<ShortestPathVertex> path = da.getPath((ShortestPathVertex) map.getVertexFromId("v_0_11"));
+			List<ShortestPathVertex> path = da.getPath((ShortestPathVertex) map.getVertexFromId("v_2_0"));
 			
 			for(ShortestPathVertex node:path){
 				int row = ((EnvironmentVertex)node).getInfo().getPosition().getRow();
 				int column = ((EnvironmentVertex)node).getInfo().getPosition().getColumn();
 
-				g.setColor(Color.ORANGE);
-				g.fillOval(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET, this.cellWidth - OFFSET,
-						this.cellHeight - OFFSET);
+				g.setColor(Color.BLUE);
+				g.fillOval(this.cellWidth * column + OFFSET+this.cellWidth/4, this.cellHeight * row + OFFSET + this.cellHeight/4, this.cellWidth/2 - OFFSET,
+						this.cellHeight/2 - OFFSET);
 			}
 			
 		}
+		
+		
 		
 		
 	}

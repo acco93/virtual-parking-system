@@ -1,5 +1,7 @@
 package acco.isac.server.ui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
@@ -14,7 +16,9 @@ public class StatusBar extends JPanel {
 
 	public StatusBar() {
 
-		JLabel currentTime = new JLabel("Loading ...");
+		this.setLayout(new BorderLayout());
+		
+		JLabel currentTime = new JLabel("Loading ... ");
 
 		Timer time = new javax.swing.Timer(1000, new ActionListener() {
 
@@ -22,14 +26,20 @@ public class StatusBar extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				java.util.Date now = new java.util.Date();
 				String ss = DateFormat.getDateTimeInstance().format(now);
-				currentTime.setText(ss);
+				currentTime.setText(ss+" ");
 
 			}
 		});
 		time.start();
 
-		this.add(currentTime);
-
+		this.add(currentTime, BorderLayout.EAST);
+		
+		
+		JLabel status = new JLabel(" Server ON");
+		status.setForeground(Color.GREEN);
+		
+		this.add(status,BorderLayout.WEST);
+		
 	}
 
 }

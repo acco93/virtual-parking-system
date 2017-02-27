@@ -105,14 +105,14 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 				nodes.add(matrix[r][c]);
 
 				// street nodes are connected everywhere (within 1-grid block)
-				//if (matrix[r][c].getInfo().getType() == InfoType.STREET) {
+				if (matrix[r][c].getInfo().getType() == InfoType.STREET) {
 					connectLeft(matrix, rows, columns, r, c);
 					connectRight(matrix, rows, columns, r, c);
 					connectUp(matrix, rows, columns, r, c);
 					connectBottom(matrix, rows, columns, r, c);
-				//} else {
+				} else {
 					// sensor nodes are connected just to street nodes
-				//}
+				}
 
 			}
 		}

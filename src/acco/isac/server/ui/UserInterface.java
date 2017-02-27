@@ -4,11 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
+import javax.swing.JTabbedPane;
 
 public class UserInterface extends JFrame implements IUserInterface {
 
 	private static final long serialVersionUID = 1L;
-
 
 	public UserInterface() {
 
@@ -16,18 +16,24 @@ public class UserInterface extends JFrame implements IUserInterface {
 		this.setSize(new Dimension(800, 600));
 		// this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		this.setJMenuBar(new MenuBar());
 
 		this.setLayout(new BorderLayout());
 
-		/*ParkViewer parkViewer = new ParkViewer();
-		this.add(parkViewer, BorderLayout.CENTER);*/
+		JTabbedPane tabbedPane = new JTabbedPane();
+		
+		this.add(tabbedPane, BorderLayout.CENTER);
+
+		ParkViewer parkViewer = new ParkViewer();
+		tabbedPane.addTab("Park", parkViewer);
 
 		GraphViewer graphViewer = new GraphViewer();
-		this.add(graphViewer, BorderLayout.CENTER);
+		tabbedPane.add("Graph", graphViewer);
 
-		ToolBar toolbar = new ToolBar();
+		//ToolBar toolbar = new ToolBar();
 
-		this.add(toolbar, BorderLayout.NORTH);
+		//this.add(toolbar, BorderLayout.NORTH);
 
 		StatusBar statusbar = new StatusBar();
 		this.add(statusbar, BorderLayout.SOUTH);
