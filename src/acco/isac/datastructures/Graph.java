@@ -22,4 +22,13 @@ public class Graph<T extends Vertex> {
 		return this.nodes;
 	}
 
+	public Vertex getVertexFromId(String id) {
+		for (T vertex : nodes) {
+			if (vertex.getId().equals(id)) {
+				return vertex;
+			}
+		}
+		return null;
+	}
+
 }

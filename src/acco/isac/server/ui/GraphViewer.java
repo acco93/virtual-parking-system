@@ -3,10 +3,12 @@ package acco.isac.server.ui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import acco.isac.algorithms.DijkstraAlgorithm;
 import acco.isac.datastructures.EnvironmentVertex;
 import acco.isac.datastructures.Graph;
 import acco.isac.datastructures.ShortestPathVertex;
@@ -130,6 +132,22 @@ public class GraphViewer extends JPanel {
 
 		}
 
+		
+		if (serverStorage.getWorldRows() > 6 && serverStorage.getWorldColumns() > 10) {
+			DijkstraAlgorithm da = new DijkstraAlgorithm(map, (ShortestPathVertex) map.getVertexFromId("v_0_0"));
+			List<ShortestPathVertex> path = da.getPath((ShortestPathVertex) map.getVertexFromId("v_0_11"));
+			
+			for(ShortestPathVertex node:path){
+				int row = ((EnvironmentVertex)node).getInfo().getPosition().getRow();
+				int column = ((EnvironmentVertex)node).getInfo().getPosition().getColumn();
+
+				g.setColor(Color.ORANGE);
+				g.fillOval(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET, this.cellWidth - OFFSET,
+						this.cellHeight - OFFSET);
+			}
+			
+		}
+		
 		
 	}
 

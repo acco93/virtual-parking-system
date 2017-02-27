@@ -123,12 +123,6 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 
 		this.storage.setMap(map);
 		
-		if (rows > 2 && columns > 2) {
-			DijkstraAlgorithm da = new DijkstraAlgorithm(map, matrix[0][0]);
-			System.out.println("sh");
-			System.out.println(da.getPath(matrix[2][0]));
-			System.out.println("----------");
-		}
 	}
 
 	private void connectBottom(EnvironmentVertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow,

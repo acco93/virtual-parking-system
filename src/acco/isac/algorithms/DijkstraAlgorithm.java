@@ -35,8 +35,6 @@ public class DijkstraAlgorithm {
 			for (Vertex v : u.getAdjecents()) {
 				this.relax(u, (ShortestPathVertex) v);
 			}
-			System.out.println("queue:");
-			System.out.println(this.queue);
 		}
 	}
 
