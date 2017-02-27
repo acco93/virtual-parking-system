@@ -9,6 +9,15 @@ import acco.isac.datastructures.Graph;
 import acco.isac.datastructures.ShortestPathVertex;
 import acco.isac.datastructures.Vertex;
 
+/**
+ * 
+ * Simple homemade Dijkstra algorithm implementated as described in
+ * "Introduction to algorithms, 3rd edition".
+ * 
+ * @author acco
+ *
+ */
+
 public class DijkstraAlgorithm {
 
 	private Graph<ShortestPathVertex> graph;
@@ -27,6 +36,7 @@ public class DijkstraAlgorithm {
 		this.queue.addAll(this.graph.getNodes());
 
 		while (!this.queue.isEmpty()) {
+			// sorting each time is not very efficient ...
 			Collections.sort(this.queue, (u, v) -> {
 				return u.getShortestPathEstimate() - v.getShortestPathEstimate();
 			});
@@ -38,6 +48,10 @@ public class DijkstraAlgorithm {
 		}
 	}
 
+	/**
+	 * Set all nodes shortest-path estimate to Inf and source node shortest-path
+	 * estimate to 0.
+	 */
 	private void initializeSingleSource() {
 		for (ShortestPathVertex vertex : this.graph.getNodes()) {
 			vertex.reset();
@@ -45,6 +59,14 @@ public class DijkstraAlgorithm {
 		source.setShortestPathEstimate(0);
 	}
 
+	/**
+	 * Relax operation.
+	 * 
+	 * @param u
+	 *            node
+	 * @param v
+	 *            node
+	 */
 	private void relax(ShortestPathVertex u, ShortestPathVertex v) {
 
 		if (v.getShortestPathEstimate() > u.getShortestPathEstimate() + u.distanceFrom(v)) {
@@ -57,8 +79,6 @@ public class DijkstraAlgorithm {
 		List<ShortestPathVertex> path = new LinkedList<>();
 
 		ShortestPathVertex node = destination;
-
-		// System.out.println(node.getAdjecents());
 
 		while (node.getPredecessor() != null) {
 			path.add(node);

@@ -22,7 +22,15 @@ public class Graph<T extends Vertex> {
 		return this.nodes;
 	}
 
+	/**
+	 * Retrieve a vertex from its name.
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public Vertex getVertexFromId(String id) {
+		// should be implemented in a more efficient way
+		// maybe storing all nodes in map String->Vertex
 		for (T vertex : nodes) {
 			if (vertex.getId().equals(id)) {
 				return vertex;

@@ -1,5 +1,12 @@
 package acco.isac.datastructures;
 
+/**
+ * 
+ * Vertex containing data to perform single-source shortest paths
+ * 
+ * @author acco
+ *
+ */
 public class ShortestPathVertex extends Vertex {
 
 	private int shortestPathEstimate;
@@ -37,7 +44,7 @@ public class ShortestPathVertex extends Vertex {
 
 	@Override
 	public String toString() {
-		return super.toString() + ": ShortestPathVertex [shortestPathEstimate=" + shortestPathEstimate+"]";
+		return super.toString() + ": ShortestPathVertex [shortestPathEstimate=" + shortestPathEstimate + "]";
 	}
 
 }

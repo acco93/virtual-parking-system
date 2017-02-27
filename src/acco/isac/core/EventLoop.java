@@ -3,6 +3,15 @@ package acco.isac.core;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * 
+ * Thread that follows the event loop architecture.
+ * 
+ * @author acco
+ *
+ * @param <T>
+ *            event type
+ */
 public abstract class EventLoop<T> extends Thread {
 
 	private BlockingQueue<T> queue;
@@ -11,6 +20,11 @@ public abstract class EventLoop<T> extends Thread {
 		this.queue = new LinkedBlockingQueue<>();
 	}
 
+	/**
+	 * Add an event to the queue.
+	 * 
+	 * @param event
+	 */
 	protected void append(T event) {
 		try {
 			this.queue.put(event);
@@ -19,6 +33,11 @@ public abstract class EventLoop<T> extends Thread {
 		}
 	}
 
+	/**
+	 * Retrieve an event from the queue. Block if none.
+	 * 
+	 * @return the event
+	 */
 	private T get() {
 		T event = null;
 
@@ -43,6 +62,11 @@ public abstract class EventLoop<T> extends Thread {
 
 	}
 
+	/**
+	 * Process the event.
+	 * 
+	 * @param event
+	 */
 	protected abstract void process(T event);
 
 }

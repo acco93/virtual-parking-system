@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import acco.isac.core.Loggable;
 import acco.isac.environment.Environment;
+import acco.isac.log.Logger;
 import acco.isac.sensor.ParkingSensor;
 import acco.isac.sensor.ParkingSensorController;
 import acco.isac.sharedknowledge.R;
@@ -21,7 +21,7 @@ import acco.isac.sharedknowledge.R;
  * @author acco
  *
  */
-public class Configurator implements Loggable {
+public class Configurator {
 
 	private String filePath;
 	private int lineNumber;
@@ -29,14 +29,14 @@ public class Configurator implements Loggable {
 
 	public Configurator(String filePath) {
 
-		log("started");
+		Logger.getInstance().info("started");
 
 		this.filePath = filePath;
 
 		this.lineNumber = 0;
 		this.lineDimension = 0;
 
-		log("file path setted: " + filePath);
+		Logger.getInstance().info("file path setted: " + filePath);
 
 	}
 
@@ -47,12 +47,12 @@ public class Configurator implements Loggable {
 	 */
 	public boolean load() {
 
-		log("trying to load " + this.filePath);
+		Logger.getInstance().info("trying to load " + this.filePath);
 
 		char[][] charMatrix = this.readFromFile();
 
 		if (lineNumber == 0 || lineDimension == -1) {
-			log("are you trying to load an empty file?");
+			Logger.getInstance().error("are you trying to load an empty file?");
 			System.exit(1);
 		}
 
@@ -70,7 +70,7 @@ public class Configurator implements Loggable {
 					boolean ok = Environment.getInstance().inject(s);
 
 					if (!ok) {
-						log("failed to inject sensor " + i + "," + j);
+						Logger.getInstance().error("failed to inject sensor " + i + "," + j);
 
 					}
 
@@ -80,7 +80,7 @@ public class Configurator implements Loggable {
 
 		}
 
-		log("successfully loaded!");
+		Logger.getInstance().info("successfully loaded!");
 		return true;
 
 	}
@@ -117,7 +117,7 @@ public class Configurator implements Loggable {
 					lineDimension = splittedLine.length;
 				} else if (lineDimension != splittedLine.length) {
 					// malformed file
-					log("malformed file. Line " + lineNumber + " has " + splittedLine.length + " characters instead of "
+					Logger.getInstance().error("malformed file. Line " + lineNumber + " has " + splittedLine.length + " characters instead of "
 							+ lineDimension);
 					System.exit(1);
 				}
@@ -149,11 +149,6 @@ public class Configurator implements Loggable {
 		}
 
 		return matrix;
-	}
-
-	@Override
-	public void log(String string) {
-		System.out.println("[" + this.getClass().getSimpleName() + "] " + string);
 	}
 
 }

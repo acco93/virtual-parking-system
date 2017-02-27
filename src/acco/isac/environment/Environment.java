@@ -2,6 +2,13 @@ package acco.isac.environment;
 
 import acco.isac.sharedknowledge.R;
 
+/**
+ * 
+ * Grid environment.
+ * 
+ * @author acco
+ *
+ */
 public class Environment {
 
 	private static Environment instance = new Environment();
