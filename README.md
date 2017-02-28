@@ -1,6 +1,7 @@
-# README #
+# VIRTUAL PARKING SYSTEM #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This application should be a working prototype of a system that aims to manage a smart park area. Each car parking place is equipped with a parking sensor able to determine if
+the place is free or not.
 
 ### What is this repository for? ###
 
