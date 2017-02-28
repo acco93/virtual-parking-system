@@ -18,7 +18,7 @@ The main elements that compose the system are:
 
 ## System functionalities ##
 
-The main final system should provide the following functionalities:
+The final system should provide the following functionalities:
 
 * find the nearest free park place
 
