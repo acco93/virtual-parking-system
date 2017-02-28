@@ -1,15 +1,20 @@
 # VIRTUAL PARKING SYSTEM #
 
 ## Overview ##
-This application should be a working prototype of a system that aims to manage a smart park area.  The system is *virtual* in the sense that the components (sensors, cars, etc) are not real but are software components that simulate a plausible behavior.
+
+This application should be a working prototype of a system that aims to manage a smart park area. The system is *virtual* in the sense that the components (sensors, cars, etc) are not real but are software components that simulate a plausible behavior.
 
 ## Components ##
+
 The main elements that compose the system are:
 
-* the environment: it is where the park area is placed and everything takes place. It is, for simplicity, a grid-based world, that is an (n x m) matrix where each cell could be a street block or a park place.
-* the sensors layer: each car parking place is equipped with a parking sensor able to determine if the place is free or busy.
+* an **environment**: it is where the park area is placed and everything takes place. It is, for simplicity, a grid-based world, that is an (n x m) matrix where each cell could be a street block or a park place.
+* a **sensors layer**: each car parking place is equipped with a parking sensor able to determine if the place is free or busy. Each sensor send this information to a central server using a MOM (RabbitMQ specifically). It also provide a (simulated) local area network that could be used by a client application to retrieve information in case the server is not available.
+* a **server application**: it knows everything about the parking area but it may suddenly break down. The server receives information from sensors and uses them to produces a dynamical park map (for eg. a graph). The server interacts also with drivers (client applications) sending the current map data that will be used to locate the nearest parking place. 
+* some **client applications**: that is drivers that would like to park their car or to locate a parked one. The client application interacts with the server, if available, to retrieve an updated park map. If the server is off, it tries to interact with the nearest sensors to retrieve some useful information.
 
 ## System functionalities ##
+
 The main final system should provide the following functionalities:
 
 * find the nearest free park place
@@ -20,20 +25,15 @@ The above functionalities should be supported in a client-server interaction sch
 
 ### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+1. Download the [source](https://bitbucket.org/acco93/virtual-parking-system/src) 
+2. Import the project in Eclipse
+3. Run 
+```
+#!java
 
-### Contribution guidelines ###
+gradle eclipse
+```
+to set up dependencies
 
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+## Technologies ##
+At the moment interactions are simulated using a RabbitMQ.
