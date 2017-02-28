@@ -13,6 +13,7 @@ import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
+import acco.isac.log.Logger;
 import acco.isac.sensor.SensorMessage;
 import acco.isac.sharedknowledge.R;
 
@@ -23,6 +24,8 @@ public class SensorHandler {
 
 	public SensorHandler() {
 
+		Logger.getInstance().info("started");
+		
 		this.msgProcessor = new SensorMessageProcessor();
 		this.msgProcessor.start();
 
@@ -51,7 +54,7 @@ public class SensorHandler {
 	public void start() {
 
 		// Define a consumer
-
+		
 		Consumer consumer = new DefaultConsumer(channel) {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
@@ -74,6 +77,9 @@ public class SensorHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		Logger.getInstance().info("waiting for sensor messages ...");
+		
 	}
 
 }

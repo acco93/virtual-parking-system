@@ -33,7 +33,14 @@ public class MapViewer extends JPanel {
 	private int cellWidth;
 	private int cellHeight;
 
+	private int userRow;
+
+	private int userColumn;
+
 	public MapViewer() {
+
+		this.userRow = 0;
+		this.userColumn = 0;
 		this.serverStorage = Storage.getInstance();
 
 		new Thread(() -> {
@@ -116,7 +123,8 @@ public class MapViewer extends JPanel {
 		}
 
 		if (serverStorage.getWorldRows() > 6 && serverStorage.getWorldColumns() > 10) {
-			DijkstraAlgorithm da = new DijkstraAlgorithm(map, map.getVertexFromId("v_0_0"));
+			DijkstraAlgorithm da = new DijkstraAlgorithm(map,
+					map.getVertexFromId("v_" + this.userRow + "_" + this.userColumn));
 			List<Vertex> path = da.getPath(map.getVertexFromId("v_4_8"));
 
 			for (int i = 0; i < path.size() - 1; i++) {
@@ -142,7 +150,7 @@ public class MapViewer extends JPanel {
 		}
 
 		g.setColor(Color.WHITE);
-		g.fillOval(0 + this.cellWidth / 4, 0 + this.cellHeight / 4, this.cellWidth - this.cellWidth / 2,
+		g.fillOval(this.cellWidth * this.userColumn + this.cellWidth / 4, this.cellHeight*this.userRow + this.cellHeight / 4, this.cellWidth - this.cellWidth / 2,
 				this.cellHeight - this.cellHeight / 2);
 
 	}
@@ -156,6 +164,26 @@ public class MapViewer extends JPanel {
 
 		this.cellWidth = (int) (panelSize.getWidth() / this.gridWidth);
 		this.cellHeight = (int) (panelSize.getHeight() / this.gridHeight);
+	}
+
+	public void left() {
+		this.userColumn--;
+		if(this.userColumn<0){this.userColumn=0;}
+	}
+
+	public void right() {
+		this.userColumn++;
+		if(this.userColumn>serverStorage.getWorldColumns()){this.userColumn=serverStorage.getWorldColumns();}
+	}
+
+	public void up() {
+		this.userRow--;
+		if(this.userRow<0){this.userRow=0;}
+	}
+
+	public void down() {
+		this.userRow++;
+		if(this.userRow>serverStorage.getWorldRows()){this.userRow=serverStorage.getWorldRows();}
 	}
 
 }

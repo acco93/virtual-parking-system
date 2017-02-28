@@ -1,5 +1,7 @@
 package acco.isac.main;
 
+import acco.isac.client.Client;
+import acco.isac.clientui.ClientUserInterface;
 import acco.isac.configurator.Configurator;
 import acco.isac.server.Server;
 
@@ -15,6 +17,10 @@ public class Main {
 
 		new Server().start();
 
+		new Client().start();
+		
+		
+		
 	}
 
 }

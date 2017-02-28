@@ -1,6 +1,7 @@
 package acco.isac.server;
 
-import acco.isac.server.ui.UserInterface;
+import acco.isac.log.Logger;
+import acco.isac.server.ui.ServerUserInterface;
 
 /**
  * 
@@ -13,13 +14,15 @@ public class Server {
 
 	private SensorHandler sensorsHandler;
 	private RequestsHandler requestsHandler;
-	private UserInterface ui;
+	private ServerUserInterface ui;
 	
 	public Server() {
 
+		Logger.getInstance().info("started");
+		
 		sensorsHandler = new SensorHandler();
 		requestsHandler = new RequestsHandler();
-		this.ui = new UserInterface();
+		this.ui = new ServerUserInterface();
 	}
 
 	public void start() {

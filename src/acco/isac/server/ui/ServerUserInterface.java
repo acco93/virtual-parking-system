@@ -6,13 +6,13 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
-import acco.isac.clientui.MobileInterface;
+import acco.isac.clientui.ClientUserInterface;
 
-public class UserInterface extends JFrame implements IUserInterface {
+public class ServerUserInterface extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	public UserInterface() {
+	public ServerUserInterface() {
 
 		this.setTitle("Server-side - Virtual car parking");
 		this.setSize(new Dimension(800, 600));
@@ -33,8 +33,8 @@ public class UserInterface extends JFrame implements IUserInterface {
 		GraphViewer graphViewer = new GraphViewer();
 		tabbedPane.add("Graph", graphViewer);
 
-		MobileInterface mapViewer = new MobileInterface();
-		tabbedPane.add("Map (client-side)", mapViewer);
+		//MobileInterface mapViewer = new MobileInterface();
+		//tabbedPane.add("Map (client-side)", mapViewer);
 		
 		//ToolBar toolbar = new ToolBar();
 
