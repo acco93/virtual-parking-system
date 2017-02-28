@@ -1,13 +1,11 @@
 # VIRTUAL PARKING SYSTEM #
 
 This application should be a working prototype of a system that aims to manage a smart park area. Each car parking place is equipped with a parking sensor able to determine if
-the place is free or not.
+the place is free or not. The system is *virtual* in the sense that the components (sensors, cars, etc) are not real but are software components that simulate a plausible behavior.
 
-### What is this repository for? ###
+## System functionalities ##
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+
 
 ### How do I get set up? ###
 
