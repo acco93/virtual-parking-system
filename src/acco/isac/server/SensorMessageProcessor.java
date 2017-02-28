@@ -4,11 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import acco.isac.algorithms.DijkstraAlgorithm;
 import acco.isac.core.EventLoop;
-import acco.isac.datastructures.EnvironmentVertex;
 import acco.isac.datastructures.Graph;
-import acco.isac.datastructures.ShortestPathVertex;
+import acco.isac.datastructures.Vertex;
 import acco.isac.environment.Position;
 import acco.isac.sensor.SensorMessage;
 import acco.isac.server.inforepresentation.InfoType;
@@ -78,14 +76,14 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 		// +1 because the count starts from 0
 
 		// define a matrix of vertices
-		EnvironmentVertex[][] matrix = new EnvironmentVertex[rows][columns];
+		Vertex[][] matrix = new Vertex[rows][columns];
 
 		// first:
 		// set street everywhere
 		for (int r = 0; r < rows; r++) {
 			for (int c = 0; c < columns; c++) {
 				StreetRepresentation street = new StreetRepresentation(new Position(r, c));
-				matrix[r][c] = new EnvironmentVertex("v_" + r + "_" + c, street);
+				matrix[r][c] = new Vertex("v_" + r + "_" + c, street);
 			}
 		}
 
@@ -94,10 +92,10 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 		for (SensorRepresentation sensor : this.storage.getSensors().values()) {
 			int row = sensor.getPosition().getRow();
 			int column = sensor.getPosition().getColumn();
-			matrix[row][column] = new EnvironmentVertex("v_" + row + "_" + column, sensor);
+			matrix[row][column] = new Vertex("v_" + row + "_" + column, sensor);
 		}
 
-		List<ShortestPathVertex> nodes = new LinkedList<>();
+		List<Vertex> nodes = new LinkedList<>();
 
 		// build the graph from the matrix
 		for (int r = 0; r < rows; r++) {
@@ -117,41 +115,39 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 			}
 		}
 
-		
-		
-		Graph<ShortestPathVertex> map = new Graph<>(nodes);
+		Graph map = new Graph(nodes);
 
 		this.storage.setMap(map);
-		
+
 	}
 
-	private void connectBottom(EnvironmentVertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow,
+	private void connectBottom(Vertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow,
 			int sourceColumn) {
 
 		this.connect(matrix, matrixRows, matrixColumns, sourceRow, sourceColumn, sourceRow - 1, sourceColumn);
 
 	}
 
-	private void connectUp(EnvironmentVertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow,
+	private void connectUp(Vertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow,
 			int sourceColumn) {
 
 		this.connect(matrix, matrixRows, matrixColumns, sourceRow, sourceColumn, sourceRow + 1, sourceColumn);
 
 	}
 
-	private void connectRight(EnvironmentVertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow,
+	private void connectRight(Vertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow,
 			int sourceColumn) {
 		this.connect(matrix, matrixRows, matrixColumns, sourceRow, sourceColumn, sourceRow, sourceColumn + 1);
 
 	}
 
-	private void connectLeft(EnvironmentVertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow,
+	private void connectLeft(Vertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow,
 			int sourceColumn) {
 		this.connect(matrix, matrixRows, matrixColumns, sourceRow, sourceColumn, sourceRow, sourceColumn - 1);
 
 	}
 
-	private void connect(EnvironmentVertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow,
+	private void connect(Vertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow,
 			int sourceColumn, int destinationRow, int destinationColumn) {
 
 		if (destinationRow < 0 || destinationRow >= matrixRows || destinationColumn < 0

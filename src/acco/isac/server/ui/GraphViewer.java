@@ -5,15 +5,11 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import acco.isac.algorithms.DijkstraAlgorithm;
-import acco.isac.datastructures.EnvironmentVertex;
 import acco.isac.datastructures.Graph;
-import acco.isac.datastructures.ShortestPathVertex;
 import acco.isac.datastructures.Vertex;
 import acco.isac.environment.Position;
 import acco.isac.server.Storage;
@@ -61,22 +57,20 @@ public class GraphViewer extends JPanel {
 		super.paintComponent(g);
 
 		this.setUpDimensions();
-		Graphics2D g2 = (Graphics2D)g;
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-			    RenderingHints.VALUE_ANTIALIAS_ON);
-		
-		Graph<ShortestPathVertex> map = this.serverStorage.getMap();
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		Graph map = this.serverStorage.getMap();
 
 		// draw edges
 
-		for (ShortestPathVertex vertex : map.getNodes()) {
-			EnvironmentVertex envVertex = (EnvironmentVertex) vertex;
+		for (Vertex vertex : map.getNodes()) {
 
-			int row = envVertex.getInfo().getPosition().getRow();
-			int column = envVertex.getInfo().getPosition().getColumn();
+			int row = vertex.getInfo().getPosition().getRow();
+			int column = vertex.getInfo().getPosition().getColumn();
 
-			for (Vertex adj : envVertex.getAdjecents()) {
-				Position adjPosition = ((EnvironmentVertex) adj).getInfo().getPosition();
+			for (Vertex adj : vertex.getAdjecent()) {
+				Position adjPosition = adj.getInfo().getPosition();
 				int adjRow = adjPosition.getRow();
 				int adjColumn = adjPosition.getColumn();
 
@@ -106,15 +100,14 @@ public class GraphViewer extends JPanel {
 			}
 		}
 
-		for (ShortestPathVertex vertex : map.getNodes()) {
-			EnvironmentVertex envVertex = (EnvironmentVertex) vertex;
+		for (Vertex vertex : map.getNodes()) {
 
-			int row = envVertex.getInfo().getPosition().getRow();
-			int column = envVertex.getInfo().getPosition().getColumn();
+			int row = vertex.getInfo().getPosition().getRow();
+			int column = vertex.getInfo().getPosition().getColumn();
 
-			if (envVertex.getInfo().getType() == InfoType.SENSOR) {
+			if (vertex.getInfo().getType() == InfoType.SENSOR) {
 				// sensor
-				SensorRepresentation sensor = (SensorRepresentation) envVertex.getInfo();
+				SensorRepresentation sensor = (SensorRepresentation) vertex.getInfo();
 
 				// R.MAX_SENSOR_DELAY : 255 = remainingTime : x
 				long remainingTime = sensor.remainingTime();
@@ -130,7 +123,7 @@ public class GraphViewer extends JPanel {
 
 			} else {
 				// street
-				StreetRepresentation street = (StreetRepresentation) envVertex.getInfo();
+				StreetRepresentation street = (StreetRepresentation) vertex.getInfo();
 				g.setColor(Color.WHITE);
 
 				g.fillOval(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET, this.cellWidth - OFFSET,

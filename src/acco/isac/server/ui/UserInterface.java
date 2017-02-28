@@ -6,7 +6,7 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
-import acco.isac.clientui.MapViewer;
+import acco.isac.clientui.MobileInterface;
 
 public class UserInterface extends JFrame implements IUserInterface {
 
@@ -33,7 +33,7 @@ public class UserInterface extends JFrame implements IUserInterface {
 		GraphViewer graphViewer = new GraphViewer();
 		tabbedPane.add("Graph", graphViewer);
 
-		MapViewer mapViewer = new MapViewer();
+		MobileInterface mapViewer = new MobileInterface();
 		tabbedPane.add("Map (client-side)", mapViewer);
 		
 		//ToolBar toolbar = new ToolBar();

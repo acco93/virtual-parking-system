@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import acco.isac.datastructures.Graph;
-import acco.isac.datastructures.ShortestPathVertex;
+import acco.isac.datastructures.Vertex;
 import acco.isac.server.inforepresentation.SensorRepresentation;
 
 public class Storage {
@@ -14,13 +14,13 @@ public class Storage {
 	private int worldColumns;
 	private int worldRows;
 	private ConcurrentHashMap<String, SensorRepresentation> sensors;
-	private Graph<ShortestPathVertex> map;
+	private Graph map;
 
 	private Storage() {
 		this.worldRows = -1;
 		this.worldColumns = -1;
 		this.sensors = new ConcurrentHashMap<String, SensorRepresentation>();
-		this.map = new Graph<>(new LinkedList<ShortestPathVertex>());
+		this.map = new Graph(new LinkedList<Vertex>());
 	}
 
 	public static Storage getInstance() {
@@ -51,11 +51,11 @@ public class Storage {
 		this.sensors = sensors;
 	}
 
-	public synchronized Graph<ShortestPathVertex> getMap() {
+	public synchronized Graph getMap() {
 		return map;
 	}
 
-	public synchronized void setMap(Graph<ShortestPathVertex> map) {
+	public synchronized void setMap(Graph map) {
 		this.map = map;
 	}
 

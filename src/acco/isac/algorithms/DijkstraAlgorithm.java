@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import acco.isac.datastructures.Graph;
-import acco.isac.datastructures.ShortestPathVertex;
 import acco.isac.datastructures.Vertex;
+import acco.isac.sharedknowledge.R;
 
 /**
  * 
@@ -20,16 +20,16 @@ import acco.isac.datastructures.Vertex;
 
 public class DijkstraAlgorithm {
 
-	private Graph<ShortestPathVertex> graph;
-	private ShortestPathVertex source;
-	private HashSet<ShortestPathVertex> set;
-	private List<ShortestPathVertex> queue;
+	private Graph graph;
+	private Vertex source;
+	private HashSet<Vertex> set;
+	private List<Vertex> queue;
 
-	public DijkstraAlgorithm(Graph<ShortestPathVertex> graph, ShortestPathVertex source) {
+	public DijkstraAlgorithm(Graph graph, Vertex source) {
 		this.graph = graph;
 		this.source = source;
-		this.set = new HashSet<ShortestPathVertex>();
-		this.queue = new LinkedList<ShortestPathVertex>();
+		this.set = new HashSet<Vertex>();
+		this.queue = new LinkedList<Vertex>();
 		this.initializeSingleSource();
 
 		// add all nodes to the queue
@@ -40,10 +40,10 @@ public class DijkstraAlgorithm {
 			Collections.sort(this.queue, (u, v) -> {
 				return u.getShortestPathEstimate() - v.getShortestPathEstimate();
 			});
-			ShortestPathVertex u = this.queue.remove(0);
+			Vertex u = this.queue.remove(0);
 			this.set.add(u);
-			for (Vertex v : u.getAdjecents()) {
-				this.relax(u, (ShortestPathVertex) v);
+			for (Vertex v : u.getAdjecent()) {
+				this.relax(u, v);
 			}
 		}
 	}
@@ -53,8 +53,9 @@ public class DijkstraAlgorithm {
 	 * estimate to 0.
 	 */
 	private void initializeSingleSource() {
-		for (ShortestPathVertex vertex : this.graph.getNodes()) {
-			vertex.reset();
+		for (Vertex vertex : this.graph.getNodes()) {
+			vertex.setShortestPathEstimate(R.INF);
+			vertex.setPredecessor(null);
 		}
 		source.setShortestPathEstimate(0);
 	}
@@ -67,18 +68,18 @@ public class DijkstraAlgorithm {
 	 * @param v
 	 *            node
 	 */
-	private void relax(ShortestPathVertex u, ShortestPathVertex v) {
+	private void relax(Vertex u, Vertex v) {
 
-		if (v.getShortestPathEstimate() > u.getShortestPathEstimate() + u.distanceFrom(v)) {
-			v.setShortestPathEstimate(u.getShortestPathEstimate() + u.distanceFrom(v));
+		if (v.getShortestPathEstimate() > u.getShortestPathEstimate() + u.weightBetween(v)) {
+			v.setShortestPathEstimate(u.getShortestPathEstimate() + u.weightBetween(v));
 			v.setPredecessor(u);
 		}
 	}
 
-	public List<ShortestPathVertex> getPath(ShortestPathVertex destination) {
-		List<ShortestPathVertex> path = new LinkedList<>();
+	public List<Vertex> getPath(Vertex destination) {
+		List<Vertex> path = new LinkedList<>();
 
-		ShortestPathVertex node = destination;
+		Vertex node = destination;
 
 		while (node.getPredecessor() != null) {
 			path.add(node);

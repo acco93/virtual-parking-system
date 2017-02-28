@@ -10,15 +10,15 @@ import java.util.List;
  * @author acco
  *
  */
-public class Graph<T extends Vertex> {
+public class Graph {
 
-	private List<T> nodes;
+	private List<Vertex> nodes;
 
-	public Graph(List<T> nodes) {
+	public Graph(List<Vertex> nodes) {
 		this.nodes = nodes;
 	}
 
-	public List<T> getNodes() {
+	public List<Vertex> getNodes() {
 		return this.nodes;
 	}
 
@@ -31,7 +31,7 @@ public class Graph<T extends Vertex> {
 	public Vertex getVertexFromId(String id) {
 		// should be implemented in a more efficient way
 		// maybe storing all nodes in map String->Vertex
-		for (T vertex : nodes) {
+		for (Vertex vertex : nodes) {
 			if (vertex.getId().equals(id)) {
 				return vertex;
 			}
