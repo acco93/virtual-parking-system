@@ -1,5 +1,6 @@
 package acco.isac.datastructures;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**

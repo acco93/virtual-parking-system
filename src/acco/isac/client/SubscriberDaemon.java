@@ -1,78 +1,118 @@
-package acco.isac.server;
+package acco.isac.client;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
-import acco.isac.core.EventLoop;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.Consumer;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
+
 import acco.isac.datastructures.Graph;
 import acco.isac.datastructures.Vertex;
 import acco.isac.environment.Position;
-import acco.isac.sensor.SensorMessage;
+import acco.isac.log.Logger;
 import acco.isac.server.inforepresentation.InfoType;
 import acco.isac.server.inforepresentation.SensorRepresentation;
 import acco.isac.server.inforepresentation.StreetRepresentation;
+import acco.isac.sharedknowledge.R;
 
-public class SensorMessageProcessor extends EventLoop<SensorMessage> {
+public class SubscriberDaemon {
 
 	private static final int SENSOR_WEIGHT = 100;
 	private static final int STREET_WEIGHT = 1;
-	private Storage storage;
+	
+	private Channel channel;
+	private String queueName;
 
-	public SensorMessageProcessor() {
-		this.storage = Storage.getInstance();
+	public SubscriberDaemon() {
+
+		Logger.getInstance().info("started");
+
+		this.setupMqtt();
+
 	}
 
-	/**
-	 * Add the message to the processing queue. It will be process as soon as
-	 * possible following a FIFO sematics.
-	 * 
-	 * @param msg
-	 *            the sensor message
-	 */
-	public void appendSensorMessage(SensorMessage msg) {
-		super.append(msg);
-	}
+	private void setupMqtt() {
 
-	@Override
-	protected void process(SensorMessage msg) {
+		try {
+			ConnectionFactory factory = new ConnectionFactory();
+			factory.setHost("localhost");
+			Connection connection;
+			connection = factory.newConnection();
+			channel = connection.createChannel();
 
-		// retrieve the sensors stored in the server storage
-		ConcurrentHashMap<String, SensorRepresentation> sensors = storage.getSensors();
-
-		// check if the sensor associated with this message was already present
-		SensorRepresentation rep = sensors.get(msg.getSensorId());
-
-		if (rep == null) {
-			// it is an unknown sonar
-			rep = new SensorRepresentation(msg.getSensorId(), msg.getPosition(), msg.isFree());
-			sensors.put(msg.getSensorId(), rep);
-			updateMaxPosition(msg.getPosition());
-			rebuildMap();
-		} else {
-			rep.updateState(msg.isFree());
+			channel.exchangeDeclare(R.EXCHANGE_NAME, "fanout");
+			queueName = channel.queueDeclare().getQueue();
+			channel.queueBind(queueName, R.EXCHANGE_NAME, "");
+		} catch (IOException | TimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
 
-	private void updateMaxPosition(Position position) {
+	public void start() {
 
-		int row = position.getRow();
-		int column = position.getColumn();
+		Consumer consumer = new DefaultConsumer(channel) {
+			@Override
+			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
+					byte[] body) throws IOException {
+				String message = new String(body, "UTF-8");
 
-		if (column > this.storage.getWorldColumns()) {
-			this.storage.setWorldColumns(column);
-		}
+				Gson gson = new GsonBuilder().create();
+				Type type = new TypeToken<Map<String, SensorRepresentation>>() {
+				}.getType();
+				HashMap<String, SensorRepresentation> sensors = gson.fromJson(message, type);
+				updateMaxPosition(sensors);
+				rebuildMap(sensors);
 
-		if (row > this.storage.getWorldRows()) {
-			this.storage.setWorldRows(row);
+			}
+
+		};
+
+		try {
+			channel.basicConsume(this.queueName, true, consumer);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
 
-	private void rebuildMap() {
-		int rows = this.storage.getWorldRows() + 1;
-		int columns = this.storage.getWorldColumns() + 1;
+	private void updateMaxPosition(HashMap<String, SensorRepresentation> sensors) {
+		for (SensorRepresentation sensor : sensors.values()) {
+
+			int row = sensor.getPosition().getRow();
+			int column = sensor.getPosition().getColumn();
+
+			if (row > ClientStorage.getInstance().getWorldRows()) {
+				ClientStorage.getInstance().setWorldRows(row);
+			}
+
+			if (column > ClientStorage.getInstance().getWorldColumns()) {
+				ClientStorage.getInstance().setWorldColumns(column);
+			}
+		}
+	}
+
+	private void rebuildMap(HashMap<String, SensorRepresentation> sensors) {
+
+		ClientStorage storage = ClientStorage.getInstance();
+
+		int rows = storage.getWorldRows() + 1;
+		int columns = storage.getWorldColumns() + 1;
 		// +1 because the count starts from 0
 
 		// define a matrix of vertices
@@ -89,7 +129,7 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 
 		// then:
 		// set the sensors in the correct position
-		for (SensorRepresentation sensor : this.storage.getSensors().values()) {
+		for (SensorRepresentation sensor : sensors.values()) {
 			int row = sensor.getPosition().getRow();
 			int column = sensor.getPosition().getColumn();
 			matrix[row][column] = new Vertex("v_" + row + "_" + column, sensor);
@@ -117,7 +157,7 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 
 		Graph map = new Graph(nodes);
 
-		this.storage.setMap(map);
+		storage.setMap(map);
 
 	}
 

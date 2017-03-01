@@ -1,16 +1,25 @@
 package acco.isac.client;
 
-import acco.isac.clientui.ClientUserInterface;
+import acco.isac.client.ui.ClientUserInterface;
+import acco.isac.core.ActiveEntity;
 
-public class Client {
+public class Client extends ActiveEntity {
+
+	private ClientUserInterface ui;
+	private ServerDaemon serverDaemon;
+	private SubscriberDaemon subscriberDaemon;
 
 	public Client() {
-		new ClientUserInterface();
+		this.ui = new ClientUserInterface();
+		this.serverDaemon = new ServerDaemon();
+		this.subscriberDaemon = new SubscriberDaemon();
 	}
 
-	public void start() {
-		// TODO Auto-generated method stub
+	@Override
+	protected void work() {
 
+		this.serverDaemon.start();
+		this.subscriberDaemon.start();
 	}
 
 }

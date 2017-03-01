@@ -1,5 +1,7 @@
 package acco.isac.datastructures;
 
-public enum BFSColor {
+import java.io.Serializable;
+
+public enum BFSColor implements Serializable {
 	WHITE, BLACK, GRAY
 }

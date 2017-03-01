@@ -43,7 +43,7 @@ public class Vertex {
 
 	public Vertex(String id, EnvironmentInfo info) {
 		this.id = id;
-		this.adjacent = new LinkedList<Vertex>();
+		this.adjacent = new LinkedList<>();
 		this.weights = new HashMap<>();
 		this.info = info;
 	}

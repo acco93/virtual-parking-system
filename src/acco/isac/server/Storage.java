@@ -3,9 +3,14 @@ package acco.isac.server;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import acco.isac.datastructures.Graph;
 import acco.isac.datastructures.Vertex;
+import acco.isac.environment.Position;
 import acco.isac.server.inforepresentation.SensorRepresentation;
+import acco.isac.server.inforepresentation.StreetRepresentation;
 
 public class Storage {
 

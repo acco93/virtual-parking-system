@@ -1,5 +1,6 @@
 package acco.isac.server;
 
+import acco.isac.core.ActiveEntity;
 import acco.isac.log.Logger;
 import acco.isac.server.ui.ServerUserInterface;
 
@@ -10,26 +11,28 @@ import acco.isac.server.ui.ServerUserInterface;
  * @author acco
  *
  */
-public class Server {
+public class Server extends ActiveEntity {
 
 	private SensorHandler sensorsHandler;
 	private RequestsHandler requestsHandler;
 	private ServerUserInterface ui;
-	
+	private PublisherDaemon publisherDaemon;
+
 	public Server() {
 
 		Logger.getInstance().info("started");
-		
-		sensorsHandler = new SensorHandler();
-		requestsHandler = new RequestsHandler();
+
+		this.sensorsHandler = new SensorHandler();
+		this.requestsHandler = new RequestsHandler();
+		this.publisherDaemon = new PublisherDaemon();
 		this.ui = new ServerUserInterface();
 	}
 
-	public void start() {
-
+	@Override
+	protected void work() {
 		this.sensorsHandler.start();
 		this.requestsHandler.start();
-
+		this.publisherDaemon.start();
 	}
 
 }

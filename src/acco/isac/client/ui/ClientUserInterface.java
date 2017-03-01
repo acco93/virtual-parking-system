@@ -1,6 +1,7 @@
-package acco.isac.clientui;
+package acco.isac.client.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
@@ -16,6 +17,7 @@ public class ClientUserInterface extends JFrame implements KeyListener {
 
 	private static final long serialVersionUID = 1L;
 	private MapViewer v;
+	private JLabel statusLabel;
 
 	public ClientUserInterface() {
 
@@ -32,9 +34,17 @@ public class ClientUserInterface extends JFrame implements KeyListener {
 
 		this.add(v, BorderLayout.CENTER);
 
-		JLabel helpLabel = new JLabel("<html>HELP: use <b>W</b>, <b>A</b>, <b>S</b>, <b>D</b> to move, <b>N</b> to find the nearest parking, <b>P</b> to park and <b>L</b> to locate a previously parked car.</html>",SwingConstants.CENTER);
-		helpLabel.setFont( helpLabel.getFont().deriveFont(Font.PLAIN));
+		JLabel helpLabel = new JLabel(
+				"<html>HELP: use <b>W</b>, <b>A</b>, <b>S</b>, <b>D</b> to move, <b>N</b> to find the nearest parking, <b>P</b> to park and <b>L</b> to locate a previously parked car.</html>",
+				SwingConstants.CENTER);
+		helpLabel.setFont(helpLabel.getFont().deriveFont(Font.PLAIN));
 		this.add(helpLabel, BorderLayout.NORTH);
+
+		statusLabel = new JLabel("Connected to server", SwingConstants.CENTER);
+		statusLabel.setOpaque(true);
+		statusLabel.setBackground(Color.DARK_GRAY);
+		
+		this.add(statusLabel, BorderLayout.SOUTH);
 
 		this.setVisible(true);
 
@@ -84,6 +94,11 @@ public class ClientUserInterface extends JFrame implements KeyListener {
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void setStatusLabel(String string, Color color) {
+		this.statusLabel.setText(string);
+		this.statusLabel.setForeground(color);
 	}
 
 }

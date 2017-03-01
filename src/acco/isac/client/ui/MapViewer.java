@@ -1,4 +1,4 @@
-package acco.isac.clientui;
+package acco.isac.client.ui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import acco.isac.algorithms.DijkstraAlgorithm;
+import acco.isac.client.ClientStorage;
 import acco.isac.datastructures.Graph;
 import acco.isac.datastructures.Vertex;
 import acco.isac.server.Storage;
@@ -27,7 +28,7 @@ public class MapViewer extends JPanel {
 
 	private static final int OFFSET = 0;
 
-	private Storage serverStorage;
+	private ClientStorage storage;
 	private int gridWidth;
 	private int gridHeight;
 	private int cellWidth;
@@ -41,7 +42,7 @@ public class MapViewer extends JPanel {
 
 		this.userRow = 0;
 		this.userColumn = 0;
-		this.serverStorage = Storage.getInstance();
+		this.storage = ClientStorage.getInstance();
 
 		new Thread(() -> {
 
@@ -52,7 +53,7 @@ public class MapViewer extends JPanel {
 				});
 
 				try {
-					Thread.sleep(100);
+					Thread.sleep(250);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -70,7 +71,7 @@ public class MapViewer extends JPanel {
 
 		this.setUpDimensions();
 
-		Graph map = this.serverStorage.getMap();
+		Graph map = this.storage.getMap();
 
 		// draw edges
 
@@ -122,7 +123,7 @@ public class MapViewer extends JPanel {
 
 		}
 
-		if (serverStorage.getWorldRows() > 6 && serverStorage.getWorldColumns() > 10) {
+		if (storage.getWorldRows() > 6 && storage.getWorldColumns() > 10) {
 			DijkstraAlgorithm da = new DijkstraAlgorithm(map,
 					map.getVertexFromId("v_" + this.userRow + "_" + this.userColumn));
 			List<Vertex> path = da.getPath(map.getVertexFromId("v_4_8"));
@@ -150,14 +151,15 @@ public class MapViewer extends JPanel {
 		}
 
 		g.setColor(Color.WHITE);
-		g.fillOval(this.cellWidth * this.userColumn + this.cellWidth / 4, this.cellHeight*this.userRow + this.cellHeight / 4, this.cellWidth - this.cellWidth / 2,
+		g.fillOval(this.cellWidth * this.userColumn + this.cellWidth / 4,
+				this.cellHeight * this.userRow + this.cellHeight / 4, this.cellWidth - this.cellWidth / 2,
 				this.cellHeight - this.cellHeight / 2);
 
 	}
 
 	private void setUpDimensions() {
-		this.gridWidth = serverStorage.getWorldColumns() + 1;
-		this.gridHeight = serverStorage.getWorldRows() + 1;
+		this.gridWidth = storage.getWorldColumns() + 1;
+		this.gridHeight = storage.getWorldRows() + 1;
 		// +1 because the drawings starts from the upper left corner
 
 		Dimension panelSize = this.getSize();
@@ -168,22 +170,30 @@ public class MapViewer extends JPanel {
 
 	public void left() {
 		this.userColumn--;
-		if(this.userColumn<0){this.userColumn=0;}
+		if (this.userColumn < 0) {
+			this.userColumn = 0;
+		}
 	}
 
 	public void right() {
 		this.userColumn++;
-		if(this.userColumn>serverStorage.getWorldColumns()){this.userColumn=serverStorage.getWorldColumns();}
+		if (this.userColumn > storage.getWorldColumns()) {
+			this.userColumn = storage.getWorldColumns();
+		}
 	}
 
 	public void up() {
 		this.userRow--;
-		if(this.userRow<0){this.userRow=0;}
+		if (this.userRow < 0) {
+			this.userRow = 0;
+		}
 	}
 
 	public void down() {
 		this.userRow++;
-		if(this.userRow>serverStorage.getWorldRows()){this.userRow=serverStorage.getWorldRows();}
+		if (this.userRow > storage.getWorldRows()) {
+			this.userRow = storage.getWorldRows();
+		}
 	}
 
 }

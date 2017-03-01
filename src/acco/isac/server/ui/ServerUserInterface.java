@@ -6,7 +6,7 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
-import acco.isac.clientui.ClientUserInterface;
+import acco.isac.client.ui.ClientUserInterface;
 
 public class ServerUserInterface extends JFrame {
 

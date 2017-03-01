@@ -33,7 +33,9 @@ public class R {
 	/**
 	 * Parking server queue name.
 	 */
-	public final static String CUSTOMER_TO_SERVER_QUEUE = "customerToServer";
+	public static final String CLIENT_TO_SERVER_QUEUE = "customerToServer";
+
+	public static final String EXCHANGE_NAME = "serverToClientExchange";
 
 	public static final int INF = 100000;
 

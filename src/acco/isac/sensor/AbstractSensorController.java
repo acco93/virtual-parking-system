@@ -8,9 +8,10 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
+import acco.isac.core.ActiveEntity;
 import acco.isac.sharedknowledge.R;
 
-public abstract class AbstractSensorController extends Thread {
+public abstract class AbstractSensorController extends ActiveEntity {
 
 	private Channel channel;
 	private Random random;
@@ -26,7 +27,7 @@ public abstract class AbstractSensorController extends Thread {
 	}
 
 	@Override
-	public void run() {
+	public void work() {
 
 		while (working) {
 
