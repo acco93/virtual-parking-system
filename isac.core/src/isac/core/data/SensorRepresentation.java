@@ -11,7 +11,7 @@ import isac.core.sharedknowledge.R;
  * @author acco
  *
  */
-public class SensorRepresentation implements EnvironmentInfo{
+public class SensorRepresentation implements EnvironmentInfo {
 
 	private String name;
 	private Position position;
@@ -44,14 +44,14 @@ public class SensorRepresentation implements EnvironmentInfo{
 		return false;
 	}
 
-	public long remainingTime(){
-		
+	public long remainingTime() {
+
 		long currentDate = new Date().getTime();
-		
+
 		return (currentDate - lastHeartbeat);
-		
+
 	}
-	
+
 	public boolean isAlive() {
 		return !isDead();
 	}
@@ -60,16 +60,19 @@ public class SensorRepresentation implements EnvironmentInfo{
 		return this.free;
 	}
 
-	public void updateState(boolean free) {
-		this.free=free;
+	public boolean updateState(boolean free) {
+		boolean changed = false;
+		if (this.free != free) {
+			changed = true;
+		}
+		this.free = free;
 		this.lastHeartbeat = new Date().getTime();
-		
+		return changed;
 	}
 
 	@Override
 	public InfoType getType() {
 		return InfoType.SENSOR;
 	}
-	
-	
+
 }

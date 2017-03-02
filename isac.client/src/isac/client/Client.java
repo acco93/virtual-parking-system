@@ -13,15 +13,16 @@ public class Client extends ActiveEntity {
 	public Client() {
 		this.ui = new ClientUserInterface();
 		ILogger gLog = this.ui.getGraphicalLogger();
-		this.serverDaemon = new ServerDaemon(gLog);
 		this.subscriberDaemon = new SubscriberDaemon(gLog);
+		this.serverDaemon = new ServerDaemon(gLog);
+
 	}
 
 	@Override
 	protected void work() {
-
-		this.serverDaemon.start();
 		this.subscriberDaemon.start();
+		this.serverDaemon.start();
+
 	}
 
 }

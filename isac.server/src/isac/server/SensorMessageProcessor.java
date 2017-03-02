@@ -18,9 +18,11 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 	private static final int SENSOR_WEIGHT = 100;
 	private static final int STREET_WEIGHT = 1;
 	private Storage storage;
+	private PublisherDaemon publisherDaemon;
 
-	public SensorMessageProcessor() {
+	public SensorMessageProcessor(PublisherDaemon publisherDaemon) {
 		this.storage = Storage.getInstance();
+		this.publisherDaemon = publisherDaemon;
 	}
 
 	/**
@@ -43,14 +45,22 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 		// check if the sensor associated with this message was already present
 		SensorRepresentation rep = sensors.get(msg.getSensorId());
 
+		boolean update = false;
+
 		if (rep == null) {
 			// it is an unknown sonar
 			rep = new SensorRepresentation(msg.getSensorId(), msg.getPosition(), msg.isFree());
 			sensors.put(msg.getSensorId(), rep);
 			updateMaxPosition(msg.getPosition());
 			rebuildMap();
+			update = true;
 		} else {
-			rep.updateState(msg.isFree());
+			update = rep.updateState(msg.isFree());
+		}
+
+		if (update) {
+			// notify clients
+			publisherDaemon.notifyClients();
 		}
 
 	}

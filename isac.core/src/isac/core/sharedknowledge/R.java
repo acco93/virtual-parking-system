@@ -33,10 +33,16 @@ public class R {
 	/**
 	 * Parking server queue name.
 	 */
-	public static final String CLIENT_TO_SERVER_QUEUE = "customerToServer";
+	public static final String CLIENT_TO_SERVER_QUEUE = "clientRequestsQueue";
 
 	public static final String EXCHANGE_NAME = "serverToClientExchange";
 
 	public static final int INF = 100000;
+
+	/**
+	 * Channel name where the server continuously sends bit indicating that it's
+	 * alive.
+	 */
+	public static final String SERVER_HEARTBEAT_CHANNEL = "serverHeartbeatChannel";
 
 }

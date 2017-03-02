@@ -15,6 +15,7 @@ public class ClientStorage {
 	private Graph map;
 	private int worldColumns;
 	private int worldRows;
+	private long time;
 
 	private ClientStorage() {
 		this.carPosition = Optional.empty();
@@ -66,6 +67,11 @@ public class ClientStorage {
 
 	public void setWorldRows(int worldRows) {
 		this.worldRows = worldRows;
+	}
+
+	public synchronized void setLastServerHeartbeat(long time) {
+		this.time = time;
+		
 	}
 
 }

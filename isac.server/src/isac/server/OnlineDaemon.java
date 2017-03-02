@@ -1,11 +1,8 @@
 package isac.server;
 
 import java.io.IOException;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeoutException;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -13,17 +10,20 @@ import com.rabbitmq.client.ConnectionFactory;
 import isac.core.log.Logger;
 import isac.core.sharedknowledge.R;
 
-public class PublisherDaemon extends Thread {
+/**
+ * 
+ * It continuously ping clients to indicate that the server is alive.
+ * 
+ * @author acco
+ *
+ */
+public class OnlineDaemon extends Thread {
 
-	private static final int EVENT_SEMAPHORE = 0;
 	private Channel channel;
-	private Semaphore semaphore;
 
-	public PublisherDaemon() {
+	public OnlineDaemon() {
 
 		Logger.getInstance().info("started");
-
-		semaphore = new Semaphore(EVENT_SEMAPHORE);
 
 		this.setupMqtt();
 	}
@@ -35,7 +35,7 @@ public class PublisherDaemon extends Thread {
 			factory.setHost("localhost");
 			Connection connection = factory.newConnection();
 			channel = connection.createChannel();
-			channel.exchangeDeclare(R.EXCHANGE_NAME, "fanout");
+			channel.exchangeDeclare(R.SERVER_HEARTBEAT_CHANNEL, "fanout");
 		} catch (IOException | TimeoutException e) {
 			Logger.getInstance().error(e.getMessage());
 		}
@@ -48,35 +48,19 @@ public class PublisherDaemon extends Thread {
 		while (true) {
 
 			try {
-				semaphore.acquire();
-
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				Logger.getInstance().error(e.getMessage());
 			}
 
-			System.out.println("publishing");
-			
-			this.publish();
+			try {
+				channel.basicPublish(R.SERVER_HEARTBEAT_CHANNEL, "", null, "1".getBytes());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 		}
 
 	}
-
-	private void publish() {
-		try {
-
-			Gson gson = new GsonBuilder().create();
-
-			String json = gson.toJson(Storage.getInstance().getSensors());
-
-			channel.basicPublish(R.EXCHANGE_NAME, "", null, json.getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public synchronized void notifyClients() {
-		this.semaphore.release();
-	}
-
 }

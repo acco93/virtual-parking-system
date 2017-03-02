@@ -22,11 +22,11 @@ public class SensorHandler {
 	private Channel channel;
 	private SensorMessageProcessor msgProcessor;
 
-	public SensorHandler() {
+	public SensorHandler(PublisherDaemon publisherDaemon) {
 
 		Logger.getInstance().info("started");
 		
-		this.msgProcessor = new SensorMessageProcessor();
+		this.msgProcessor = new SensorMessageProcessor(publisherDaemon);
 		this.msgProcessor.start();
 
 		this.setupRabbitMQ();
