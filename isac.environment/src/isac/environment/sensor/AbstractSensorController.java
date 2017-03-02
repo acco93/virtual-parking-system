@@ -2,7 +2,12 @@ package isac.environment.sensor;
 
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -17,11 +22,17 @@ public abstract class AbstractSensorController extends ActiveEntity {
 	private Random random;
 	private double serviceDisruptionProbability;
 	private boolean working;
+	private Condition condition;
+	private ReentrantLock lock;
 
 	public AbstractSensorController() {
 		this.random = new Random();
 		this.serviceDisruptionProbability = 0.001;
 		this.working = true;
+
+		lock = new ReentrantLock();
+		this.condition = lock.newCondition();
+
 		// setup rabbitmq
 		this.rabbitMQSetup();
 	}
@@ -66,11 +77,23 @@ public abstract class AbstractSensorController extends ActiveEntity {
 
 		int randomDelay = random.nextInt(R.MAX_SENSOR_DELAY);
 
+		lock.lock();
+
 		try {
-			Thread.sleep(randomDelay);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			condition.await(randomDelay, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
+
+		lock.unlock();
+
+	}
+
+	public void wake() {
+		lock.lock();
+		condition.signal();
+		lock.unlock();
 	}
 
 	private void rabbitMQSetup() {

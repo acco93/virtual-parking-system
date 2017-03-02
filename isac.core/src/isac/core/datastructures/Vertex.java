@@ -101,4 +101,12 @@ public class Vertex {
 		return info;
 	}
 
+	@Override
+	public String toString() {
+		return "Vertex [id=" + id + ", predecessor=" + predecessor + ", color=" + color + ", distance=" + distance
+				+ ", info=" + info + "]";
+	}
+
+	
+	
 }

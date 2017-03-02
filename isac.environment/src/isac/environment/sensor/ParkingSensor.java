@@ -4,7 +4,6 @@ import isac.core.data.Position;
 import isac.environment.Environment;
 import isac.environment.IEnvironmentElement;
 
-
 /**
  * 
  * A simple virtual parking sensor. Each sensor is deployed in a (x, y) position
@@ -17,6 +16,7 @@ public class ParkingSensor implements ISensor<Boolean>, IEnvironmentElement {
 
 	private Position position;
 	private String uid;
+	private ParkingSensorController sensorController;
 
 	/**
 	 * The constructor.
@@ -44,6 +44,15 @@ public class ParkingSensor implements ISensor<Boolean>, IEnvironmentElement {
 	@Override
 	public String getId() {
 		return this.uid;
+	}
+
+	public void setController(ParkingSensorController controller) {
+		this.sensorController = controller;
+
+	}
+
+	public void wake() {
+		this.sensorController.wake();
 	}
 
 }

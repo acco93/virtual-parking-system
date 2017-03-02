@@ -11,6 +11,7 @@ public class ParkingSensorController extends AbstractSensorController {
 
 	public ParkingSensorController(ParkingSensor sensor) {
 		this.sensor = sensor;
+		this.sensor.setController(this);
 	}
 
 	

@@ -3,6 +3,8 @@ package isac.core.datastructures;
 import java.io.Serializable;
 import java.util.List;
 
+import isac.core.data.Position;
+
 /**
  * 
  * A graph is a set of nodes and edges. The edges are implicit in the Vertex
@@ -38,6 +40,11 @@ public class Graph {
 			}
 		}
 		return null;
+	}
+
+	public Vertex getVertexFromPosition(Position position) {
+		String id = "v_"+position.getRow()+"_"+position.getColumn();
+		return this.getVertexFromId(id);
 	}
 
 }

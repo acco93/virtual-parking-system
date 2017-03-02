@@ -1,4 +1,4 @@
-package isac.client;
+package isac.client.controller;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -19,6 +19,7 @@ import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
+import isac.client.model.Storage;
 import isac.core.data.InfoType;
 import isac.core.data.Position;
 import isac.core.data.SensorRepresentation;
@@ -100,19 +101,19 @@ public class SubscriberDaemon {
 			int row = sensor.getPosition().getRow();
 			int column = sensor.getPosition().getColumn();
 
-			if (row > ClientStorage.getInstance().getWorldRows()) {
-				ClientStorage.getInstance().setWorldRows(row);
+			if (row > Storage.getInstance().getWorldRows()) {
+				Storage.getInstance().setWorldRows(row);
 			}
 
-			if (column > ClientStorage.getInstance().getWorldColumns()) {
-				ClientStorage.getInstance().setWorldColumns(column);
+			if (column > Storage.getInstance().getWorldColumns()) {
+				Storage.getInstance().setWorldColumns(column);
 			}
 		}
 	}
 
 	private void rebuildMap(HashMap<String, SensorRepresentation> sensors) {
 
-		ClientStorage storage = ClientStorage.getInstance();
+		Storage storage = Storage.getInstance();
 
 		int rows = storage.getWorldRows() + 1;
 		int columns = storage.getWorldColumns() + 1;

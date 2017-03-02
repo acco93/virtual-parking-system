@@ -1,4 +1,4 @@
-package isac.client;
+package isac.client.controller;
 
 import java.io.IOException;
 import java.util.Date;
@@ -12,6 +12,7 @@ import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
+import isac.client.model.Storage;
 import isac.core.log.ILogger;
 import isac.core.log.Logger;
 import isac.core.sharedknowledge.R;
@@ -72,8 +73,8 @@ public class ServerDaemon {
 					byte[] body) throws IOException {
 
 				long time = new Date().getTime();
-				ClientStorage.getInstance().setLastServerHeartbeat(time);
-				gLog.error("qua");
+				Storage.getInstance().setLastServerHeartbeat(time);
+
 			}
 
 		};

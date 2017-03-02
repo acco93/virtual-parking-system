@@ -1,4 +1,4 @@
-package isac.client;
+package isac.client.controller;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;

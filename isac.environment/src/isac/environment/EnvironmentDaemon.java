@@ -1,6 +1,7 @@
 package isac.environment;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
 import com.google.gson.Gson;
@@ -17,6 +18,8 @@ import isac.core.constructs.EventLoop;
 import isac.core.data.EnvironmentMessage;
 import isac.core.log.Logger;
 import isac.core.sharedknowledge.R;
+import isac.environment.sensor.ParkingSensor;
+import isac.environment.sensor.ParkingSensorController;
 
 public class EnvironmentDaemon extends EventLoop<EnvironmentMessage> {
 
@@ -73,6 +76,15 @@ public class EnvironmentDaemon extends EventLoop<EnvironmentMessage> {
 		} else {
 			Environment.getInstance().removeCar(message.getPosition());
 		}
+
+		int row = message.getPosition().getRow();
+		int column = message.getPosition().getColumn();
+
+		Optional<IEnvironmentElement> elem = Environment.getInstance().getSensorsLayer()[row][column].getElement();
+
+		elem.ifPresent((e) -> {
+			((ParkingSensor) e).wake();
+		});
 
 	}
 

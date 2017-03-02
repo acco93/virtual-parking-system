@@ -1,4 +1,4 @@
-package isac.client;
+package isac.client.model;
 
 import java.util.LinkedList;
 import java.util.Optional;
@@ -7,9 +7,9 @@ import isac.core.data.Position;
 import isac.core.datastructures.Graph;
 import isac.core.datastructures.Vertex;
 
-public class ClientStorage {
+public class Storage {
 
-	private static ClientStorage instance = new ClientStorage();
+	private static Storage instance = new Storage();
 	private Optional<Position> carPosition;
 	private Position userPosition;
 	private Graph map;
@@ -17,7 +17,7 @@ public class ClientStorage {
 	private int worldRows;
 	private long time;
 
-	private ClientStorage() {
+	private Storage() {
 		this.carPosition = Optional.empty();
 		this.userPosition = new Position(0, 0);
 		this.map = new Graph(new LinkedList<Vertex>());
@@ -25,16 +25,16 @@ public class ClientStorage {
 		this.worldRows = 0;
 	}
 
-	public static ClientStorage getInstance() {
-		return ClientStorage.instance;
+	public static Storage getInstance() {
+		return Storage.instance;
 	}
 
 	public Optional<Position> getCarPosition() {
 		return carPosition;
 	}
 
-	public void setCarPosition(Optional<Position> carPosition) {
-		this.carPosition = carPosition;
+	public void setCarPosition(Optional<Position> position) {
+		this.carPosition = position;
 	}
 
 	public Position getUserPosition() {
@@ -71,6 +71,11 @@ public class ClientStorage {
 
 	public synchronized void setLastServerHeartbeat(long time) {
 		this.time = time;
+
+	}
+
+	public long getLastServerHeartbeat() {
+		return this.time;
 
 	}
 

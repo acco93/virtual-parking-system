@@ -1,18 +1,21 @@
-package isac.client.ui;
+package isac.client.view;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import isac.client.ClientStorage;
+import isac.client.model.Storage;
 import isac.core.data.InfoType;
-import isac.core.data.Position;
 import isac.core.data.SensorRepresentation;
 import isac.core.data.StreetRepresentation;
 import isac.core.datastructures.Graph;
@@ -24,20 +27,17 @@ public class MapViewer extends JPanel {
 
 	private static final int OFFSET = 0;
 
-	private ClientStorage storage;
+	private Storage storage;
 	private int cellWidth;
 	private int cellHeight;
-
-	private int userRow;
-
-	private int userColumn;
+	private List<Vertex> nearestParkPath;
+	private List<Vertex> shortestPathToCar;
 
 	public MapViewer() {
 
-		this.userRow = 0;
-		this.userColumn = 0;
-		this.storage = ClientStorage.getInstance();
-
+		this.storage = Storage.getInstance();
+		this.nearestParkPath = new LinkedList<>();
+		this.shortestPathToCar = new LinkedList<>();
 		this.setBackground(BACKGROUND_COLOR);
 
 		new Thread(() -> {
@@ -138,10 +138,33 @@ public class MapViewer extends JPanel {
 		 * }
 		 */
 
+		g.setColor(Color.yellow);
+		for (int i = 0; i < this.nearestParkPath.size(); i++) {
+			Vertex node = nearestParkPath.get(i);
+			int row = node.getInfo().getPosition().getRow();
+			int column = node.getInfo().getPosition().getColumn();
+
+			g.fillOval(this.cellWidth * column + OFFSET + this.cellWidth / 3,
+					this.cellHeight * row + OFFSET + this.cellHeight / 3, this.cellWidth / 4 - OFFSET,
+					this.cellHeight / 4 - OFFSET);
+		}
+
+		g.setColor(Color.magenta);
+		for (int i = 0; i < this.shortestPathToCar.size(); i++) {
+			Vertex node = shortestPathToCar.get(i);
+			int row = node.getInfo().getPosition().getRow();
+			int column = node.getInfo().getPosition().getColumn();
+
+			g.fillOval(this.cellWidth * column + OFFSET + this.cellWidth / 3,
+					this.cellHeight * row + OFFSET + this.cellHeight / 3, this.cellWidth / 4 - OFFSET,
+					this.cellHeight / 4 - OFFSET);
+		}
+
+		int userRow = this.storage.getUserPosition().getRow();
+		int userColumn = this.storage.getUserPosition().getColumn();
 		g.setColor(Color.WHITE);
-		g.fillOval(this.cellWidth * this.userColumn + this.cellWidth / 4,
-				this.cellHeight * this.userRow + this.cellHeight / 4, this.cellWidth - this.cellWidth / 2,
-				this.cellHeight - this.cellHeight / 2);
+		g.fillOval(this.cellWidth * userColumn + this.cellWidth / 4, this.cellHeight * userRow + this.cellHeight / 4,
+				this.cellWidth - this.cellWidth / 2, this.cellHeight - this.cellHeight / 2);
 
 	}
 
@@ -156,55 +179,13 @@ public class MapViewer extends JPanel {
 		this.cellHeight = (int) (panelSize.getHeight() / gridHeight);
 	}
 
-	public void left() {
-		this.userColumn--;
-		if (this.userColumn < 0) {
-			this.userColumn = 0;
-		}
-		SwingUtilities.invokeLater(() -> {
-			repaint();
-		});
-		this.updateUserPosition();
+	public void setNearestParkPath(List<Vertex> path) {
+		this.nearestParkPath = path;
 
 	}
 
-	private void updateUserPosition() {
-		ClientStorage.getInstance().setUserPosition(new Position(this.userRow, this.userColumn));
-
-	}
-
-	public void right() {
-		this.userColumn++;
-		if (this.userColumn > storage.getWorldColumns()) {
-			this.userColumn = storage.getWorldColumns();
-		}
-		SwingUtilities.invokeLater(() -> {
-			repaint();
-		});
-		this.updateUserPosition();
-
-	}
-
-	public void up() {
-		this.userRow--;
-		if (this.userRow < 0) {
-			this.userRow = 0;
-		}
-		SwingUtilities.invokeLater(() -> {
-			repaint();
-		});
-		this.updateUserPosition();
-	}
-
-	public void down() {
-		this.userRow++;
-		if (this.userRow > storage.getWorldRows()) {
-			this.userRow = storage.getWorldRows();
-		}
-		SwingUtilities.invokeLater(() -> {
-			repaint();
-		});
-		this.updateUserPosition();
+	public void setShortestPathToCar(List<Vertex> path) {
+		this.shortestPathToCar = path;
 
 	}
 
