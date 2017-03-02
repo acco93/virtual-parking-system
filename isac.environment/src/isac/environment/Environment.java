@@ -1,5 +1,6 @@
 package isac.environment;
 
+import isac.core.data.Position;
 import isac.core.sharedknowledge.R;
 
 /**
@@ -28,7 +29,7 @@ public class Environment {
 	public Environment() {
 		this.columns = R.ENV_COLUMNS;
 		this.rows = R.ENV_ROWS;
-		
+
 		this.sensorsLayer = new Cell[this.rows][this.columns];
 		this.carsLayer = new boolean[this.rows][this.columns];
 
@@ -38,6 +39,8 @@ public class Environment {
 				this.carsLayer[i][j] = false;
 			}
 		}
+
+		new EnvironmentDaemon().start();
 
 	}
 
@@ -61,7 +64,7 @@ public class Environment {
 		int row = element.getPosition().getRow();
 		int column = element.getPosition().getColumn();
 
-		if (row < 0 || row > this.rows-1 || column < 0 || column > this.columns-1) {
+		if (row < 0 || row > this.rows - 1 || column < 0 || column > this.columns - 1) {
 			return false;
 		}
 
@@ -82,6 +85,18 @@ public class Environment {
 
 	public boolean[][] getCarsLayer() {
 		return carsLayer;
+	}
+
+	public void setCar(Position position) {
+		int r = position.getRow();
+		int c = position.getColumn();
+		this.carsLayer[r][c] = true;
+	}
+
+	public void removeCar(Position position) {
+		int r = position.getRow();
+		int c = position.getColumn();
+		this.carsLayer[r][c] = false;
 	}
 
 }

@@ -38,7 +38,7 @@ public class ServerDaemon {
 			connection = factory.newConnection();
 			Channel requestChannel = connection.createChannel();
 			requestChannel.queueDeclare(R.CLIENT_TO_SERVER_QUEUE, false, false, false, null);
-			channel.basicPublish("", R.CLIENT_TO_SERVER_QUEUE, null, "1".getBytes());
+			requestChannel.basicPublish("", R.CLIENT_TO_SERVER_QUEUE, null, "1".getBytes());
 		} catch (IOException | TimeoutException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

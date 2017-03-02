@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 
 import isac.client.ClientStorage;
 import isac.core.data.InfoType;
+import isac.core.data.Position;
 import isac.core.data.SensorRepresentation;
 import isac.core.data.StreetRepresentation;
 import isac.core.datastructures.Graph;
@@ -163,6 +164,12 @@ public class MapViewer extends JPanel {
 		SwingUtilities.invokeLater(() -> {
 			repaint();
 		});
+		this.updateUserPosition();
+
+	}
+
+	private void updateUserPosition() {
+		ClientStorage.getInstance().setUserPosition(new Position(this.userRow, this.userColumn));
 
 	}
 
@@ -174,6 +181,7 @@ public class MapViewer extends JPanel {
 		SwingUtilities.invokeLater(() -> {
 			repaint();
 		});
+		this.updateUserPosition();
 
 	}
 
@@ -185,7 +193,7 @@ public class MapViewer extends JPanel {
 		SwingUtilities.invokeLater(() -> {
 			repaint();
 		});
-
+		this.updateUserPosition();
 	}
 
 	public void down() {
@@ -196,6 +204,7 @@ public class MapViewer extends JPanel {
 		SwingUtilities.invokeLater(() -> {
 			repaint();
 		});
+		this.updateUserPosition();
 
 	}
 

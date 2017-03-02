@@ -11,7 +11,7 @@ public class ClientStorage {
 
 	private static ClientStorage instance = new ClientStorage();
 	private Optional<Position> carPosition;
-	private Optional<Position> userPosition;
+	private Position userPosition;
 	private Graph map;
 	private int worldColumns;
 	private int worldRows;
@@ -19,7 +19,7 @@ public class ClientStorage {
 
 	private ClientStorage() {
 		this.carPosition = Optional.empty();
-		this.userPosition = Optional.empty();
+		this.userPosition = new Position(0, 0);
 		this.map = new Graph(new LinkedList<Vertex>());
 		this.worldColumns = 0;
 		this.worldRows = 0;
@@ -37,11 +37,11 @@ public class ClientStorage {
 		this.carPosition = carPosition;
 	}
 
-	public Optional<Position> getUserPosition() {
+	public Position getUserPosition() {
 		return userPosition;
 	}
 
-	public void setUserPosition(Optional<Position> userPosition) {
+	public void setUserPosition(Position userPosition) {
 		this.userPosition = userPosition;
 	}
 
@@ -71,7 +71,7 @@ public class ClientStorage {
 
 	public synchronized void setLastServerHeartbeat(long time) {
 		this.time = time;
-		
+
 	}
 
 }

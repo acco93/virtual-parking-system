@@ -45,4 +45,6 @@ public class R {
 	 */
 	public static final String SERVER_HEARTBEAT_CHANNEL = "serverHeartbeatChannel";
 
+	public static final String ENVIRONMENT_CHANNEL = "environmentChannel";
+
 }

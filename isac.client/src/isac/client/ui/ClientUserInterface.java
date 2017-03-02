@@ -13,6 +13,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import isac.client.ClientStorage;
+import isac.client.EnvironmentInteraction;
 import isac.core.log.ILogger;
 import isac.core.log.Logger;
 
@@ -22,8 +24,11 @@ public class ClientUserInterface extends JFrame implements KeyListener {
 	private MapViewer mapViewer;
 	private JLabel statusLabel;
 	private LogViewer logViewer;
+	private EnvironmentInteraction envInteraction;
 
 	public ClientUserInterface() {
+
+		envInteraction = new EnvironmentInteraction();
 
 		this.setTitle("Client-side - Virtual car parking");
 		this.setSize(new Dimension(400, 300));
@@ -49,7 +54,7 @@ public class ClientUserInterface extends JFrame implements KeyListener {
 		tabbedPane.addTab("Map", mapViewer);
 
 		JLabel helpLabel = new JLabel(
-				"<html> HELP: use <b>W</b>, <b>A</b>, <b>S</b>, <b>D</b> to move, <b>N</b> to find the nearest parking, <b>P</b> to park and <b>L</b> to locate a previously parked car.</html>",
+				"<html> HELP: use <b>W</b>, <b>A</b>, <b>S</b>, <b>D</b> to move, <b>N</b> to find the nearest parking, <b>P</b> to park, <b>R</b> to remove a previously parked car and <b>L</b> to locate a previously parked car.</html>",
 				SwingConstants.CENTER);
 		helpLabel.setFont(helpLabel.getFont().deriveFont(Font.PLAIN));
 		helpLabel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -96,7 +101,12 @@ public class ClientUserInterface extends JFrame implements KeyListener {
 			Logger.getInstance().info("Searching for free parking");
 			break;
 		case 'p':
-			Logger.getInstance().info("Parking");
+			Logger.getInstance().info("Parking car");
+			envInteraction.park(ClientStorage.getInstance().getUserPosition());
+			break;
+		case 'r':
+			Logger.getInstance().info("Removing car");
+			envInteraction.remove(ClientStorage.getInstance().getUserPosition());
 			break;
 		case 'l':
 			Logger.getInstance().info("Locating car");

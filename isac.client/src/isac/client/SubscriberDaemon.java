@@ -33,7 +33,7 @@ public class SubscriberDaemon {
 
 	private static final int SENSOR_WEIGHT = 100;
 	private static final int STREET_WEIGHT = 1;
-	
+
 	private Channel channel;
 	private String queueName;
 	private ILogger gLog;
@@ -59,7 +59,6 @@ public class SubscriberDaemon {
 			queueName = channel.queueDeclare().getQueue();
 			channel.queueBind(queueName, R.EXCHANGE_NAME, "");
 		} catch (IOException | TimeoutException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -74,7 +73,7 @@ public class SubscriberDaemon {
 				String message = new String(body, "UTF-8");
 
 				gLog.info("Received an updated map.");
-				
+
 				Gson gson = new GsonBuilder().create();
 				Type type = new TypeToken<Map<String, SensorRepresentation>>() {
 				}.getType();
