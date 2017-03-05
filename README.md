@@ -50,7 +50,11 @@ How to deal with the previous aspects?
 
 * strong modularity, rigid boundaries definition
 
-* loose coupled interactions, eg. MOM adoption and standard message formats (JSON)
+* loose coupled interactions, eg. MOM adoption to enable flexible communication among different aplicatons and standard data formats (JSON)
+
+* explicit messages and protocols definition
+
+* few assumptions between components, few dependencies
 
 
 ### How do I get set up? ###
