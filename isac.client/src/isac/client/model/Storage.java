@@ -7,6 +7,13 @@ import isac.core.data.Position;
 import isac.core.datastructures.Graph;
 import isac.core.datastructures.Vertex;
 
+/**
+ * 
+ * Client storage implemented as singleton and monitor.
+ * 
+ * @author acco
+ *
+ */
 public class Storage {
 
 	private static Storage instance = new Storage();
@@ -15,67 +22,141 @@ public class Storage {
 	private Graph map;
 	private int worldColumns;
 	private int worldRows;
-	private long time;
+	private long serverHeartbeat;
 
 	private Storage() {
 		this.carPosition = Optional.empty();
+		/*
+		 * Initial position.
+		 */
 		this.userPosition = new Position(0, 0);
 		this.map = new Graph(new LinkedList<Vertex>());
 		this.worldColumns = 0;
 		this.worldRows = 0;
 	}
 
+	/**
+	 * Return the storage instance.
+	 * 
+	 * @return storage instance
+	 */
 	public static Storage getInstance() {
 		return Storage.instance;
 	}
 
-	public Optional<Position> getCarPosition() {
+	/**
+	 * Return the car position, if the user didn't park the Optional is empty.
+	 * 
+	 * @return an Optional<Position>
+	 */
+	public synchronized Optional<Position> getCarPosition() {
 		return carPosition;
 	}
 
-	public void setCarPosition(Optional<Position> position) {
+	/**
+	 * Set the car position.
+	 * 
+	 * @param position
+	 *            an Optional<Position>
+	 */
+	public synchronized void setCarPosition(Optional<Position> position) {
 		this.carPosition = position;
 	}
 
-	public Position getUserPosition() {
+	/**
+	 * Get the user position.
+	 * 
+	 * @return the position
+	 */
+	public synchronized Position getUserPosition() {
 		return userPosition;
 	}
 
-	public void setUserPosition(Position userPosition) {
+	/**
+	 * Set the user position.
+	 * 
+	 * @param userPosition
+	 *            the position
+	 */
+	public synchronized void setUserPosition(Position userPosition) {
 		this.userPosition = userPosition;
 	}
 
-	public Graph getMap() {
+	/**
+	 * Return the most updated known map.
+	 * 
+	 * @return the map
+	 */
+	public synchronized Graph getMap() {
 		return map;
 	}
 
-	public void setMap(Graph map) {
+	/**
+	 * Set a new map.
+	 * 
+	 * @param map
+	 *            the map
+	 */
+	public synchronized void setMap(Graph map) {
 		this.map = map;
 	}
 
-	public int getWorldColumns() {
+	/**
+	 * Return the number of columns of the world.
+	 * 
+	 * @return # of columns
+	 */
+	public synchronized int getWorldColumns() {
 		return worldColumns;
 	}
 
-	public void setWorldColumns(int worldColumns) {
+	/**
+	 * Set the number of columns of the world.
+	 * 
+	 * @param worldColumns
+	 *            # of columns
+	 */
+	public synchronized void setWorldColumns(int worldColumns) {
 		this.worldColumns = worldColumns;
 	}
 
-	public int getWorldRows() {
+	/**
+	 * Return the number of rows of the world.
+	 * 
+	 * @return # of rows
+	 */
+	public synchronized int getWorldRows() {
 		return worldRows;
 	}
 
-	public void setWorldRows(int worldRows) {
+	/**
+	 * Set the number of rows of the world.
+	 * 
+	 * @param worldRows
+	 *            # of rows
+	 */
+	public synchronized void setWorldRows(int worldRows) {
 		this.worldRows = worldRows;
 	}
 
-	public synchronized void setLastServerHeartbeat(long time) {
-		this.time = time;
+	/**
+	 * Set the last time in milliseconds in which the server has sent its
+	 * heartbeat.
+	 * 
+	 * @param serverHeartbeat
+	 */
+	public synchronized void setServerHeartbeat(long serverHeartbeat) {
+		this.serverHeartbeat = serverHeartbeat;
 
 	}
 
-	public long getLastServerHeartbeat() {
-		return this.time;
+	/**
+	 * Get the last server heartbeat.
+	 * 
+	 * @return
+	 */
+	public synchronized long getServerHeartbeat() {
+		return this.serverHeartbeat;
 
 	}
 

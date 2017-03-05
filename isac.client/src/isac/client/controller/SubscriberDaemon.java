@@ -38,11 +38,14 @@ public class SubscriberDaemon {
 	private Channel channel;
 	private String queueName;
 	private ILogger gLog;
+	private Client client;
 
-	public SubscriberDaemon(ILogger gLog) {
+	public SubscriberDaemon(Client client, ILogger gLog) {
+		this.client = client;
+		this.gLog = gLog;
 
 		Logger.getInstance().info("started");
-		this.gLog = gLog;
+
 		this.setupMqtt();
 
 	}
@@ -81,7 +84,7 @@ public class SubscriberDaemon {
 				HashMap<String, SensorRepresentation> sensors = gson.fromJson(message, type);
 				updateMaxPosition(sensors);
 				rebuildMap(sensors);
-
+				client.repaintMap();
 			}
 
 		};
@@ -89,7 +92,6 @@ public class SubscriberDaemon {
 		try {
 			channel.basicConsume(this.queueName, true, consumer);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

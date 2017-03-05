@@ -22,7 +22,7 @@ public class ServerChecker extends Thread {
 
 		while (true) {
 
-			long time = Storage.getInstance().getLastServerHeartbeat();
+			long time = Storage.getInstance().getServerHeartbeat();
 
 			long currentTime = new Date().getTime();
 
@@ -45,7 +45,6 @@ public class ServerChecker extends Thread {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 

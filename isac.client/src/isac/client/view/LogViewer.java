@@ -16,12 +16,19 @@ import javax.swing.text.StyledDocument;
 
 import isac.core.log.ILogger;
 
+/**
+ * 
+ * ILogger implementation as user-friendly graphical component.
+ * 
+ * @author acco
+ *
+ */
 public class LogViewer extends JPanel implements ILogger {
 
 	private static final long serialVersionUID = 1L;
-	private StyledDocument doc;
-	private Style errStyle;
-	private Style infoStyle;
+	private final transient StyledDocument doc;
+	private final transient Style errStyle;
+	private final transient Style infoStyle;
 
 	public LogViewer() {
 
@@ -30,8 +37,8 @@ public class LogViewer extends JPanel implements ILogger {
 		JTextPane log = new JTextPane();
 		log.setEditable(false);
 		log.setOpaque(false);
-		doc = log.getStyledDocument();		
-		
+		doc = log.getStyledDocument();
+
 		DefaultCaret caret = (DefaultCaret) log.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
@@ -45,11 +52,16 @@ public class LogViewer extends JPanel implements ILogger {
 		JScrollPane scroll = new JScrollPane(log);
 		scroll.setOpaque(false);
 		scroll.setBorder(new EmptyBorder(5, 5, 5, 5));
-		
+
 		this.add(scroll, BorderLayout.CENTER);
 
 	}
 
+	/**
+	 * Append some text using the specified style
+	 * @param text some test
+	 * @param style the style
+	 */
 	private void append(String text, Style style) {
 		try {
 			doc.insertString(doc.getLength(), text + "\n", style);

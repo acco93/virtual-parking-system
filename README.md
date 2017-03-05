@@ -28,6 +28,31 @@ The final system should provide the following functionalities:
 
 The above functionalities should be supported in a client-server interaction schema if the server is available or using local interactions with near sensors otherwise. 
 
+## Complexity aspects ##
+
+The system should face the following aspects:
+
+* it is composed by a dynamic and possibly large set of components. At a given moment the number of clients is unpredictable
+
+* it is open, that is components could be added or removed while the system is working
+
+* it is heterogeneous, clients, server and sensors application may be written in different programming language
+
+* it should work in a centralized and decentralized/distributed way
+
+* the interactions are asynchronous and loose coupled
+
+* the components are situated in a (virtual) world
+
+* there are some reactivity requirements
+
+How to deal with the previous aspects?
+
+* strong modularity, rigid boundaries definition
+
+* loose coupled interactions, eg. MOM adoption and standard message formats (JSON)
+
+
 ### How do I get set up? ###
 
 1. Download the [source](https://bitbucket.org/acco93/virtual-parking-system/src)

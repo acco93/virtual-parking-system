@@ -4,11 +4,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import isac.client.controller.Client;
-import isac.client.controller.EnvironmentInteraction;
-import isac.client.model.Storage;
-import isac.client.view.UserInterface;
-import isac.core.log.Logger;
 
+/**
+ * 
+ * Key listener implementation.
+ * 
+ * @author acco
+ *
+ */
 public class UserListener implements KeyListener {
 
 	private Client client;
@@ -19,7 +22,7 @@ public class UserListener implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-
+		// empty
 	}
 
 	@Override
@@ -31,41 +34,35 @@ public class UserListener implements KeyListener {
 			this.client.moveLeft();
 			break;
 		case 's':
-
 			this.client.moveDown();
 			break;
 		case 'd':
-
 			this.client.moveRight();
 			break;
 		case 'w':
-
 			this.client.moveUp();
 			break;
 		case 'n':
-
 			this.client.searchPark();
 			break;
 		case 'p':
-
 			this.client.park();
-			//
 			break;
 		case 'r':
-
 			this.client.removeCar();
-			//
 			break;
 		case 'l':
 			this.client.locateCar();
-
+			break;
+		default:
+			// unknown key
 			break;
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-
+		// empty
 	}
 
 }

@@ -1,32 +1,32 @@
 package isac.client.view;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.Stroke;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import isac.client.model.Storage;
 import isac.core.data.InfoType;
 import isac.core.data.SensorRepresentation;
-import isac.core.data.StreetRepresentation;
 import isac.core.datastructures.Graph;
 import isac.core.datastructures.Vertex;
 
+/**
+ * 
+ * Graphical component that draw a the park map.
+ * 
+ * @author acco
+ *
+ */
 public class MapViewer extends JPanel {
-	public static final Color BACKGROUND_COLOR = new Color(161, 212, 144);
+
 	private static final long serialVersionUID = 1L;
-
-	private static final int OFFSET = 0;
-
 	private Storage storage;
 	private int cellWidth;
 	private int cellHeight;
@@ -36,26 +36,12 @@ public class MapViewer extends JPanel {
 	public MapViewer() {
 
 		this.storage = Storage.getInstance();
+		/*
+		 * Init lists to avoid if in paint.
+		 */
 		this.nearestParkPath = new LinkedList<>();
 		this.shortestPathToCar = new LinkedList<>();
-		this.setBackground(BACKGROUND_COLOR);
 
-		new Thread(() -> {
-
-			while (true) {
-
-				SwingUtilities.invokeLater(() -> {
-					repaint();
-				});
-
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}).start();
 	}
 
 	@Override
@@ -69,8 +55,6 @@ public class MapViewer extends JPanel {
 
 		Graph map = this.storage.getMap();
 
-		// draw edges
-
 		for (Vertex vertex : map.getNodes()) {
 
 			int row = vertex.getInfo().getPosition().getRow();
@@ -82,84 +66,62 @@ public class MapViewer extends JPanel {
 
 				if (sensor.isFree()) {
 					g.setColor(Color.green);
-					g.fillRect(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET,
-							this.cellWidth - OFFSET, this.cellHeight - OFFSET);
+					g.fillRect(this.cellWidth * column, this.cellHeight * row, this.cellWidth, this.cellHeight);
 
 				} else {
 					g.setColor(Color.orange);
-					g.fillRect(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET,
-							this.cellWidth - OFFSET, this.cellHeight - OFFSET);
+					g.fillRect(this.cellWidth * column, this.cellHeight * row, this.cellWidth, this.cellHeight);
 
 				}
 
+				/*
+				 * Parking place name.
+				 */
 				g.setColor(Color.BLACK);
 				g.setFont(new Font("default", Font.BOLD, 14));
-				g.drawString(sensor.getName(), this.cellWidth * column + OFFSET + this.cellWidth / 3,
-						this.cellHeight * row + OFFSET + this.cellHeight / 2);
+				g.drawString(sensor.getName(), this.cellWidth * column + this.cellWidth / 3,
+						this.cellHeight * row + this.cellHeight / 2);
 
 			} else {
 				// street
-				StreetRepresentation street = (StreetRepresentation) vertex.getInfo();
-
 				g.setColor(Color.LIGHT_GRAY);
-				g.fillRect(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET, this.cellWidth - OFFSET,
-						this.cellHeight - OFFSET);
+				g.fillRect(this.cellWidth * column, this.cellHeight * row, this.cellWidth, this.cellHeight);
 			}
 
 			g.setColor(Color.BLACK);
-			g.drawRect(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET, this.cellWidth - OFFSET,
-					this.cellHeight - OFFSET);
+			g.drawRect(this.cellWidth * column, this.cellHeight * row, this.cellWidth, this.cellHeight);
 
 		}
 
 		/*
-		 * if (storage.getWorldRows() > 6 && storage.getWorldColumns() > 10) {
-		 * DijkstraAlgorithm da = new DijkstraAlgorithm(map,
-		 * map.getVertexFromId("v_" + this.userRow + "_" + this.userColumn));
-		 * List<Vertex> path = da.getPath(map.getVertexFromId("v_4_8"));
-		 * 
-		 * for (int i = 0; i < path.size() - 1; i++) { Vertex node =
-		 * path.get(i); int row = node.getInfo().getPosition().getRow(); int
-		 * column = node.getInfo().getPosition().getColumn();
-		 * 
-		 * g.setColor(Color.yellow); g.fillOval(this.cellWidth * column + OFFSET
-		 * + this.cellWidth / 3, this.cellHeight * row + OFFSET +
-		 * this.cellHeight / 3, this.cellWidth / 4 - OFFSET, this.cellHeight / 4
-		 * - OFFSET); }
-		 * 
-		 * int row = (path.get(path.size() -
-		 * 1)).getInfo().getPosition().getRow(); int column =
-		 * (path.get(path.size() - 1)).getInfo().getPosition().getColumn();
-		 * 
-		 * Stroke oldStroke = g2.getStroke(); g2.setStroke(new BasicStroke(3));
-		 * g.drawOval(this.cellWidth * column + OFFSET + this.cellWidth / 4,
-		 * this.cellHeight * row + OFFSET + this.cellHeight / 4, this.cellWidth
-		 * / 2 - OFFSET, this.cellHeight / 2 - OFFSET); g2.setStroke(oldStroke);
-		 * }
+		 * Draw the nearest park path, if present.
 		 */
-
 		g.setColor(Color.yellow);
 		for (int i = 0; i < this.nearestParkPath.size(); i++) {
 			Vertex node = nearestParkPath.get(i);
 			int row = node.getInfo().getPosition().getRow();
 			int column = node.getInfo().getPosition().getColumn();
 
-			g.fillOval(this.cellWidth * column + OFFSET + this.cellWidth / 3,
-					this.cellHeight * row + OFFSET + this.cellHeight / 3, this.cellWidth / 4 - OFFSET,
-					this.cellHeight / 4 - OFFSET);
+			g.fillOval(this.cellWidth * column + this.cellWidth / 3, this.cellHeight * row + this.cellHeight / 3,
+					this.cellWidth / 4, this.cellHeight / 4);
 		}
 
-		g.setColor(Color.magenta);
+		/*
+		 * Draw the shortest path to car, if present.
+		 */
+		g.setColor(Color.cyan);
 		for (int i = 0; i < this.shortestPathToCar.size(); i++) {
 			Vertex node = shortestPathToCar.get(i);
 			int row = node.getInfo().getPosition().getRow();
 			int column = node.getInfo().getPosition().getColumn();
 
-			g.fillOval(this.cellWidth * column + OFFSET + this.cellWidth / 3,
-					this.cellHeight * row + OFFSET + this.cellHeight / 3, this.cellWidth / 4 - OFFSET,
-					this.cellHeight / 4 - OFFSET);
+			g.fillOval(this.cellWidth * column + this.cellWidth / 3, this.cellHeight * row + this.cellHeight / 3,
+					this.cellWidth / 4, this.cellHeight / 4);
 		}
 
+		/*
+		 * Draw the user.
+		 */
 		int userRow = this.storage.getUserPosition().getRow();
 		int userColumn = this.storage.getUserPosition().getColumn();
 		g.setColor(Color.WHITE);
@@ -168,6 +130,9 @@ public class MapViewer extends JPanel {
 
 	}
 
+	/**
+	 * Resize the grid to fit the panel.
+	 */
 	private void setUpDimensions() {
 		int gridWidth = storage.getWorldColumns() + 1;
 		int gridHeight = storage.getWorldRows() + 1;
@@ -179,11 +144,23 @@ public class MapViewer extends JPanel {
 		this.cellHeight = (int) (panelSize.getHeight() / gridHeight);
 	}
 
+	/**
+	 * Set the nearest park path, that will eventually be drawn.
+	 * 
+	 * @param path
+	 *            a list of vertex
+	 */
 	public void setNearestParkPath(List<Vertex> path) {
 		this.nearestParkPath = path;
 
 	}
 
+	/**
+	 * Set the shortest path to a parked car. It will eventually be drawn.
+	 * 
+	 * @param path
+	 *            a list of vertex
+	 */
 	public void setShortestPathToCar(List<Vertex> path) {
 		this.shortestPathToCar = path;
 

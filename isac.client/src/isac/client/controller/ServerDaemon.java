@@ -13,19 +13,16 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
 import isac.client.model.Storage;
-import isac.core.log.ILogger;
 import isac.core.log.Logger;
 import isac.core.sharedknowledge.R;
 
 public class ServerDaemon {
 
 	private Channel channel;
-	private ILogger gLog;
 	private String queueName;
 
-	public ServerDaemon(ILogger gLog) {
+	public ServerDaemon() {
 		Logger.getInstance().info("started");
-		this.gLog = gLog;
 		this.setupRabbitMQ();
 		this.requestParkInfo();
 	}
@@ -73,7 +70,7 @@ public class ServerDaemon {
 					byte[] body) throws IOException {
 
 				long time = new Date().getTime();
-				Storage.getInstance().setLastServerHeartbeat(time);
+				Storage.getInstance().setServerHeartbeat(time);
 
 			}
 

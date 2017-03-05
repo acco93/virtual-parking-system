@@ -1,11 +1,8 @@
 package isac.client.view;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -15,13 +12,17 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
-import isac.client.controller.EnvironmentInteraction;
 import isac.client.listeners.UserListener;
-import isac.client.model.Storage;
 import isac.core.datastructures.Vertex;
 import isac.core.log.ILogger;
-import isac.core.log.Logger;
 
+/**
+ * 
+ * Client user interface.
+ * 
+ * @author acco
+ *
+ */
 public class UserInterface extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -38,6 +39,9 @@ public class UserInterface extends JFrame {
 
 		this.addKeyListener(userListener);
 
+		/*
+		 * To allow key detection.
+		 */
 		this.setFocusable(true);
 
 		this.setLayout(new BorderLayout());
@@ -54,6 +58,7 @@ public class UserInterface extends JFrame {
 		mapViewer = new MapViewer();
 		tabbedPane.addTab("Map", mapViewer);
 
+		// that's horrible ...
 		JLabel helpLabel = new JLabel("<html> HELP: use <b>W</b>, <b>A</b>, <b>S</b>, <b>D</b> to move,"
 				+ " <b>N</b> to find the nearest parking, <b>P</b> to park,"
 				+ " <b>R</b> to remove a previously parked car and <b>L</b> to"
@@ -71,33 +76,59 @@ public class UserInterface extends JFrame {
 
 	}
 
+	/**
+	 * Change the user interface status label.
+	 * 
+	 * @param string
+	 *            a message
+	 */
 	public void setStatusLabel(String string) {
 		this.statusLabel.setText(string);
 	}
 
+	/**
+	 * Returns an ILogger implementation.
+	 * 
+	 * @return graphical logger
+	 */
 	public ILogger getGraphicalLogger() {
 		return this.logViewer;
 
 	}
 
+	/**
+	 * Set the nearest park path, that will eventually be drawn.
+	 * 
+	 * @param path
+	 *            a list of vertex
+	 */
 	public void setNearestParkPath(List<Vertex> path) {
 
 		this.mapViewer.setNearestParkPath(path);
-		
+
 		this.repaintMap();
 
 	}
 
+	/**
+	 * Ask to repaint the map.
+	 */
 	public void repaintMap() {
 		SwingUtilities.invokeLater(() -> {
 			this.mapViewer.repaint();
 		});
 	}
 
+	/**
+	 * Set the shortest path to a parked car. It will eventually be drawn.
+	 * 
+	 * @param path
+	 *            a list of vertex
+	 */
 	public void setShortestPathToCar(List<Vertex> path) {
 		this.mapViewer.setShortestPathToCar(path);
 		this.repaintMap();
-		
+
 	}
 
 }
