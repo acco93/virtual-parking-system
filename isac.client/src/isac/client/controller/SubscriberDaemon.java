@@ -20,6 +20,7 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
 import isac.client.model.Storage;
+import isac.client.utils.ClientUtils;
 import isac.core.data.InfoType;
 import isac.core.data.Position;
 import isac.core.data.SensorRepresentation;
@@ -38,10 +39,10 @@ public class SubscriberDaemon {
 	private Channel channel;
 	private String queueName;
 	private ILogger gLog;
-	private Client client;
+	private ClientUtils utils;
 
-	public SubscriberDaemon(Client client, ILogger gLog) {
-		this.client = client;
+	public SubscriberDaemon(ClientUtils utils, ILogger gLog) {
+		this.utils = utils;
 		this.gLog = gLog;
 
 		Logger.getInstance().info("started");
@@ -84,7 +85,7 @@ public class SubscriberDaemon {
 				HashMap<String, SensorRepresentation> sensors = gson.fromJson(message, type);
 				updateMaxPosition(sensors);
 				rebuildMap(sensors);
-				client.repaintMap();
+				utils.repaintMap();
 			}
 
 		};

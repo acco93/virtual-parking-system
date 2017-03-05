@@ -12,7 +12,6 @@ import javax.swing.SwingUtilities;
 import isac.core.data.InfoType;
 import isac.core.data.Position;
 import isac.core.data.SensorRepresentation;
-import isac.core.data.StreetRepresentation;
 import isac.core.datastructures.Graph;
 import isac.core.datastructures.Vertex;
 import isac.core.sharedknowledge.R;
@@ -123,7 +122,7 @@ public class GraphViewer extends JPanel {
 
 			} else {
 				// street
-				StreetRepresentation street = (StreetRepresentation) vertex.getInfo();
+				//StreetRepresentation street = (StreetRepresentation) vertex.getInfo();
 				g.setColor(Color.WHITE);
 
 				g.fillOval(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET, this.cellWidth - OFFSET,

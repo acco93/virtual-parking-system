@@ -19,7 +19,6 @@ import isac.core.data.EnvironmentMessage;
 import isac.core.log.Logger;
 import isac.core.sharedknowledge.R;
 import isac.environment.sensor.ParkingSensor;
-import isac.environment.sensor.ParkingSensorController;
 
 public class EnvironmentDaemon extends EventLoop<EnvironmentMessage> {
 

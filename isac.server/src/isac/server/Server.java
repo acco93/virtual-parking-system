@@ -15,7 +15,6 @@ public class Server extends ActiveEntity {
 
 	private SensorHandler sensorsHandler;
 	private RequestsHandler requestsHandler;
-	private ServerUserInterface ui;
 	private PublisherDaemon publisherDaemon;
 	private OnlineDaemon onlineDaemon;
 
@@ -28,7 +27,8 @@ public class Server extends ActiveEntity {
 		this.sensorsHandler = new SensorHandler(this.publisherDaemon);
 		this.requestsHandler = new RequestsHandler(this.publisherDaemon);
 
-		this.ui = new ServerUserInterface();
+		@SuppressWarnings("unused")
+		ServerUserInterface ui = new ServerUserInterface();
 	}
 
 	@Override

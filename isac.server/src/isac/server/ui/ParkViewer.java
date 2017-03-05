@@ -5,16 +5,12 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import isac.core.data.SensorRepresentation;
-import isac.core.sharedknowledge.R;
 import isac.server.Storage;
 
 public class ParkViewer extends JPanel {

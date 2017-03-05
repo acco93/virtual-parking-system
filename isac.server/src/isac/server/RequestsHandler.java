@@ -48,7 +48,7 @@ public class RequestsHandler extends EventLoop<Boolean> {
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 					byte[] body) throws IOException {
 
-				String message = new String(body, "UTF-8");
+				//String message = new String(body, "UTF-8");
 
 				
 

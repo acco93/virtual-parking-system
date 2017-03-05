@@ -1,6 +1,5 @@
 package isac.core.datastructures;
 
-import java.io.Serializable;
 import java.util.List;
 
 import isac.core.data.Position;

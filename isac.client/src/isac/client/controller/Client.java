@@ -1,12 +1,9 @@
 package isac.client.controller;
 
-import java.util.List;
-
 import isac.client.listeners.UserListener;
 import isac.client.utils.ClientUtils;
 import isac.client.view.UserInterface;
 import isac.core.constructs.ActiveEntity;
-import isac.core.datastructures.Vertex;
 import isac.core.log.ILogger;
 
 /**
@@ -34,11 +31,11 @@ public class Client extends ActiveEntity {
 
 		ILogger gLog = this.ui.getGraphicalLogger();
 
-		this.subscriberDaemon = new SubscriberDaemon(this, gLog);
-		this.serverDaemon = new ServerDaemon();
-		this.serverChecker = new ServerChecker(this, gLog);
+		this.utils = new ClientUtils(this.ui);
 
-		this.utils = ClientUtils.getInstance();
+		this.subscriberDaemon = new SubscriberDaemon(utils, gLog);
+		this.serverDaemon = new ServerDaemon();
+		this.serverChecker = new ServerChecker(this);
 
 	}
 
@@ -64,7 +61,6 @@ public class Client extends ActiveEntity {
 	 */
 	public void moveLeft() {
 		utils.moveLeft();
-		this.repaintMap();
 	}
 
 	/**
@@ -72,7 +68,6 @@ public class Client extends ActiveEntity {
 	 */
 	public void moveRight() {
 		utils.moveRight();
-		this.repaintMap();
 	}
 
 	/**
@@ -80,7 +75,6 @@ public class Client extends ActiveEntity {
 	 */
 	public void moveUp() {
 		utils.moveUp();
-		this.repaintMap();
 	}
 
 	/**
@@ -88,7 +82,6 @@ public class Client extends ActiveEntity {
 	 */
 	public void moveDown() {
 		utils.moveDown();
-		this.repaintMap();
 	}
 
 	/**
@@ -96,7 +89,6 @@ public class Client extends ActiveEntity {
 	 */
 	public void park() {
 		utils.park();
-		this.repaintMap();
 	}
 
 	/**
@@ -104,29 +96,20 @@ public class Client extends ActiveEntity {
 	 */
 	public void removeCar() {
 		utils.removeCar();
-		this.repaintMap();
 	}
 
 	/**
 	 * Search for a free near parking place.
 	 */
 	public void searchPark() {
-		List<Vertex> path = utils.searchPark();
-		this.ui.setNearestParkPath(path);
-		this.repaintMap();
+		utils.searchPark();
 	}
 
 	/**
 	 * Locate a previously parked car.
 	 */
 	public void locateCar() {
-		List<Vertex> path = utils.locateCar();
-		this.ui.setNearestParkPath(path);
-		this.repaintMap();
-	}
-
-	public void repaintMap() {
-		this.ui.repaintMap();
+		utils.locateCar();
 	}
 
 }

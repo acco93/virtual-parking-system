@@ -8,6 +8,7 @@ import acco.isac.algorithms.DijkstraAlgorithm;
 import acco.isac.algorithms.NearestFreePark;
 import isac.client.controller.EnvironmentInteraction;
 import isac.client.model.Storage;
+import isac.client.view.UserInterface;
 import isac.core.data.InfoType;
 import isac.core.data.Position;
 import isac.core.data.SensorRepresentation;
@@ -23,13 +24,16 @@ import isac.core.datastructures.Vertex;
  */
 public class ClientUtils {
 
-	private static ClientUtils instance = new ClientUtils();
 	private Storage storage;
 	private boolean isSearchingNearestPark;
 	private boolean isLocatingCar;
 	private EnvironmentInteraction envInteraction;
+	private UserInterface ui;
 
-	private ClientUtils() {
+	public ClientUtils(UserInterface ui) {
+
+		this.ui = ui;
+
 		this.storage = Storage.getInstance();
 		/*
 		 * Not searching for a free park at the beginning
@@ -43,10 +47,6 @@ public class ClientUtils {
 		 * Environment interaction "simulator"
 		 */
 		this.envInteraction = new EnvironmentInteraction();
-	}
-
-	public static ClientUtils getInstance() {
-		return instance;
 	}
 
 	/**
@@ -97,7 +97,14 @@ public class ClientUtils {
 			int c = this.storage.getUserPosition().getColumn();
 
 			this.storage.setCarPosition(Optional.of(new Position(r, c)));
+
+			if (this.isSearchingNearestPark) {
+				// turn off the search
+				this.searchPark();
+			}
 		}
+
+		this.ui.repaintMap();
 
 	}
 
@@ -112,7 +119,14 @@ public class ClientUtils {
 			this.storage.setCarPosition(Optional.empty());
 			envInteraction.remove(this.storage.getUserPosition());
 
+			if (this.isLocatingCar) {
+				// turn off the search
+				this.locateCar();
+			}
+
 		}
+
+		this.ui.repaintMap();
 
 	}
 
@@ -121,7 +135,7 @@ public class ClientUtils {
 	 * 
 	 * @return the path to a free park.
 	 */
-	public List<Vertex> searchPark() {
+	public void searchPark() {
 
 		if (!this.isSearchingNearestPark) {
 			this.isSearchingNearestPark = true;
@@ -130,6 +144,8 @@ public class ClientUtils {
 			this.isSearchingNearestPark = false;
 			this.ui.setNearestParkPath(new LinkedList<>());
 		}
+
+		this.ui.repaintMap();
 
 	}
 
@@ -145,13 +161,9 @@ public class ClientUtils {
 	 * 
 	 * @return the path to the car
 	 */
-	public List<Vertex> locateCar() {
+	public void locateCar() {
 
-		if (!this.storage.getCarPosition().isPresent()) {
-			return;
-		}
-
-		if (!this.isLocatingCar) {
+		if (!this.isLocatingCar && this.storage.getCarPosition().isPresent()) {
 			this.isLocatingCar = true;
 			this.locateCarProcedure();
 		} else {
@@ -159,14 +171,17 @@ public class ClientUtils {
 			this.ui.setShortestPathToCar(new LinkedList<>());
 		}
 
+		this.ui.repaintMap();
+
 	}
 
 	private void locateCarProcedure() {
-		Graph map = this.storage.getMap();
 
+		Graph map = this.storage.getMap();
 		DijkstraAlgorithm da = new DijkstraAlgorithm(map, map.getVertexFromPosition(this.storage.getUserPosition()));
 		List<Vertex> path = da.getPath(map.getVertexFromPosition(this.storage.getCarPosition().get()));
 		this.ui.setShortestPathToCar(path);
+
 	}
 
 	private void generalMove(int row, int column) {
@@ -191,6 +206,8 @@ public class ClientUtils {
 			this.locateCarProcedure();
 		}
 
+		this.ui.repaintMap();
+
 	}
 
 	private int userRow() {
@@ -199,5 +216,9 @@ public class ClientUtils {
 
 	private int userColumn() {
 		return storage.getUserPosition().getColumn();
+	}
+
+	public void repaintMap() {
+		this.ui.repaintMap();
 	}
 }
