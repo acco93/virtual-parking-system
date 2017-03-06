@@ -19,6 +19,8 @@ public class R {
 	 */
 	public static int ENV_ROWS = 0;
 
+	
+
 	/**
 	 * Parking server queue name.
 	 */
@@ -47,4 +49,10 @@ public class R {
 
 	public static final String ENVIRONMENT_CHANNEL = "environmentChannel";
 
+	public static final String LOCAL_INTERACTIONS_CHANNEL = "localInteractionsChannel";
+
+	public static final String INTERNAL_REQUESTS_CHANNEL = "internalRequestsChannel";
+
+	public static final String INTERNAL_REPLIES_CHANNEL = "internalRepliesChannel";
+	
 }

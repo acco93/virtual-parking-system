@@ -7,11 +7,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import isac.core.constructs.EventLoop;
 import isac.core.data.InfoType;
 import isac.core.data.Position;
-import isac.core.data.SensorMessage;
 import isac.core.data.SensorRepresentation;
 import isac.core.data.StreetRepresentation;
 import isac.core.datastructures.Graph;
 import isac.core.datastructures.Vertex;
+import isac.core.message.SensorMessage;
 
 public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 

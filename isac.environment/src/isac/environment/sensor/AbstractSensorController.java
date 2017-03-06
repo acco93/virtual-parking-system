@@ -49,7 +49,7 @@ public abstract class AbstractSensorController extends ActiveEntity {
 			this.send(processedValue);
 
 			if (random.nextDouble() <= this.serviceDisruptionProbability) {
-				this.working = false;
+				// this.working = false;
 			}
 
 		}

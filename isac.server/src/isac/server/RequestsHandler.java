@@ -42,15 +42,13 @@ public class RequestsHandler extends EventLoop<Boolean> {
 
 			e.printStackTrace();
 		}
-		
+
 		Consumer consumer = new DefaultConsumer(channel) {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 					byte[] body) throws IOException {
 
-				//String message = new String(body, "UTF-8");
-
-				
+				// String message = new String(body, "UTF-8");
 
 				append(true);
 
@@ -67,15 +65,11 @@ public class RequestsHandler extends EventLoop<Boolean> {
 
 		Logger.getInstance().info("waiting for client messages ...");
 
-		
-		
 	}
-
 
 	@Override
 	protected void process(Boolean event) {
 
-		System.out.println("qua");
 		this.publisherDaemon.notifyClients();
 
 	}

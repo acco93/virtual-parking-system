@@ -1,7 +1,6 @@
-package isac.environment;
+package isac.environment.sensor;
 
 import java.io.IOException;
-import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
 import com.google.gson.Gson;
@@ -15,20 +14,22 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
 import isac.core.constructs.EventLoop;
-import isac.core.log.Logger;
-import isac.core.message.EnvironmentMessage;
+import isac.core.message.InternalRequest;
 import isac.core.sharedknowledge.R;
-import isac.environment.sensor.ParkingSensor;
 
-public class EnvironmentDaemon extends EventLoop<EnvironmentMessage> {
+public class InternalRequestHandler extends EventLoop<InternalRequest> {
 
+	private LocalInteractionProcessor localInteractionProcessor;
 	private Channel channel;
+	private String queueName;
 
-	public EnvironmentDaemon() {
+	public InternalRequestHandler(LocalInteractionProcessor localInteractionProcessor) {
+		this.localInteractionProcessor = localInteractionProcessor;
 		this.setupRabbitMQ();
 	}
 
 	private void setupRabbitMQ() {
+
 		try {
 			ConnectionFactory factory = new ConnectionFactory();
 			factory.setHost("localhost");
@@ -36,10 +37,10 @@ public class EnvironmentDaemon extends EventLoop<EnvironmentMessage> {
 			connection = factory.newConnection();
 			channel = connection.createChannel();
 
-			channel.queueDeclare(R.ENVIRONMENT_CHANNEL, false, false, false, null);
-
+			channel.exchangeDeclare(R.INTERNAL_REQUESTS_CHANNEL, "fanout");
+			queueName = channel.queueDeclare().getQueue();
+			channel.queueBind(queueName, R.INTERNAL_REQUESTS_CHANNEL, "");
 		} catch (IOException | TimeoutException e) {
-
 			e.printStackTrace();
 		}
 
@@ -47,44 +48,43 @@ public class EnvironmentDaemon extends EventLoop<EnvironmentMessage> {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 					byte[] body) throws IOException {
-
+				
 				String message = new String(body, "UTF-8");
 				Gson gson = new GsonBuilder().create();
-				EnvironmentMessage envMessage = gson.fromJson(message, EnvironmentMessage.class);
-				append(envMessage);
+				InternalRequest iRequest = gson.fromJson(message, InternalRequest.class);
+				append(iRequest);
+				
 			}
 
 		};
 
-		// Register to it
 		try {
-			channel.basicConsume(R.ENVIRONMENT_CHANNEL, true, consumer);
+			channel.basicConsume(this.queueName, true, consumer);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		Logger.getInstance().info("waiting for client messages ...");
-
 	}
 
 	@Override
-	protected void process(EnvironmentMessage message) {
-
-		if (message.isPark()) {
-			Environment.getInstance().setCar(message.getPosition());
-		} else {
-			Environment.getInstance().removeCar(message.getPosition());
-		}
-
-		int row = message.getPosition().getRow();
-		int column = message.getPosition().getColumn();
-
-		Optional<IEnvironmentElement> elem = Environment.getInstance().getSensorsLayer()[row][column].getElement();
-
-		elem.ifPresent((e) -> {
-			((ParkingSensor) e).wake();
-		});
-
+	protected void process(InternalRequest iRequest) {
+		System.out.println("qua");
+		this.localInteractionProcessor.process(iRequest);
 	}
 
+	public void spread(InternalRequest iRequest) {
+		
+		System.out.println("Spreading ...");
+		
+		try {
+
+			Gson gson = new GsonBuilder().create();
+
+			String json = gson.toJson(iRequest);
+
+			channel.basicPublish(R.INTERNAL_REQUESTS_CHANNEL, "", null, json.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

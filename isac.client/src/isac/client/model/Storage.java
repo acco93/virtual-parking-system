@@ -23,6 +23,7 @@ public class Storage {
 	private int worldColumns;
 	private int worldRows;
 	private long serverHeartbeat;
+	private boolean serverOn;
 
 	private Storage() {
 		this.carPosition = Optional.empty();
@@ -158,6 +159,14 @@ public class Storage {
 	public synchronized long getServerHeartbeat() {
 		return this.serverHeartbeat;
 
+	}
+
+	public void setServerOn(boolean isOn){
+		this.serverOn = isOn;
+	}
+	
+	public boolean isServerOn() {
+		return this.serverOn;
 	}
 
 }

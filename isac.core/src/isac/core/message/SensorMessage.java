@@ -1,4 +1,6 @@
-package isac.core.data;
+package isac.core.message;
+
+import isac.core.data.Position;
 
 public class SensorMessage {
 

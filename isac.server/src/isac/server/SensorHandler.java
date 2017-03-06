@@ -13,8 +13,8 @@ import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
-import isac.core.data.SensorMessage;
 import isac.core.log.Logger;
+import isac.core.message.SensorMessage;
 import isac.core.sharedknowledge.R;
 
 public class SensorHandler {
@@ -65,6 +65,8 @@ public class SensorHandler {
 				Gson gson = new GsonBuilder().create();
 				SensorMessage msg = gson.fromJson(message, SensorMessage.class);
 
+				System.out.println(message);
+				
 				msgProcessor.appendSensorMessage(msg);
 
 			}

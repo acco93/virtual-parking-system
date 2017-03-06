@@ -1,4 +1,4 @@
-package isac.client.controller;
+package isac.environment.sensor;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -9,22 +9,23 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-import isac.core.data.Position;
-import isac.core.message.EnvironmentMessage;
-import isac.core.sharedknowledge.R;
+import isac.core.message.InternalReply;
+import isac.core.message.LocalReply;
 
-public class EnvironmentInteraction {
+public class AdHocCustomerHandler {
 
 	private Channel channel;
+	private String replyChannelName;
 
-	public EnvironmentInteraction() {
+	public AdHocCustomerHandler(String replyChannelName) {
+
+		this.replyChannelName = replyChannelName;
 
 		this.setupRabbitMQ();
 
 	}
 
 	private void setupRabbitMQ() {
-
 		try {
 
 			ConnectionFactory factory = new ConnectionFactory();
@@ -32,33 +33,34 @@ public class EnvironmentInteraction {
 			Connection connection;
 			connection = factory.newConnection();
 			channel = connection.createChannel();
-			channel.queueDeclare(R.CLIENT_TO_SERVER_QUEUE, false, false, false, null);
+			channel.queueDeclare(this.replyChannelName, false, false, false, null);
 
 		} catch (IOException | TimeoutException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
-	public void park(Position position) {
-		this.messageToEnvironment(position, true);
-	}
+	public void send(InternalReply iReply) {
 
-	public void remove(Position position) {
-		this.messageToEnvironment(position, false);
-	}
+		LocalReply reply = this.translateReply(iReply);
 
-	private void messageToEnvironment(Position position, boolean park) {
-		EnvironmentMessage msg = new EnvironmentMessage(position, park);
 		Gson gson = new GsonBuilder().create();
-		String json = gson.toJson(msg);
-
+		String json = gson.toJson(reply);
 		try {
-			channel.basicPublish("", R.ENVIRONMENT_CHANNEL, null, json.getBytes());
+			channel.basicPublish("", this.replyChannelName, null, json.getBytes());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+	}
+
+	private LocalReply translateReply(InternalReply iReply) {
+
+		LocalReply reply = new LocalReply(iReply);
+
+		return reply;
 	}
 
 }

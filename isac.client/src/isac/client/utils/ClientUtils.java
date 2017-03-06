@@ -7,6 +7,7 @@ import java.util.Optional;
 import acco.isac.algorithms.DijkstraAlgorithm;
 import acco.isac.algorithms.NearestFreePark;
 import isac.client.controller.EnvironmentInteraction;
+import isac.client.controller.LocalInteraction;
 import isac.client.model.Storage;
 import isac.client.view.UserInterface;
 import isac.core.data.InfoType;
@@ -29,6 +30,7 @@ public class ClientUtils {
 	private boolean isLocatingCar;
 	private EnvironmentInteraction envInteraction;
 	private UserInterface ui;
+	private LocalInteraction localInteraction;
 
 	public ClientUtils(UserInterface ui) {
 
@@ -47,6 +49,8 @@ public class ClientUtils {
 		 * Environment interaction "simulator"
 		 */
 		this.envInteraction = new EnvironmentInteraction();
+		
+		this.localInteraction = new LocalInteraction(this.ui);
 	}
 
 	/**
@@ -84,10 +88,10 @@ public class ClientUtils {
 
 		boolean alreadyParked = this.storage.getCarPosition().isPresent();
 		Position userPosition = this.storage.getUserPosition();
-		Vertex vertex = this.storage.getMap().getVertexFromPosition(userPosition);
-		InfoType blockType = vertex.getInfo().getType();
+		// Vertex vertex = this.storage.getMap().getVertexFromPosition(userPosition);
+		// InfoType blockType = vertex.getInfo().getType();
 
-		if (!alreadyParked && blockType == InfoType.SENSOR && ((SensorRepresentation) vertex.getInfo()).isFree()) {
+		if (!alreadyParked) {
 
 			// please park in parking place <.<
 
@@ -150,10 +154,18 @@ public class ClientUtils {
 	}
 
 	private void searchParkProcedure() {
-		Graph map = this.storage.getMap();
-		NearestFreePark nfp = new NearestFreePark(map, map.getVertexFromPosition(this.storage.getUserPosition()));
-		List<Vertex> path = nfp.find();
-		this.ui.setNearestParkPath(path);
+
+		if (this.storage.isServerOn()) {
+			// if the server is on
+			Graph map = this.storage.getMap();
+			NearestFreePark nfp = new NearestFreePark(map, map.getVertexFromPosition(this.storage.getUserPosition()));
+			List<Vertex> path = nfp.find();
+			this.ui.setNearestParkPath(path);
+		} else {
+			// otherwise try to use some local info
+			this.localInteraction.searchNearFreePark();
+			
+		}
 	}
 
 	/**
@@ -186,12 +198,8 @@ public class ClientUtils {
 
 	private void generalMove(int row, int column) {
 
-		int worldRow = this.storage.getWorldRows();
-		int worldColumns = this.storage.getWorldColumns();
-
-		if (row < 0 || row > worldRow || column < 0 || column > worldColumns) {
-			return;
-		}
+		// int worldRow = this.storage.getWorldRows();
+		// int worldColumns = this.storage.getWorldColumns();
 
 		Position newPosition = new Position(row, column);
 

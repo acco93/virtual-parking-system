@@ -1,7 +1,6 @@
-package isac.environment;
+package isac.environment.sensor;
 
 import java.io.IOException;
-import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
 import com.google.gson.Gson;
@@ -15,20 +14,26 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
 import isac.core.constructs.EventLoop;
+import isac.core.data.Position;
 import isac.core.log.Logger;
-import isac.core.message.EnvironmentMessage;
+import isac.core.message.LocalRequest;
 import isac.core.sharedknowledge.R;
-import isac.environment.sensor.ParkingSensor;
 
-public class EnvironmentDaemon extends EventLoop<EnvironmentMessage> {
+public class LocalInteractionHandler extends EventLoop<LocalRequest> {
 
 	private Channel channel;
+	private ParkingSensor sensor;
+	private LocalInteractionProcessor localInteractionProcessor;
+	private String queueName;
 
-	public EnvironmentDaemon() {
+	public LocalInteractionHandler(ParkingSensor sensor) {
+		this.sensor = sensor;
+		this.localInteractionProcessor = new LocalInteractionProcessor(this.sensor);
 		this.setupRabbitMQ();
 	}
 
 	private void setupRabbitMQ() {
+
 		try {
 			ConnectionFactory factory = new ConnectionFactory();
 			factory.setHost("localhost");
@@ -36,10 +41,10 @@ public class EnvironmentDaemon extends EventLoop<EnvironmentMessage> {
 			connection = factory.newConnection();
 			channel = connection.createChannel();
 
-			channel.queueDeclare(R.ENVIRONMENT_CHANNEL, false, false, false, null);
-
+			channel.exchangeDeclare(R.LOCAL_INTERACTIONS_CHANNEL, "fanout");
+			queueName = channel.queueDeclare().getQueue();
+			channel.queueBind(queueName, R.LOCAL_INTERACTIONS_CHANNEL, "");
 		} catch (IOException | TimeoutException e) {
-
 			e.printStackTrace();
 		}
 
@@ -50,15 +55,15 @@ public class EnvironmentDaemon extends EventLoop<EnvironmentMessage> {
 
 				String message = new String(body, "UTF-8");
 				Gson gson = new GsonBuilder().create();
-				EnvironmentMessage envMessage = gson.fromJson(message, EnvironmentMessage.class);
-				append(envMessage);
+				LocalRequest request = gson.fromJson(message, LocalRequest.class);
+				append(request);
 			}
 
 		};
 
 		// Register to it
 		try {
-			channel.basicConsume(R.ENVIRONMENT_CHANNEL, true, consumer);
+			channel.basicConsume(this.queueName, true, consumer);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -68,22 +73,20 @@ public class EnvironmentDaemon extends EventLoop<EnvironmentMessage> {
 	}
 
 	@Override
-	protected void process(EnvironmentMessage message) {
+	protected void process(LocalRequest request) {
 
-		if (message.isPark()) {
-			Environment.getInstance().setCar(message.getPosition());
-		} else {
-			Environment.getInstance().removeCar(message.getPosition());
+		Position sensorPosition = this.sensor.getPosition();
+		Position requestPosition = request.getPosition();
+		// discard too distante requests
+		int manhattanDistance = Math.abs(sensorPosition.getRow() - requestPosition.getRow())
+				+ Math.abs(sensorPosition.getColumn() - requestPosition.getColumn());
+
+		if (manhattanDistance > 1) {
+			return;
 		}
 
-		int row = message.getPosition().getRow();
-		int column = message.getPosition().getColumn();
-
-		Optional<IEnvironmentElement> elem = Environment.getInstance().getSensorsLayer()[row][column].getElement();
-
-		elem.ifPresent((e) -> {
-			((ParkingSensor) e).wake();
-		});
+		System.out.println("Request received from sensor " + this.sensor.getId());
+		this.localInteractionProcessor.process(request);
 
 	}
 

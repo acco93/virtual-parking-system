@@ -90,7 +90,13 @@ public class Environment {
 	public void setCar(Position position) {
 		int r = position.getRow();
 		int c = position.getColumn();
+
+		if (r < 0 || r > this.getRows() || c < 0 || c > this.getColumns()) {
+			return;
+		}
+
 		this.carsLayer[r][c] = true;
+		System.out.println("Parked in position "+r+" "+c);
 	}
 
 	public void removeCar(Position position) {

@@ -54,8 +54,6 @@ public class PublisherDaemon extends Thread {
 				Logger.getInstance().error(e.getMessage());
 			}
 
-			System.out.println("publishing");
-			
 			this.publish();
 
 		}
