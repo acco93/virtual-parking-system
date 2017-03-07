@@ -32,16 +32,23 @@ public class MapViewer extends JPanel {
 	private int cellHeight;
 	private List<Vertex> nearestParkPath;
 	private List<Vertex> shortestPathToCar;
+	private String nearestParkPositionString;
+	private String carPositionString;
+	private String airDistanceString;
+	private String airPath;
 
 	public MapViewer() {
 
 		this.storage = Storage.getInstance();
 		/*
-		 * Init lists to avoid if in paint.
+		 * Initialize lists to avoid if in paint.
 		 */
 		this.nearestParkPath = new LinkedList<>();
 		this.shortestPathToCar = new LinkedList<>();
-
+		this.nearestParkPositionString = "";
+		this.carPositionString = "";
+		this.airDistanceString = "";
+		this.airPath = "";
 	}
 
 	@Override
@@ -51,6 +58,24 @@ public class MapViewer extends JPanel {
 
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+		if (this.storage.isServerOn()) {
+			drawMap(g);
+		} else {
+			displayInfo(g);
+		}
+
+	}
+
+	private void displayInfo(Graphics g) {
+
+		g.drawString("Your position: " + this.storage.getUserPosition(), 20, 20);
+		g.drawString("Nearest free park:" + this.nearestParkPositionString, 20, 40);
+		g.drawString("Car parked:" + this.carPositionString, 20, 60);
+		g.drawString("Air distance:" + this.airDistanceString, 20, 80);
+		g.drawString("Air path:" + this.airPath, 20, 100);
+	}
+
+	private void drawMap(Graphics g) {
 		this.setUpDimensions();
 
 		Graph map = this.storage.getMap();
@@ -127,7 +152,6 @@ public class MapViewer extends JPanel {
 		g.setColor(Color.WHITE);
 		g.fillOval(this.cellWidth * userColumn + this.cellWidth / 4, this.cellHeight * userRow + this.cellHeight / 4,
 				this.cellWidth - this.cellWidth / 2, this.cellHeight - this.cellHeight / 2);
-
 	}
 
 	/**
@@ -164,6 +188,22 @@ public class MapViewer extends JPanel {
 	public void setShortestPathToCar(List<Vertex> path) {
 		this.shortestPathToCar = path;
 
+	}
+
+	public void setNearestParkPositionString(String nearestParkPositionString) {
+		this.nearestParkPositionString = nearestParkPositionString;
+	}
+
+	public void setCarPositionString(String carPositionString) {
+		this.carPositionString = carPositionString;
+	}
+
+	public void setAirDistanceString(String airDistanceString) {
+		this.airDistanceString = airDistanceString;
+	}
+
+	public void setAirPath(String airPath) {
+		this.airPath = airPath;
 	}
 
 }

@@ -12,15 +12,26 @@ import com.rabbitmq.client.ConnectionFactory;
 import isac.core.message.InternalReply;
 import isac.core.message.LocalReply;
 
+/**
+ * 
+ * It represents the interaction medium to reply to the client once the reply to
+ * a local interaction request has been found. It is used just once and
+ * discarded.
+ * 
+ * @author acco
+ *
+ */
 public class AdHocCustomerHandler {
 
 	private Channel channel;
+	/*
+	 * The private reply channel name chosen by the client.
+	 */
 	private String replyChannelName;
 
 	public AdHocCustomerHandler(String replyChannelName) {
 
 		this.replyChannelName = replyChannelName;
-
 		this.setupRabbitMQ();
 
 	}
@@ -41,26 +52,37 @@ public class AdHocCustomerHandler {
 		}
 	}
 
+	/**
+	 * Send the reply to the client.
+	 * 
+	 * @param iReply
+	 *            the internal reply
+	 */
 	public void send(InternalReply iReply) {
 
 		LocalReply reply = this.translateReply(iReply);
 
 		Gson gson = new GsonBuilder().create();
 		String json = gson.toJson(reply);
+
 		try {
 			channel.basicPublish("", this.replyChannelName, null, json.getBytes());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
+	/**
+	 * Build a LocalReply from an InternalReply. Clients understand
+	 * LocalReply(s).
+	 * 
+	 * @param iReply
+	 *            the internal reply
+	 * @return the local reply
+	 */
 	private LocalReply translateReply(InternalReply iReply) {
-
-		LocalReply reply = new LocalReply(iReply);
-
-		return reply;
+		return new LocalReply(iReply);
 	}
 
 }

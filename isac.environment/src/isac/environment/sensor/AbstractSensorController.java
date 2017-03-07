@@ -14,13 +14,28 @@ import com.rabbitmq.client.ConnectionFactory;
 import isac.core.constructs.ActiveEntity;
 import isac.core.sharedknowledge.R;
 
+/**
+ * 
+ * Abstract class that defines the structure of a SensorController
+ * 
+ * @author acco
+ *
+ */
 public abstract class AbstractSensorController extends ActiveEntity {
 
+	/**
+	 * The sensor to server channel.
+	 */
 	private Channel channel;
+
 	private Random random;
+
 	private double serviceDisruptionProbability;
+
 	private boolean working;
+
 	private Condition condition;
+
 	private ReentrantLock lock;
 
 	public AbstractSensorController() {
@@ -49,6 +64,7 @@ public abstract class AbstractSensorController extends ActiveEntity {
 			this.send(processedValue);
 
 			if (random.nextDouble() <= this.serviceDisruptionProbability) {
+
 				// this.working = false;
 			}
 
@@ -88,6 +104,9 @@ public abstract class AbstractSensorController extends ActiveEntity {
 
 	}
 
+	/**
+	 * Wake the sensor.
+	 */
 	public void wake() {
 		lock.lock();
 		condition.signal();

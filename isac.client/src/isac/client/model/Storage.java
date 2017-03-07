@@ -34,6 +34,7 @@ public class Storage {
 		this.map = new Graph(new LinkedList<Vertex>());
 		this.worldColumns = 0;
 		this.worldRows = 0;
+		this.serverOn = false;
 	}
 
 	/**
@@ -161,11 +162,11 @@ public class Storage {
 
 	}
 
-	public void setServerOn(boolean isOn){
+	public synchronized void setServerOn(boolean isOn) {
 		this.serverOn = isOn;
 	}
-	
-	public boolean isServerOn() {
+
+	public synchronized boolean isServerOn() {
 		return this.serverOn;
 	}
 

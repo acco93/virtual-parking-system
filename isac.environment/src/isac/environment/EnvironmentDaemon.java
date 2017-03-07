@@ -15,11 +15,17 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
 import isac.core.constructs.EventLoop;
-import isac.core.log.Logger;
 import isac.core.message.EnvironmentMessage;
 import isac.core.sharedknowledge.R;
 import isac.environment.sensor.ParkingSensor;
 
+/**
+ * Daemon that handles the park/remove car interactions from the clients. This
+ * is to simulate the park occupation. It handles one request at a time.
+ * 
+ * @author acco
+ *
+ */
 public class EnvironmentDaemon extends EventLoop<EnvironmentMessage> {
 
 	private Channel channel;
@@ -56,14 +62,11 @@ public class EnvironmentDaemon extends EventLoop<EnvironmentMessage> {
 
 		};
 
-		// Register to it
 		try {
 			channel.basicConsume(R.ENVIRONMENT_CHANNEL, true, consumer);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		Logger.getInstance().info("waiting for client messages ...");
 
 	}
 
@@ -81,6 +84,9 @@ public class EnvironmentDaemon extends EventLoop<EnvironmentMessage> {
 
 		Optional<IEnvironmentElement> elem = Environment.getInstance().getSensorsLayer()[row][column].getElement();
 
+		/*
+		 * Wake the sensor to send the updated status.
+		 */
 		elem.ifPresent((e) -> {
 			((ParkingSensor) e).wake();
 		});

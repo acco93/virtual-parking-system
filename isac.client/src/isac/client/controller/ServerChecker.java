@@ -7,11 +7,12 @@ import isac.client.model.Storage;
 public class ServerChecker extends Thread {
 
 	private static final int MAX_SERVER_DELAY = 1500;
-	private boolean onLocalInteractions;
 	private Client client;
+	private Storage storage;
 
 	public ServerChecker(Client client) {
 		this.client = client;
+		this.storage = Storage.getInstance();
 	}
 
 	@Override
@@ -24,21 +25,17 @@ public class ServerChecker extends Thread {
 			long currentTime = new Date().getTime();
 
 			if (currentTime - time > MAX_SERVER_DELAY) {
-
-				if (!onLocalInteractions) {
-					onLocalInteractions = true;
-					this.client.setStatus("Server unreachable");
-				}
-
+				this.storage.setServerOn(false);
+				this.client.setStatus("Server unreachable");
+				
 			} else {
-
-				if (onLocalInteractions) {
-					onLocalInteractions = false;
-					this.client.setStatus("Server ON");
-				}
-
+				this.storage.setServerOn(true);
+				this.client.setStatus("Server ON");
+				
 			}
 
+			this.client.repaintMap();
+			
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {

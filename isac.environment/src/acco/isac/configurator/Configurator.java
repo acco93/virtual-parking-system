@@ -61,18 +61,18 @@ public class Configurator {
 
 		char letter = 'A';
 		int inc = 0;
-		
+
 		for (int i = 0; i < this.lineNumber; i++) {
 
 			for (int j = 0; j < this.lineDimension; j++) {
 
 				if (charMatrix[i][j] == 's') {
-					inc ++;
-					if(inc==10){
+					inc++;
+					if (inc == 10) {
 						letter++;
 						inc = 0;
 					}
-					ParkingSensor s = new ParkingSensor(i, j, ""+letter+""+inc);
+					ParkingSensor s = new ParkingSensor(i, j, Character.toString(letter) + "" + inc);
 					new ParkingSensorController(s).start();
 					boolean ok = Environment.getInstance().inject(s);
 
@@ -124,8 +124,8 @@ public class Configurator {
 					lineDimension = splittedLine.length;
 				} else if (lineDimension != splittedLine.length) {
 					// malformed file
-					Logger.getInstance().error("malformed file. Line " + lineNumber + " has " + splittedLine.length + " characters instead of "
-							+ lineDimension);
+					Logger.getInstance().error("malformed file. Line " + lineNumber + " has " + splittedLine.length
+							+ " characters instead of " + lineDimension);
 					System.exit(1);
 				}
 

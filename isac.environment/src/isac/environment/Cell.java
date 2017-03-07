@@ -40,20 +40,28 @@ public class Cell {
 		}
 
 	}
-	
-	public boolean isEmpty(){
+
+	/**
+	 * Return if there is something in the cell
+	 * 
+	 * @return true, if not empty
+	 */
+	public boolean isEmpty() {
 		return !this.element.isPresent();
 	}
 
-	public Optional<IEnvironmentElement> getElement(){
+	/**
+	 * Return the element.
+	 * 
+	 * @return the element
+	 */
+	public Optional<IEnvironmentElement> getElement() {
 		return this.element;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Cell [component=" + element + "]";
 	}
-	
-	
 
 }

@@ -17,10 +17,26 @@ import isac.core.constructs.EventLoop;
 import isac.core.message.InternalReply;
 import isac.core.sharedknowledge.R;
 
+/**
+ * 
+ * Daemon that handles internal replies in interactions with neighbors.
+ * 
+ * @author acco
+ *
+ */
 public class InternalReplyHandler extends EventLoop<InternalReply> {
 
+	/*
+	 * The message processor.
+	 */
 	private LocalInteractionProcessor localInteractionProcessor;
+	/*
+	 * The channel where are published internal replies.
+	 */
 	private Channel channel;
+	/*
+	 * The queue where are published internal replies.
+	 */
 	private String queueName;
 
 	public InternalReplyHandler(LocalInteractionProcessor localInteractionProcessor) {
@@ -28,6 +44,9 @@ public class InternalReplyHandler extends EventLoop<InternalReply> {
 		this.setupRabbitMQ();
 	}
 
+	/**
+	 * Setup some RabbitMQ settings ...
+	 */
 	private void setupRabbitMQ() {
 		try {
 			ConnectionFactory factory = new ConnectionFactory();
@@ -51,6 +70,9 @@ public class InternalReplyHandler extends EventLoop<InternalReply> {
 
 				Gson gson = new GsonBuilder().create();
 				InternalReply iReply = gson.fromJson(message, InternalReply.class);
+				/*
+				 * Process one reply at a time
+				 */
 				append(iReply);
 			}
 
@@ -64,22 +86,30 @@ public class InternalReplyHandler extends EventLoop<InternalReply> {
 
 	}
 
+	@Override
+	protected void process(InternalReply iReply) {
+		/*
+		 * Forward the reply to the processor.
+		 */
+		this.localInteractionProcessor.process(iReply);
+	}
+
+	/**
+	 * Publish the internal reply to the internal replies channel.
+	 * 
+	 * @param iReply
+	 *            the reply
+	 */
 	public void spread(InternalReply iReply) {
 		try {
 
 			Gson gson = new GsonBuilder().create();
-
 			String json = gson.toJson(iReply);
-
 			channel.basicPublish(R.INTERNAL_REPLIES_CHANNEL, "", null, json.getBytes());
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	@Override
-	protected void process(InternalReply iReply) {
-		this.localInteractionProcessor.process(iReply);
 	}
 
 }

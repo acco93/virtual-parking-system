@@ -15,10 +15,17 @@ import com.rabbitmq.client.Envelope;
 
 import isac.core.constructs.EventLoop;
 import isac.core.data.Position;
-import isac.core.log.Logger;
 import isac.core.message.LocalRequest;
 import isac.core.sharedknowledge.R;
 
+/**
+ * 
+ * Daemon that receives local messages from clients. It is implemented as
+ * EventLoop to process a message at a time.
+ * 
+ * @author acco
+ *
+ */
 public class LocalInteractionHandler extends EventLoop<LocalRequest> {
 
 	private Channel channel;
@@ -28,6 +35,10 @@ public class LocalInteractionHandler extends EventLoop<LocalRequest> {
 
 	public LocalInteractionHandler(ParkingSensor sensor) {
 		this.sensor = sensor;
+		/*
+		 * Setup a local interaction processor. It will process messages
+		 * received from clients and other sensors.
+		 */
 		this.localInteractionProcessor = new LocalInteractionProcessor(this.sensor);
 		this.setupRabbitMQ();
 	}
@@ -56,6 +67,9 @@ public class LocalInteractionHandler extends EventLoop<LocalRequest> {
 				String message = new String(body, "UTF-8");
 				Gson gson = new GsonBuilder().create();
 				LocalRequest request = gson.fromJson(message, LocalRequest.class);
+				/*
+				 * Process a message at a time.
+				 */
 				append(request);
 			}
 
@@ -68,8 +82,6 @@ public class LocalInteractionHandler extends EventLoop<LocalRequest> {
 			e.printStackTrace();
 		}
 
-		Logger.getInstance().info("waiting for client messages ...");
-
 	}
 
 	@Override
@@ -77,15 +89,26 @@ public class LocalInteractionHandler extends EventLoop<LocalRequest> {
 
 		Position sensorPosition = this.sensor.getPosition();
 		Position requestPosition = request.getPosition();
-		// discard too distante requests
+
+		/*
+		 * All sensors receives all (local) client messages since a
+		 * publish-subscribe schema is used. To simulate local interactions
+		 * discard messages that comes from too distant locations. Compute the
+		 * manhattan distance since we are working in a grid.
+		 */
 		int manhattanDistance = Math.abs(sensorPosition.getRow() - requestPosition.getRow())
 				+ Math.abs(sensorPosition.getColumn() - requestPosition.getColumn());
 
 		if (manhattanDistance > 1) {
+			/*
+			 * Discarded
+			 */
 			return;
 		}
 
-		System.out.println("Request received from sensor " + this.sensor.getId());
+		/*
+		 * Received
+		 */
 		this.localInteractionProcessor.process(request);
 
 	}

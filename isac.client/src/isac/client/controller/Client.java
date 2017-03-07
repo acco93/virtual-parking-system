@@ -112,4 +112,8 @@ public class Client extends ActiveEntity {
 		utils.locateCar();
 	}
 
+	public void repaintMap() {
+		this.ui.repaintMap();
+	}
+
 }

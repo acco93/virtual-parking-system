@@ -69,7 +69,7 @@ public class UserInterface extends JFrame {
 		this.add(helpLabel, BorderLayout.NORTH);
 
 		statusLabel = new JLabel("Connected to server", SwingConstants.CENTER);
-
+		
 		this.add(statusLabel, BorderLayout.SOUTH);
 
 		this.setVisible(true);
@@ -129,6 +129,25 @@ public class UserInterface extends JFrame {
 		this.mapViewer.setShortestPathToCar(path);
 		this.repaintMap();
 
+	}
+
+	public void setNearestParkPositionString(String nearestParkPositionString) {
+		this.mapViewer.setNearestParkPositionString(nearestParkPositionString);
+		this.repaintMap();
+	}
+
+	public void setCarPositionString(String carPositionString) {
+		this.mapViewer.setCarPositionString(carPositionString);
+		this.repaintMap();
+	}
+
+	public void setAirDistanceString(String airDistanceString) {
+		this.mapViewer.setAirDistanceString(airDistanceString);
+		this.repaintMap();
+	}
+
+	public void setAirPath(String airPath) {
+		this.mapViewer.setAirPath(airPath);
 	}
 
 }

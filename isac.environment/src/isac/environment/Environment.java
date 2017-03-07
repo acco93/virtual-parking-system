@@ -40,10 +40,19 @@ public class Environment {
 			}
 		}
 
+		/*
+		 * Start the daemon that receives park/remove car interactions from the
+		 * clients.
+		 */
 		new EnvironmentDaemon().start();
 
 	}
 
+	/**
+	 * Return the environment instance
+	 * 
+	 * @return the instance
+	 */
 	public static Environment getInstance() {
 		return Environment.instance;
 	}
@@ -71,34 +80,67 @@ public class Environment {
 		return this.sensorsLayer[row][column].inject(element);
 	}
 
+	/**
+	 * Return the world columns number.
+	 * 
+	 * @return columns number
+	 */
 	public int getColumns() {
 		return columns;
 	}
 
+	/**
+	 * Return the world rows number.
+	 * 
+	 * @return rows number
+	 */
 	public int getRows() {
 		return rows;
 	}
 
+	/**
+	 * Retrieve the sensor layer.
+	 * 
+	 * @return matrix sensor layer
+	 */
 	public Cell[][] getSensorsLayer() {
 		return sensorsLayer;
 	}
 
+	/**
+	 * Retrieve the car layer.
+	 * 
+	 * @return matrix car layer
+	 */
 	public boolean[][] getCarsLayer() {
 		return carsLayer;
 	}
 
+	/**
+	 * Occupy the given position with a car.
+	 * 
+	 * @param position
+	 *            the position
+	 */
 	public void setCar(Position position) {
 		int r = position.getRow();
 		int c = position.getColumn();
 
+		/*
+		 * Park in a feasible position.
+		 */
 		if (r < 0 || r > this.getRows() || c < 0 || c > this.getColumns()) {
 			return;
 		}
 
 		this.carsLayer[r][c] = true;
-		System.out.println("Parked in position "+r+" "+c);
 	}
 
+	/**
+	 * Free the place.
+	 * 
+	 * @param position
+	 */
 	public void removeCar(Position position) {
 		int r = position.getRow();
 		int c = position.getColumn();

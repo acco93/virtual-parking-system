@@ -17,10 +17,26 @@ import isac.core.constructs.EventLoop;
 import isac.core.message.InternalRequest;
 import isac.core.sharedknowledge.R;
 
+/**
+ * 
+ * Daemon that handles internal requests in interactions with neighbors.
+ * 
+ * @author acco
+ *
+ */
 public class InternalRequestHandler extends EventLoop<InternalRequest> {
 
+	/*
+	 * The message processor.
+	 */
 	private LocalInteractionProcessor localInteractionProcessor;
+	/*
+	 * The channel where are published internal requests.
+	 */
 	private Channel channel;
+	/*
+	 * The queue where are published internal requests.
+	 */
 	private String queueName;
 
 	public InternalRequestHandler(LocalInteractionProcessor localInteractionProcessor) {
@@ -28,6 +44,9 @@ public class InternalRequestHandler extends EventLoop<InternalRequest> {
 		this.setupRabbitMQ();
 	}
 
+	/**
+	 * Set up some RabbitMQ settings ...
+	 */
 	private void setupRabbitMQ() {
 
 		try {
@@ -48,12 +67,16 @@ public class InternalRequestHandler extends EventLoop<InternalRequest> {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 					byte[] body) throws IOException {
-				
+
 				String message = new String(body, "UTF-8");
 				Gson gson = new GsonBuilder().create();
 				InternalRequest iRequest = gson.fromJson(message, InternalRequest.class);
+				/*
+				 * Append the request to the event queue in order to process one
+				 * request at a time
+				 */
 				append(iRequest);
-				
+
 			}
 
 		};
@@ -68,18 +91,23 @@ public class InternalRequestHandler extends EventLoop<InternalRequest> {
 
 	@Override
 	protected void process(InternalRequest iRequest) {
-		System.out.println("qua");
+		/*
+		 * Forward the message to the processor.
+		 */
 		this.localInteractionProcessor.process(iRequest);
 	}
 
+	/**
+	 * Publish the internal request to the internal requests channel.
+	 * 
+	 * @param iRequest
+	 *            the request
+	 */
 	public void spread(InternalRequest iRequest) {
-		
-		System.out.println("Spreading ...");
-		
+
 		try {
 
 			Gson gson = new GsonBuilder().create();
-
 			String json = gson.toJson(iRequest);
 
 			channel.basicPublish(R.INTERNAL_REQUESTS_CHANNEL, "", null, json.getBytes());

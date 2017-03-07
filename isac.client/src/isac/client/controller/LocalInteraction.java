@@ -16,6 +16,7 @@ import com.rabbitmq.client.Envelope;
 
 import isac.client.model.Storage;
 import isac.client.view.UserInterface;
+import isac.core.data.Position;
 import isac.core.log.Logger;
 import isac.core.message.LocalReply;
 import isac.core.message.LocalRequest;
@@ -59,8 +60,56 @@ public class LocalInteraction {
 
 				String message = new String(body, "UTF-8");
 
-				System.out.println(message);
+				Gson gson = new GsonBuilder().create();
+				LocalReply reply = gson.fromJson(message, LocalReply.class);
 
+				ui.setAirDistanceString("" + reply.getHops());
+				ui.setNearestParkPositionString("" + reply.getDestination());
+
+				String airPath = computeAirPath(Storage.getInstance().getUserPosition(), reply.getDestination());
+
+				ui.setAirPath("Estimated air path: " + airPath);
+			}
+
+			private String computeAirPath(Position source, Position destination) {
+
+				boolean toRight = false;
+				boolean toBottom = false;
+
+				int xSteps = source.getColumn() - destination.getColumn();
+				int ySteps = source.getRow() - destination.getRow();
+
+				if (xSteps < 0) {
+					toRight = true;
+				}
+
+				if (ySteps < 0) {
+					toBottom = true;
+				}
+
+				String path = "";
+
+				for (int i = 0; i < Math.abs(xSteps); i++) {
+					if (toRight) {
+						path += "right ";
+					} else {
+						path += "left ";
+					}
+				}
+
+				for (int i = 0; i < Math.abs(ySteps); i++) {
+					if (toBottom) {
+						path += "bottom ";
+					} else {
+						path += "up ";
+					}
+				}
+
+				if(xSteps+ySteps ==0){
+					path+="in place";
+				}
+				
+				return path;
 			}
 
 		};
