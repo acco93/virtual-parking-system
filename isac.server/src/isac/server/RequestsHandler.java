@@ -15,6 +15,16 @@ import isac.core.constructs.EventLoop;
 import isac.core.log.Logger;
 import isac.core.sharedknowledge.R;
 
+/**
+ * 
+ * Clients once started send a welcome message to the server. This way the
+ * server understand that a new client need sensors information. The
+ * RequestHandler receives welcome messages and asks the PublisherDaemon to
+ * publish the sensors information.
+ * 
+ * @author acco
+ *
+ */
 public class RequestsHandler extends EventLoop<Boolean> {
 
 	private PublisherDaemon publisherDaemon;
@@ -47,9 +57,6 @@ public class RequestsHandler extends EventLoop<Boolean> {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 					byte[] body) throws IOException {
-
-				// String message = new String(body, "UTF-8");
-
 				append(true);
 
 			}
@@ -63,7 +70,7 @@ public class RequestsHandler extends EventLoop<Boolean> {
 			e.printStackTrace();
 		}
 
-		Logger.getInstance().info("waiting for client messages ...");
+		Logger.getInstance().info("waiting for client welcome messages ...");
 
 	}
 

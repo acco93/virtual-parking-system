@@ -2,6 +2,7 @@ package isac.server.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -51,10 +52,9 @@ public class ParkViewer extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		Graphics2D g2 = (Graphics2D)g;
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-			    RenderingHints.VALUE_ANTIALIAS_ON);
-		
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
 		setUpDimensions();
 
 		for (SensorRepresentation sensor : serverStorage.getSensors().values()) {
@@ -81,14 +81,16 @@ public class ParkViewer extends JPanel {
 				}
 
 			}
-			
+
 			g.setColor(Color.BLACK);
 			g.drawRect(this.cellWidth * column + OFFSET, this.cellHeight * row + OFFSET, this.cellWidth - OFFSET,
 					this.cellHeight - OFFSET);
 
-			g.drawString("User"+new Random().nextInt(255), this.cellWidth * column + OFFSET + this.cellWidth / 4,
-					this.cellHeight * row + OFFSET + this.cellHeight / 2);
-			
+			g.setColor(Color.BLACK);
+			g.setFont(new Font("default", Font.BOLD, 14));
+			g.drawString(sensor.getName(), this.cellWidth * column + this.cellWidth / 2,
+					this.cellHeight * row + this.cellHeight / 2);
+
 		}
 
 	}

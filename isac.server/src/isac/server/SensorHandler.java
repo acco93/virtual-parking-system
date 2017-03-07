@@ -17,6 +17,13 @@ import isac.core.log.Logger;
 import isac.core.message.SensorMessage;
 import isac.core.sharedknowledge.R;
 
+/**
+ * 
+ * It receives messages from the sensors.
+ * 
+ * @author acco
+ *
+ */
 public class SensorHandler {
 
 	private Channel channel;
@@ -25,7 +32,7 @@ public class SensorHandler {
 	public SensorHandler(PublisherDaemon publisherDaemon) {
 
 		Logger.getInstance().info("started");
-		
+
 		this.msgProcessor = new SensorMessageProcessor(publisherDaemon);
 		this.msgProcessor.start();
 
@@ -54,7 +61,7 @@ public class SensorHandler {
 	public void start() {
 
 		// Define a consumer
-		
+
 		Consumer consumer = new DefaultConsumer(channel) {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
@@ -65,8 +72,6 @@ public class SensorHandler {
 				Gson gson = new GsonBuilder().create();
 				SensorMessage msg = gson.fromJson(message, SensorMessage.class);
 
-				System.out.println(message);
-				
 				msgProcessor.appendSensorMessage(msg);
 
 			}
@@ -79,9 +84,9 @@ public class SensorHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		Logger.getInstance().info("waiting for sensor messages ...");
-		
+
 	}
 
 }

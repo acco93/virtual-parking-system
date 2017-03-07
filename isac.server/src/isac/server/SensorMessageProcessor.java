@@ -13,6 +13,13 @@ import isac.core.datastructures.Graph;
 import isac.core.datastructures.Vertex;
 import isac.core.message.SensorMessage;
 
+/**
+ * 
+ * It translate sensor messages into useful aggregate information.
+ * 
+ * @author acco
+ *
+ */
 public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 
 	private static final int SENSOR_WEIGHT = 100;
@@ -39,32 +46,49 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 	@Override
 	protected void process(SensorMessage msg) {
 
-		// retrieve the sensors stored in the server storage
+		/*
+		 * Retrieve the sensors stored in the server storage
+		 */
 		ConcurrentHashMap<String, SensorRepresentation> sensors = storage.getSensors();
 
-		// check if the sensor associated with this message was already present
+		/*
+		 * Check if the sensor associated with this message was already present
+		 */
 		SensorRepresentation rep = sensors.get(msg.getSensorId());
 
 		boolean update = false;
 
 		if (rep == null) {
-			// it is an unknown sonar
+			/*
+			 * Unknown sensor
+			 */
 			rep = new SensorRepresentation(msg.getSensorId(), msg.getPosition(), msg.isFree());
 			sensors.put(msg.getSensorId(), rep);
 			updateMaxPosition(msg.getPosition());
 			rebuildMap();
 			update = true;
 		} else {
+			/*
+			 * Known sensor
+			 */
 			update = rep.updateState(msg.isFree());
 		}
 
+		/*
+		 * Notify clients if needed
+		 */
 		if (update) {
-			// notify clients
 			publisherDaemon.notifyClients();
 		}
 
 	}
 
+	/**
+	 * Update the known world dimensions.
+	 * 
+	 * @param position
+	 *            a sensor position
+	 */
 	private void updateMaxPosition(Position position) {
 
 		int row = position.getRow();
@@ -80,16 +104,24 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 
 	}
 
+	/**
+	 * Build a graph from the sensors representation.
+	 */
 	private void rebuildMap() {
 		int rows = this.storage.getWorldRows() + 1;
 		int columns = this.storage.getWorldColumns() + 1;
-		// +1 because the count starts from 0
+		/*
+		 * +1 because the count starts from 0
+		 */
 
-		// define a matrix of vertices
+		/*
+		 * Define a matrix of vertices
+		 */
 		Vertex[][] matrix = new Vertex[rows][columns];
 
-		// first:
-		// set street everywhere
+		/*
+		 * Set street everywhere
+		 */
 		for (int r = 0; r < rows; r++) {
 			for (int c = 0; c < columns; c++) {
 				StreetRepresentation street = new StreetRepresentation(new Position(r, c));
@@ -97,8 +129,9 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 			}
 		}
 
-		// then:
-		// set the sensors in the correct position
+		/*
+		 * Set the sensors in the correct position
+		 */
 		for (SensorRepresentation sensor : this.storage.getSensors().values()) {
 			int row = sensor.getPosition().getRow();
 			int column = sensor.getPosition().getColumn();
@@ -107,19 +140,25 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 
 		List<Vertex> nodes = new LinkedList<>();
 
-		// build the graph from the matrix
+		/*
+		 * Build the graph from the matrix
+		 */
 		for (int r = 0; r < rows; r++) {
 			for (int c = 0; c < columns; c++) {
 				nodes.add(matrix[r][c]);
 
-				// street nodes are connected everywhere (within 1-grid block)
+				/*
+				 * Street nodes are connected everywhere (within 1-grid block)
+				 */
 				if (matrix[r][c].getInfo().getType() == InfoType.STREET) {
 					connectLeft(matrix, rows, columns, r, c);
 					connectRight(matrix, rows, columns, r, c);
 					connectUp(matrix, rows, columns, r, c);
 					connectBottom(matrix, rows, columns, r, c);
 				} else {
-					// sensor nodes are connected just to street nodes
+					/*
+					 * Sensor nodes have an out-degree = 0
+					 */
 				}
 
 			}
@@ -132,25 +171,19 @@ public class SensorMessageProcessor extends EventLoop<SensorMessage> {
 	}
 
 	private void connectBottom(Vertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow, int sourceColumn) {
-
 		this.connect(matrix, matrixRows, matrixColumns, sourceRow, sourceColumn, sourceRow - 1, sourceColumn);
-
 	}
 
 	private void connectUp(Vertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow, int sourceColumn) {
-
 		this.connect(matrix, matrixRows, matrixColumns, sourceRow, sourceColumn, sourceRow + 1, sourceColumn);
-
 	}
 
 	private void connectRight(Vertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow, int sourceColumn) {
 		this.connect(matrix, matrixRows, matrixColumns, sourceRow, sourceColumn, sourceRow, sourceColumn + 1);
-
 	}
 
 	private void connectLeft(Vertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow, int sourceColumn) {
 		this.connect(matrix, matrixRows, matrixColumns, sourceRow, sourceColumn, sourceRow, sourceColumn - 1);
-
 	}
 
 	private void connect(Vertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow, int sourceColumn,

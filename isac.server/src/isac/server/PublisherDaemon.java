@@ -13,6 +13,13 @@ import com.rabbitmq.client.ConnectionFactory;
 import isac.core.log.Logger;
 import isac.core.sharedknowledge.R;
 
+/**
+ * 
+ * Send sensors info to the client.
+ * 
+ * @author acco
+ *
+ */
 public class PublisherDaemon extends Thread {
 
 	private static final int EVENT_SEMAPHORE = 0;
@@ -23,7 +30,7 @@ public class PublisherDaemon extends Thread {
 
 		Logger.getInstance().info("started");
 
-		semaphore = new Semaphore(EVENT_SEMAPHORE);
+		this.semaphore = new Semaphore(EVENT_SEMAPHORE);
 
 		this.setupMqtt();
 	}
@@ -48,6 +55,10 @@ public class PublisherDaemon extends Thread {
 		while (true) {
 
 			try {
+
+				/*
+				 * Send update message just when necessary
+				 */
 				semaphore.acquire();
 
 			} catch (InterruptedException e) {

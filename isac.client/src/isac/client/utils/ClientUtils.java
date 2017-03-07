@@ -10,9 +10,7 @@ import isac.client.controller.EnvironmentInteraction;
 import isac.client.controller.LocalInteraction;
 import isac.client.model.Storage;
 import isac.client.view.UserInterface;
-import isac.core.data.InfoType;
 import isac.core.data.Position;
-import isac.core.data.SensorRepresentation;
 import isac.core.datastructures.Graph;
 import isac.core.datastructures.Vertex;
 
@@ -49,7 +47,7 @@ public class ClientUtils {
 		 * Environment interaction "simulator"
 		 */
 		this.envInteraction = new EnvironmentInteraction();
-		
+
 		this.localInteraction = new LocalInteraction(this.ui);
 	}
 
@@ -87,9 +85,6 @@ public class ClientUtils {
 	public void park() {
 
 		boolean alreadyParked = this.storage.getCarPosition().isPresent();
-		Position userPosition = this.storage.getUserPosition();
-		// Vertex vertex = this.storage.getMap().getVertexFromPosition(userPosition);
-		// InfoType blockType = vertex.getInfo().getType();
 
 		if (!alreadyParked) {
 
@@ -158,13 +153,22 @@ public class ClientUtils {
 		if (this.storage.isServerOn()) {
 			// if the server is on
 			Graph map = this.storage.getMap();
-			NearestFreePark nfp = new NearestFreePark(map, map.getVertexFromPosition(this.storage.getUserPosition()));
+
+			Vertex source = map.getVertexFromPosition(this.storage.getUserPosition());
+			if (source == null) {
+				/*
+				 * The user is outside the map
+				 */
+				this.ui.setNearestParkPath(new LinkedList<>());
+				return;
+			}
+			NearestFreePark nfp = new NearestFreePark(map, source);
 			List<Vertex> path = nfp.find();
 			this.ui.setNearestParkPath(path);
 		} else {
 			// otherwise try to use some local info
 			this.localInteraction.searchNearFreePark();
-			
+
 		}
 	}
 
@@ -190,7 +194,17 @@ public class ClientUtils {
 	private void locateCarProcedure() {
 
 		Graph map = this.storage.getMap();
-		DijkstraAlgorithm da = new DijkstraAlgorithm(map, map.getVertexFromPosition(this.storage.getUserPosition()));
+
+		Vertex source = map.getVertexFromPosition(this.storage.getUserPosition());
+		if (source == null) {
+			/*
+			 * The user is outside the map
+			 */
+			this.ui.setShortestPathToCar(new LinkedList<>());
+			return;
+		}
+
+		DijkstraAlgorithm da = new DijkstraAlgorithm(map, source);
 		List<Vertex> path = da.getPath(map.getVertexFromPosition(this.storage.getCarPosition().get()));
 		this.ui.setShortestPathToCar(path);
 
@@ -227,6 +241,15 @@ public class ClientUtils {
 	}
 
 	public void repaintMap() {
+		// if it is on, recompute new place
+		if (this.isSearchingNearestPark) {
+			this.searchParkProcedure();
+		}
+
+		if (this.isLocatingCar) {
+			this.locateCarProcedure();
+		}
+
 		this.ui.repaintMap();
 	}
 }

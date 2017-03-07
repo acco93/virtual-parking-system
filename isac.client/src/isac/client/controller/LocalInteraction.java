@@ -68,7 +68,7 @@ public class LocalInteraction {
 
 				String airPath = computeAirPath(Storage.getInstance().getUserPosition(), reply.getDestination());
 
-				ui.setAirPath("Estimated air path: " + airPath);
+				ui.setAirPath(airPath);
 			}
 
 			private String computeAirPath(Position source, Position destination) {
@@ -105,10 +105,10 @@ public class LocalInteraction {
 					}
 				}
 
-				if(xSteps+ySteps ==0){
-					path+="in place";
+				if (xSteps + ySteps == 0) {
+					path = "in place";
 				}
-				
+
 				return path;
 			}
 

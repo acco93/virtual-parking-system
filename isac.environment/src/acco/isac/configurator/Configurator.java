@@ -88,6 +88,7 @@ public class Configurator {
 		}
 
 		Logger.getInstance().info("successfully loaded!");
+		Logger.getInstance().info("Working ...");
 		return true;
 
 	}

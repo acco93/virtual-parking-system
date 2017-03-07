@@ -17,7 +17,7 @@ public class ServerUserInterface extends JFrame {
 		// this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		this.setJMenuBar(new MenuBar());
+		//this.setJMenuBar(new MenuBar());
 
 		this.setLayout(new BorderLayout());
 
@@ -26,7 +26,7 @@ public class ServerUserInterface extends JFrame {
 		this.add(tabbedPane, BorderLayout.CENTER);
 
 		ParkViewer parkViewer = new ParkViewer();
-		tabbedPane.addTab("Park", parkViewer);
+		tabbedPane.addTab("Park status", parkViewer);
 
 		GraphViewer graphViewer = new GraphViewer();
 		tabbedPane.add("Graph", graphViewer);
