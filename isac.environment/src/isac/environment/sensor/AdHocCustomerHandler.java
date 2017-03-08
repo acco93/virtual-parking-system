@@ -28,9 +28,10 @@ public class AdHocCustomerHandler {
 	 * The private reply channel name chosen by the client.
 	 */
 	private String replyChannelName;
+	private String replyId;
 
-	public AdHocCustomerHandler(String replyChannelName) {
-
+	public AdHocCustomerHandler(String replyId, String replyChannelName) {
+		this.replyId = replyId;
 		this.replyChannelName = replyChannelName;
 		this.setupRabbitMQ();
 
@@ -82,7 +83,7 @@ public class AdHocCustomerHandler {
 	 * @return the local reply
 	 */
 	private LocalReply translateReply(InternalReply iReply) {
-		return new LocalReply(iReply);
+		return new LocalReply(replyId, iReply.getDestination(), iReply.getHops());
 	}
 
 }

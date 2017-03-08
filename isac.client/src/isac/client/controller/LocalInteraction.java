@@ -1,6 +1,7 @@
 package isac.client.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 
@@ -28,13 +29,15 @@ public class LocalInteraction {
 	private UserInterface ui;
 	private Channel channel;
 	private String privateReplyChannel;
+	private int requestIndex;
+	private HashMap<String, Integer> requestsId;
 
 	public LocalInteraction(UserInterface ui) {
 
 		this.ui = ui;
-
+		this.requestIndex = 0;
 		this.privateReplyChannel = UUID.randomUUID().toString();
-
+		this.requestsId = new HashMap<String, Integer>();
 		this.setupRabbitMQ();
 	}
 
@@ -63,12 +66,27 @@ public class LocalInteraction {
 				Gson gson = new GsonBuilder().create();
 				LocalReply reply = gson.fromJson(message, LocalReply.class);
 
-				ui.setAirDistanceString("" + reply.getHops());
-				ui.setNearestParkPositionString("" + reply.getDestination());
+				int distance = Math
+						.abs(Storage.getInstance().getUserPosition().getRow() - reply.getDestination().getRow())
+						+ Math.abs(Storage.getInstance().getUserPosition().getColumn()
+								- reply.getDestination().getColumn());
 
-				String airPath = computeAirPath(Storage.getInstance().getUserPosition(), reply.getDestination());
+				Integer bestReplyDistance = requestsId.get(reply.getId());
 
-				ui.setAirPath(airPath);
+				if (bestReplyDistance == null || distance < bestReplyDistance) {
+					requestsId.put(reply.getId(), distance);
+					ui.setAirDistanceString(Integer.toString(distance));
+					ui.setNearestParkPositionString("" + reply.getDestination());
+
+					String airPath = computeAirPath(Storage.getInstance().getUserPosition(), reply.getDestination());
+
+					ui.setAirPath(airPath);
+				} else {
+					/*
+					 * Skip worse replies
+					 */
+				}
+
 			}
 
 			private String computeAirPath(Position source, Position destination) {
@@ -126,12 +144,11 @@ public class LocalInteraction {
 	}
 
 	public void searchNearFreePark() {
-		System.out.println("Trying to contact the sensors ...");
-		this.generalRequest(LocalRequestType.PARK);
+		this.generalRequest(LocalRequestType.PARK, Storage.getInstance().getUserPosition());
 	}
 
-	public void searchParkedCar() {
-		this.generalRequest(LocalRequestType.LOCATE);
+	public void locateParkedCar() {
+		this.generalRequest(LocalRequestType.LOCATE, Storage.getInstance().getCarPosition().get());
 	}
 
 	/**
@@ -140,10 +157,10 @@ public class LocalInteraction {
 	 * @param type
 	 *            request type
 	 */
-	private void generalRequest(LocalRequestType type) {
-		LocalRequest request = new LocalRequest(type, Storage.getInstance().getUserPosition(),
-				this.privateReplyChannel);
+	private void generalRequest(LocalRequestType type, Position position) {
 
+		LocalRequest request = new LocalRequest("id" + this.requestIndex, type, position, this.privateReplyChannel);
+		this.requestIndex++;
 		Gson gson = new GsonBuilder().create();
 		String json = gson.toJson(request);
 		try {

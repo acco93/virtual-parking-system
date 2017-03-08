@@ -72,16 +72,12 @@ public class LocalInteractionProcessor {
 	 */
 	public synchronized void process(InternalRequest iRequest) {
 
-		System.out.println("Internal request received from " + this.sensor.getId());
-
 		/*
 		 * Discard internal request messages that are too distant
 		 */
 		if (isTooFarMessage(this.sensor.getPosition(), iRequest.getFrom())) {
 			return;
 		}
-
-		System.out.println("Passed. Internal request received from " + this.sensor.getId());
 
 		/*
 		 * Retrieve the unique request identifier
@@ -174,7 +170,7 @@ public class LocalInteractionProcessor {
 				/*
 				 * Yes, I've to reply to the client
 				 */
-				new AdHocCustomerHandler(clientRequest.getReplyChannelName()).send(iReply);
+				new AdHocCustomerHandler(clientRequest.getId(),clientRequest.getReplyChannelName()).send(iReply);
 			}
 
 		} else {

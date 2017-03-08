@@ -7,8 +7,10 @@ public class LocalRequest {
 	private LocalRequestType type;
 	private Position userPosition;
 	private String replyChannelName;
+	private String id;
 
-	public LocalRequest(LocalRequestType type, Position userPosition, String replyChannelName) {
+	public LocalRequest(String id, LocalRequestType type, Position userPosition, String replyChannelName) {
+		this.id = id;
 		this.type = type;
 		this.userPosition = userPosition;
 		this.replyChannelName = replyChannelName;
@@ -24,6 +26,10 @@ public class LocalRequest {
 
 	public String getReplyChannelName() {
 		return replyChannelName;
+	}
+
+	public String getId() {
+		return id;
 	}
 
 }

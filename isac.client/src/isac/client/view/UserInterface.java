@@ -132,14 +132,10 @@ public class UserInterface extends JFrame {
 	}
 
 	public void setNearestParkPositionString(String nearestParkPositionString) {
-		this.mapViewer.setNearestParkPositionString(nearestParkPositionString);
+		this.mapViewer.setQueriedPosition(nearestParkPositionString);
 		this.repaintMap();
 	}
 
-	public void setCarPositionString(String carPositionString) {
-		this.mapViewer.setCarPositionString(carPositionString);
-		this.repaintMap();
-	}
 
 	public void setAirDistanceString(String airDistanceString) {
 		this.mapViewer.setAirDistanceString(airDistanceString);
@@ -148,6 +144,11 @@ public class UserInterface extends JFrame {
 
 	public void setAirPath(String airPath) {
 		this.mapViewer.setAirPath(airPath);
+	}
+
+	public void resetDisplay() {
+		this.mapViewer.resetDisplay();
+		
 	}
 
 }

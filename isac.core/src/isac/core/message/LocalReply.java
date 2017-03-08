@@ -6,10 +6,12 @@ public class LocalReply {
 
 	private Position destination;
 	private int hops;
+	private String id;
 
-	public LocalReply(InternalReply iReply) {
-		this.destination = iReply.getDestination();
-		this.hops = iReply.getHops();
+	public LocalReply(String id, Position destination, int hops) {
+		this.id = id;
+		this.destination = destination;
+		this.hops = hops;
 	}
 
 	public Position getDestination() {
@@ -18,6 +20,10 @@ public class LocalReply {
 
 	public int getHops() {
 		return hops;
+	}
+
+	public String getId() {
+		return id;
 	}
 
 }
