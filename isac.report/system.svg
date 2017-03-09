@@ -1,0 +1,304 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+    xmlns:latexdraw="http://latexdraw.sourceforge.net/namespaces/latexdraw"
+    version="1.1" baseProfile="full">
+    <g>
+        <g latexdraw:type="rectangle" id="id1068610545">
+            <rect x="340.5" y="80.5" width="479.0" height="359.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id1368347757">
+            <rect x="540.5" y="100.5" width="239.0" height="279.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id466556529">
+            <rect x="560.5" y="120.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id896059113" fill="black" latexdraw:position="">
+            <text x="580.0" y="140.0">S</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id803144267">
+            <rect x="600.5" y="120.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id1221339357" fill="black" latexdraw:position="">
+            <text x="620.0" y="140.0">S</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id525772501">
+            <rect x="640.5" y="120.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id722258604" fill="black" latexdraw:position="">
+            <text x="660.0" y="140.0">S</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id21410070">
+            <rect x="680.5" y="120.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id1735675406" fill="black" latexdraw:position="">
+            <text x="700.0" y="140.0">S</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id1393462775">
+            <rect x="720.5" y="120.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id1489337863" fill="black" latexdraw:position="">
+            <text x="740.0" y="140.0">S</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id2130915805">
+            <rect x="560.5" y="200.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id1324020693" fill="black" latexdraw:position="">
+            <text x="580.0" y="220.0">S</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id671198732">
+            <rect x="600.5" y="200.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id819174969" fill="black" latexdraw:position="">
+            <text x="620.0" y="220.0">S</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id361179105">
+            <rect x="640.5" y="200.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id72987522" fill="black" latexdraw:position="">
+            <text x="660.0" y="220.0">S</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id684532935">
+            <rect x="720.5" y="200.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id149657235" fill="black" latexdraw:position="">
+            <text x="740.0" y="220.0">S</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id1229021269">
+            <rect x="560.5" y="240.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id976788008" fill="black" latexdraw:position="">
+            <text x="580.0" y="260.0">S</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id2017003250">
+            <rect x="600.5" y="240.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id288116963" fill="black" latexdraw:position="">
+            <text x="620.0" y="260.0">S</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id554883746">
+            <rect x="640.5" y="240.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id614615053" fill="black" latexdraw:position="">
+            <text x="660.0" y="260.0">S</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id324162033">
+            <rect x="720.5" y="240.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id1375490542" fill="black" latexdraw:position="">
+            <text x="740.0" y="260.0">S</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id1344294905">
+            <rect x="560.5" y="320.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id1965588490" fill="black" latexdraw:position="">
+            <text x="580.0" y="340.0">S</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id665142993">
+            <rect x="600.5" y="320.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id652967904" fill="black" latexdraw:position="">
+            <text x="620.0" y="340.0">S</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id729097762">
+            <rect x="640.5" y="320.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id325196731" fill="black" latexdraw:position="">
+            <text x="660.0" y="340.0">S</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id295988163">
+            <rect x="680.5" y="320.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id1847181906" fill="black" latexdraw:position="">
+            <text x="700.0" y="340.0">S</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id1548830241">
+            <rect x="720.5" y="320.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id1145455184" fill="black" latexdraw:position="">
+            <text x="740.0" y="340.0">S</text>
+        </g>
+        <g latexdraw:type="text" id="id355452674" fill="black" latexdraw:position="bl">
+            <text x="620.0" y="400.0">Sensors</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id426830101">
+            <rect x="375.5" y="140.5" width="79.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id359311167" fill="black" latexdraw:position="">
+            <text x="415.0" y="160.0">Server</text>
+        </g>
+        <g latexdraw:type="rectangle" id="id197971142">
+            <rect x="375.5" y="290.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="#fefefe"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id974991298">
+            <rect x="380.5" y="295.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="#fefefe"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id390688138">
+            <rect x="385.5" y="300.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="#fefefe"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id222695612">
+            <rect x="390.5" y="305.5" width="39.0" height="39.0"
+                latexdraw:borderPos="outer" stroke-width="1.0"
+                stroke="black" fill="#fefefe"/>
+        </g>
+        <g latexdraw:type="text" id="id918254273" fill="black" latexdraw:position="">
+            <text x="410.0" y="325.0">C</text>
+        </g>
+        <g latexdraw:type="text" id="id690346167" fill="black" latexdraw:position="bl">
+            <text x="380.0" y="380.0">Clients</text>
+        </g>
+        <g latexdraw:type="joinedLines" id="id708960444">
+            <polyline
+                points="530.0,160.0 518.9512960422156,154.9570931236888 510.0,160.0 495.0,155.0 486.451296042216,159.95709312368882 479.7846293755494,154.9570931236889 470.0,160.0 464.78462937554946,159.95709312368888 "
+                stroke-width="1.0" stroke="black" fill="none"
+                latexdraw:rotationAngle="0.0"
+                marker-start="url(#arrow0-708960444)" marker-end="url(#arrow1-708960444)"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1860493831">
+            <polyline
+                points="409.9764570640337,200.09915484072732 404.89097351996907,211.12832643395924 409.89931828442235,220.09900608039123 404.84150138979805,235.07960981523618 409.7655858130168,243.64736939331527 404.7399100765638,250.29470177830032 409.7450407251997,260.0987085597184 409.6820188017713,265.31387490295094 "
+                stroke-width="1.0" stroke="black" fill="none"
+                latexdraw:rotationAngle="0.0"
+                marker-start="url(#arrow0-1860493831)" marker-end="url(#arrow1-1860493831)"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id642578554">
+            <polyline
+                points="520.0,325.0 508.95129604221563,319.95709312368876 500.0,325.0 485.0,320.0 476.451296042216,324.9570931236888 469.7846293755494,319.9570931236889 460.0,325.0 454.78462937554946,324.9570931236889 "
+                stroke-width="1.0" stroke="black" fill="none"
+                latexdraw:rotationAngle="0.0"
+                marker-start="url(#arrow0-642578554)" marker-end="url(#arrow1-642578554)"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1677842827">
+            <polyline
+                points="660.3667843593878,330.4438282467877 665.251839075639,320.1770224143187 660.0819712386,311.9792227876728 664.8678543815913,298.06502500289895 659.7895247707768,290.23778223369544 664.6940800474297,284.0171700568861 659.5123449970243,275.05001186944355 659.4809772232567,270.2344596529879 "
+                stroke-width="1.0" stroke="black" fill="none"
+                latexdraw:rotationAngle="0.0"
+                marker-start="url(#arrow0-1677842827)" marker-end="url(#arrow1-1677842827)"/>
+        </g>
+        <g latexdraw:type="text" id="id17319804" fill="black" latexdraw:position="bl">
+            <text x="670.0" y="295.0">l</text>
+        </g>
+        <g latexdraw:type="text" id="id1551086823" fill="black" latexdraw:position="bl">
+            <text x="485.0" y="340.0">l</text>
+        </g>
+        <g latexdraw:type="text" id="id479586971" fill="black" latexdraw:position="bl">
+            <text x="415.0" y="225.0">g</text>
+        </g>
+        <g latexdraw:type="text" id="id1323726456" fill="black" latexdraw:position="bl">
+            <text x="490.0" y="175.0">g</text>
+        </g>
+        <g latexdraw:type="text" id="id162027263" fill="black" latexdraw:position="bl">
+            <text x="350.0" y="75.0">System boundaries</text>
+        </g>
+    </g>
+    <defs>
+        <marker overflow="visible" orient="auto" id="arrow0-708960444">
+            <path
+                d="M 0.0 0.0 L 6.504166666666667 2.322916666666667 L 6.504166666666667 0.0 L 6.504166666666667 -2.322916666666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow1-708960444">
+            <path
+                d="M 0.0 0.0 L -6.504166666666667 2.322916666666667 L -6.504166666666667 0.0 L -6.504166666666667 -2.322916666666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow0-1860493831">
+            <path
+                d="M 0.0 0.0 L 6.504166666666667 2.322916666666667 L 6.504166666666667 0.0 L 6.504166666666667 -2.322916666666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow1-1860493831">
+            <path
+                d="M 0.0 0.0 L -6.504166666666667 2.322916666666667 L -6.504166666666667 0.0 L -6.504166666666667 -2.322916666666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow0-642578554">
+            <path
+                d="M 0.0 0.0 L 6.504166666666667 2.322916666666667 L 6.504166666666667 0.0 L 6.504166666666667 -2.322916666666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow1-642578554">
+            <path
+                d="M 0.0 0.0 L -6.504166666666667 2.322916666666667 L -6.504166666666667 0.0 L -6.504166666666667 -2.322916666666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow0-1677842827">
+            <path
+                d="M 0.0 0.0 L 6.504166666666667 2.322916666666667 L 6.504166666666667 0.0 L 6.504166666666667 -2.322916666666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+        <marker overflow="visible" orient="auto" id="arrow1-1677842827">
+            <path
+                d="M 0.0 0.0 L -6.504166666666667 2.322916666666667 L -6.504166666666667 0.0 L -6.504166666666667 -2.322916666666667 z "
+                latexdraw:arrSizeNum="2.0" fill="black"/>
+        </marker>
+    </defs>
+    <metadata>
+        <latexdraw:metadata>
+            <latexdraw:latexIncludes/>
+            <latexdraw:displayXScale>true</latexdraw:displayXScale>
+            <latexdraw:displayYScale>true</latexdraw:displayYScale>
+            <latexdraw:unit>CM</latexdraw:unit>
+            <latexdraw:zoom>1.0</latexdraw:zoom>
+            <latexdraw:magneticGridStyle>CUSTOMISED</latexdraw:magneticGridStyle>
+            <latexdraw:gridGap>5</latexdraw:gridGap>
+            <latexdraw:magneticGrid>true</latexdraw:magneticGrid>
+            <latexdraw:version>3.3.5</latexdraw:version>
+            <latexdraw:size>
+                <latexdraw:width>1368</latexdraw:width>
+                <latexdraw:height>745</latexdraw:height>
+            </latexdraw:size>
+            <latexdraw:position>
+                <latexdraw:x>0.0</latexdraw:x>
+                <latexdraw:y>24.0</latexdraw:y>
+            </latexdraw:position>
+        </latexdraw:metadata>
+    </metadata>
+</svg>
