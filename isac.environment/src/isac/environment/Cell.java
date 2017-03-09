@@ -2,6 +2,8 @@ package isac.environment;
 
 import java.util.Optional;
 
+import isac.environment.sensor.ParkingSensor;
+
 /**
  * 
  * A cell is an element of the grid-world-environment. It may contain a

@@ -19,6 +19,8 @@ public class Environment {
 	private Cell[][] sensorsLayer;
 	private boolean[][] carsLayer;
 
+	private EnvironmentDaemon daemon;
+
 	/**
 	 * 
 	 * Create an empty environment.
@@ -44,8 +46,8 @@ public class Environment {
 		 * Start the daemon that receives park/remove car interactions from the
 		 * clients.
 		 */
-		new EnvironmentDaemon().start();
-
+		this.daemon = new EnvironmentDaemon();
+		this.daemon.start();
 	}
 
 	/**
