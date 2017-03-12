@@ -26,4 +26,9 @@ public class LocalReply {
 		return id;
 	}
 
+	@Override
+	public String toString() {
+		return "LocalReply [destination=" + destination + ", hops=" + hops + ", id=" + id + "]";
+	}
+
 }

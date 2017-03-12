@@ -1,4 +1,4 @@
-package acco.isac.configurator;
+package isac.environment.configurator;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -88,7 +88,7 @@ public class Configurator {
 		}
 
 		Logger.getInstance().info("successfully loaded!");
-		Logger.getInstance().info("Working ...");
+		Logger.getInstance().info("working ...");
 		return true;
 
 	}

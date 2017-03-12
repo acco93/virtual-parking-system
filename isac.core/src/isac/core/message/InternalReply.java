@@ -25,7 +25,7 @@ public class InternalReply {
 		return from;
 	}
 
-	public Position getDestination() {
+	public Position getResultDestination() {
 		return destination;
 	}
 

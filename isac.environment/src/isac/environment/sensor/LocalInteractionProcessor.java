@@ -35,6 +35,10 @@ public class LocalInteractionProcessor {
 	 */
 	private HashSet<String> processedRequestsId;
 	/*
+	 * Store replies id in order to know if you have already received a reply.
+	 */
+	private HashSet<String> processedRepliesId;
+	/*
 	 * Store requests id and relative LocalRequest if you've been directly
 	 * contacted by the client.
 	 */
@@ -54,6 +58,7 @@ public class LocalInteractionProcessor {
 		this.requestIndex = 0;
 
 		this.processedRequestsId = new HashSet<>();
+		this.processedRepliesId = new HashSet<>();
 		this.clientDirectRequests = new HashMap<>();
 
 		this.internalRequestsHandler = new InternalRequestHandler(this);
@@ -71,7 +76,6 @@ public class LocalInteractionProcessor {
 	 *            the request
 	 */
 	public synchronized void process(InternalRequest iRequest) {
-
 		/*
 		 * Discard internal request messages that are too distant
 		 */
@@ -91,6 +95,7 @@ public class LocalInteractionProcessor {
 			 */
 			return;
 		} else {
+
 			/*
 			 * It's a new request, add it to the processed requests
 			 */
@@ -125,6 +130,13 @@ public class LocalInteractionProcessor {
 			}
 		}
 
+		/*
+		 * Clean up requests if necessary
+		 */
+		if (this.processedRequestsId.size() > 100) {
+			this.processedRequestsId.clear();
+		}
+
 	}
 
 	/**
@@ -135,7 +147,6 @@ public class LocalInteractionProcessor {
 	 *            the reply
 	 */
 	public synchronized void process(InternalReply iReply) {
-
 		/*
 		 * Check not to be too far.
 		 */
@@ -148,13 +159,15 @@ public class LocalInteractionProcessor {
 		/*
 		 * Handle reply for which you've received the request.
 		 */
-		if (this.processedRequestsId.contains(id)) {
-
+		if (this.processedRepliesId.contains(id)) {
 			/*
-			 * Remove it ...
+			 * It was a reply that I had already processed. Skip it to avoid
+			 * infinity replies circulation.
 			 */
-			this.processedRequestsId.remove(id);
+			return;
+		} else {
 
+			this.processedRepliesId.add(id);
 			/*
 			 * Check if the client directly contacted you
 			 */
@@ -164,20 +177,24 @@ public class LocalInteractionProcessor {
 				/*
 				 * No, spread the reply ... Someone else will contact the client
 				 */
-				this.internalReplyHandler.spread(iReply);
+				InternalReply newReply = new InternalReply(iReply.getRequestId(), this.sensor.getPosition(),
+						iReply.getResultDestination(), iReply.getHops());
+				this.internalReplyHandler.spread(newReply);
 
 			} else {
 				/*
 				 * Yes, I've to reply to the client
 				 */
-				new AdHocCustomerHandler(clientRequest.getId(),clientRequest.getReplyChannelName()).send(iReply);
+				new AdHocCustomerHandler(clientRequest.getId(), clientRequest.getReplyChannelName()).send(iReply);
 			}
 
-		} else {
-			/*
-			 * That is a reply for which I've not previously received a request
-			 * ... Skip it
-			 */
+		}
+
+		/*
+		 * Clean up replies if necessary
+		 */
+		if (this.processedRepliesId.size() > 100) {
+			this.processedRepliesId.clear();
 		}
 	}
 
@@ -229,7 +246,7 @@ public class LocalInteractionProcessor {
 		 * greater than 1 are discarded.
 		 */
 		int distance = 1;
-		if (this.sensor.getPosition().equals(request.getPosition())) {
+		if (this.sensor.getPosition().equals(request.getUserPosition())) {
 			distance = 0;
 		}
 
@@ -278,7 +295,7 @@ public class LocalInteractionProcessor {
 	private boolean tryToSatisfy(LocalRequest request) {
 		switch (request.getType()) {
 		case LOCATE:
-			if (request.getPosition().equals(sensor.getPosition())) {
+			if (request.getCarPosition().equals(sensor.getPosition())) {
 				return true;
 			}
 			break;
@@ -290,6 +307,11 @@ public class LocalInteractionProcessor {
 		}
 
 		return false;
+	}
+
+	public void disable() {
+		this.internalReplyHandler.disable();
+		this.internalRequestsHandler.disable();
 	}
 
 }

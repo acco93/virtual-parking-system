@@ -76,11 +76,10 @@ public class LocalInteraction {
 				if (bestReplyDistance == null || distance < bestReplyDistance) {
 					requestsId.put(reply.getId(), distance);
 					ui.setAirDistanceString(Integer.toString(distance));
-					ui.setNearestParkPositionString("" + reply.getDestination());
-
+					ui.setQueriedPosition("" + reply.getDestination());
 					String airPath = computeAirPath(Storage.getInstance().getUserPosition(), reply.getDestination());
-
 					ui.setAirPath(airPath);
+
 				} else {
 					/*
 					 * Skip worse replies
@@ -109,21 +108,21 @@ public class LocalInteraction {
 
 				for (int i = 0; i < Math.abs(xSteps); i++) {
 					if (toRight) {
-						path += "right ";
+						path += "\u2192 "; // right
 					} else {
-						path += "left ";
+						path += "\u2190 "; // left
 					}
 				}
 
 				for (int i = 0; i < Math.abs(ySteps); i++) {
 					if (toBottom) {
-						path += "bottom ";
+						path += "\u2193 "; // down
 					} else {
-						path += "up ";
+						path += "\u2191 "; // up
 					}
 				}
 
-				if (xSteps + ySteps == 0) {
+				if (Math.abs(xSteps) + Math.abs(ySteps) == 0) {
 					path = "in place";
 				}
 
@@ -144,11 +143,11 @@ public class LocalInteraction {
 	}
 
 	public void searchNearFreePark() {
-		this.generalRequest(LocalRequestType.PARK, Storage.getInstance().getUserPosition());
+		this.generalRequest(LocalRequestType.PARK);
 	}
 
 	public void locateParkedCar() {
-		this.generalRequest(LocalRequestType.LOCATE, Storage.getInstance().getCarPosition().get());
+		this.generalRequest(LocalRequestType.LOCATE);
 	}
 
 	/**
@@ -157,9 +156,16 @@ public class LocalInteraction {
 	 * @param type
 	 *            request type
 	 */
-	private void generalRequest(LocalRequestType type, Position position) {
+	private void generalRequest(LocalRequestType type) {
 
-		LocalRequest request = new LocalRequest("id" + this.requestIndex, type, position, this.privateReplyChannel);
+		Position carPosition = null;
+
+		if (Storage.getInstance().getCarPosition().isPresent()) {
+			carPosition = Storage.getInstance().getCarPosition().get();
+		}
+
+		LocalRequest request = new LocalRequest("id" + this.requestIndex, type, Storage.getInstance().getUserPosition(),
+				carPosition, this.privateReplyChannel);
 		this.requestIndex++;
 		Gson gson = new GsonBuilder().create();
 		String json = gson.toJson(request);

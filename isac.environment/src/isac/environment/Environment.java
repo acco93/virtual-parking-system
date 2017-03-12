@@ -2,6 +2,8 @@ package isac.environment;
 
 import isac.core.data.Position;
 import isac.core.sharedknowledge.R;
+import isac.environment.interpreter.CommandLineInterpreter;
+import isac.environment.sensor.ParkingSensor;
 
 /**
  * 
@@ -20,6 +22,8 @@ public class Environment {
 	private boolean[][] carsLayer;
 
 	private EnvironmentDaemon daemon;
+
+	private CommandLineInterpreter cli;
 
 	/**
 	 * 
@@ -48,6 +52,9 @@ public class Environment {
 		 */
 		this.daemon = new EnvironmentDaemon();
 		this.daemon.start();
+
+		this.cli = new CommandLineInterpreter();
+		this.cli.start();
 	}
 
 	/**
@@ -147,6 +154,13 @@ public class Environment {
 		int r = position.getRow();
 		int c = position.getColumn();
 		this.carsLayer[r][c] = false;
+	}
+
+	public void removeSensor(ParkingSensor sensor) {
+		int r = sensor.getPosition().getRow();
+		int c = sensor.getPosition().getColumn();
+		this.getSensorsLayer()[r][c] = new Cell();
+
 	}
 
 }

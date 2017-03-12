@@ -27,7 +27,6 @@ import isac.core.data.SensorRepresentation;
 import isac.core.data.StreetRepresentation;
 import isac.core.datastructures.Graph;
 import isac.core.datastructures.Vertex;
-import isac.core.log.ILogger;
 import isac.core.log.Logger;
 import isac.core.sharedknowledge.R;
 
@@ -38,12 +37,10 @@ public class SubscriberDaemon {
 
 	private Channel channel;
 	private String queueName;
-	private ILogger gLog;
 	private ClientUtils utils;
 
-	public SubscriberDaemon(ClientUtils utils, ILogger gLog) {
+	public SubscriberDaemon(ClientUtils utils) {
 		this.utils = utils;
-		this.gLog = gLog;
 
 		Logger.getInstance().info("started");
 
@@ -76,8 +73,6 @@ public class SubscriberDaemon {
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 					byte[] body) throws IOException {
 				String message = new String(body, "UTF-8");
-
-				gLog.info("Received an updated map.");
 
 				Gson gson = new GsonBuilder().create();
 				Type type = new TypeToken<Map<String, SensorRepresentation>>() {

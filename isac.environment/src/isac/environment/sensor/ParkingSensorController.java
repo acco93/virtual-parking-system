@@ -1,9 +1,18 @@
 package isac.environment.sensor;
 
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 
+import isac.core.log.Logger;
 import isac.core.message.SensorMessage;
+import isac.core.sharedknowledge.R;
+import isac.environment.Environment;
 
 /**
  * 
@@ -22,12 +31,24 @@ public class ParkingSensorController extends AbstractSensorController {
 	 * Thread that manage the interaction with other sensors and clients.
 	 */
 	private LocalInteractionHandler localInteractionHandler;
+	/*
+	 * The sensor to server channel.
+	 */
+	private Channel channel;
 
 	public ParkingSensorController(ParkingSensor sensor) {
 
 		this.sensor = sensor;
 		this.sensor.setController(this);
 
+		/*
+		 * Server interaction
+		 */
+		this.rabbitMQSetup();
+
+		/*
+		 * Neighbors interaction
+		 */
 		this.localInteractionHandler = new LocalInteractionHandler(this.sensor);
 		this.localInteractionHandler.start();
 	}
@@ -53,6 +74,48 @@ public class ParkingSensorController extends AbstractSensorController {
 		String json = gson.toJson(msg);
 
 		return json.getBytes();
+	}
+
+	private void rabbitMQSetup() {
+
+		try {
+
+			ConnectionFactory factory = new ConnectionFactory();
+			factory.setHost("localhost");
+			Connection connection;
+			connection = factory.newConnection();
+			channel = connection.createChannel();
+			channel.queueDeclare(R.SENSOR_TO_SERVER_QUEUE, false, false, false, null);
+
+		} catch (IOException | TimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	protected void act(byte[] bytes) {
+		{
+
+			try {
+				channel.basicPublish("", R.SENSOR_TO_SERVER_QUEUE, null, bytes);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
+	}
+
+	@Override
+	protected void disable() {
+		Environment.getInstance().removeSensor(this.sensor);
+		Logger.getInstance().error(
+				"Sensor " + this.sensor.getId() + " in position " + this.sensor.getPosition() + " stopped working ...");
+		this.localInteractionHandler.disable();
+
 	}
 
 }

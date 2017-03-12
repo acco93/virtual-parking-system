@@ -7,14 +7,12 @@ import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import isac.client.listeners.UserListener;
 import isac.core.datastructures.Vertex;
-import isac.core.log.ILogger;
 
 /**
  * 
@@ -28,7 +26,6 @@ public class UserInterface extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private MapViewer mapViewer;
 	private JLabel statusLabel;
-	private LogViewer logViewer;
 
 	public UserInterface(UserListener userListener) {
 
@@ -46,17 +43,9 @@ public class UserInterface extends JFrame {
 
 		this.setLayout(new BorderLayout());
 
-		JTabbedPane tabbedPane = new JTabbedPane();
-		this.add(tabbedPane, BorderLayout.CENTER);
-
-		this.logViewer = new LogViewer();
-		tabbedPane.addTab("Log", logViewer);
-
-		logViewer.info("App online");
-		logViewer.error("Error");
-
 		mapViewer = new MapViewer();
-		tabbedPane.addTab("Map", mapViewer);
+
+		this.add(mapViewer, BorderLayout.CENTER);
 
 		// that's horrible ...
 		JLabel helpLabel = new JLabel("<html> HELP: use <b>W</b>, <b>A</b>, <b>S</b>, <b>D</b> to move,"
@@ -69,7 +58,7 @@ public class UserInterface extends JFrame {
 		this.add(helpLabel, BorderLayout.NORTH);
 
 		statusLabel = new JLabel("Connected to server", SwingConstants.CENTER);
-		
+
 		this.add(statusLabel, BorderLayout.SOUTH);
 
 		this.setVisible(true);
@@ -84,16 +73,6 @@ public class UserInterface extends JFrame {
 	 */
 	public void setStatusLabel(String string) {
 		this.statusLabel.setText(string);
-	}
-
-	/**
-	 * Returns an ILogger implementation.
-	 * 
-	 * @return graphical logger
-	 */
-	public ILogger getGraphicalLogger() {
-		return this.logViewer;
-
 	}
 
 	/**
@@ -131,11 +110,10 @@ public class UserInterface extends JFrame {
 
 	}
 
-	public void setNearestParkPositionString(String nearestParkPositionString) {
-		this.mapViewer.setQueriedPosition(nearestParkPositionString);
+	public void setQueriedPosition(String queriedPosition) {
+		this.mapViewer.setQueriedPosition(queriedPosition);
 		this.repaintMap();
 	}
-
 
 	public void setAirDistanceString(String airDistanceString) {
 		this.mapViewer.setAirDistanceString(airDistanceString);
@@ -148,7 +126,7 @@ public class UserInterface extends JFrame {
 
 	public void resetDisplay() {
 		this.mapViewer.resetDisplay();
-		
+
 	}
 
 }

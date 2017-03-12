@@ -1,15 +1,9 @@
 package isac.environment.sensor;
 
-import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 
 import isac.core.constructs.ActiveEntity;
 import isac.core.sharedknowledge.R;
@@ -22,11 +16,6 @@ import isac.core.sharedknowledge.R;
  *
  */
 public abstract class AbstractSensorController extends ActiveEntity {
-
-	/**
-	 * The sensor to server channel.
-	 */
-	private Channel channel;
 
 	private Random random;
 
@@ -46,8 +35,6 @@ public abstract class AbstractSensorController extends ActiveEntity {
 		lock = new ReentrantLock();
 		this.condition = lock.newCondition();
 
-		// setup rabbitmq
-		this.rabbitMQSetup();
 	}
 
 	@Override
@@ -61,27 +48,20 @@ public abstract class AbstractSensorController extends ActiveEntity {
 
 			byte[] processedValue = this.process(value);
 
-			this.send(processedValue);
+			this.act(processedValue);
 
 			if (random.nextDouble() <= this.serviceDisruptionProbability) {
-
-				// this.working = false;
+				this.disable();
+				this.working = false;
 			}
 
 		}
 
 	}
 
-	protected void send(byte[] bytes) {
+	protected abstract void disable();
 
-		try {
-			channel.basicPublish("", R.SENSOR_TO_SERVER_QUEUE, null, bytes);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
+	protected abstract void act(byte[] bytes);
 
 	protected abstract byte[] process(Object value);
 
@@ -111,24 +91,6 @@ public abstract class AbstractSensorController extends ActiveEntity {
 		lock.lock();
 		condition.signal();
 		lock.unlock();
-	}
-
-	private void rabbitMQSetup() {
-
-		try {
-
-			ConnectionFactory factory = new ConnectionFactory();
-			factory.setHost("localhost");
-			Connection connection;
-			connection = factory.newConnection();
-			channel = connection.createChannel();
-			channel.queueDeclare(R.SENSOR_TO_SERVER_QUEUE, false, false, false, null);
-
-		} catch (IOException | TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 	}
 
 }

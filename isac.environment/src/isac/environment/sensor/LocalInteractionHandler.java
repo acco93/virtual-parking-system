@@ -88,7 +88,7 @@ public class LocalInteractionHandler extends EventLoop<LocalRequest> {
 	protected void process(LocalRequest request) {
 
 		Position sensorPosition = this.sensor.getPosition();
-		Position requestPosition = request.getPosition();
+		Position requestPosition = request.getUserPosition();
 
 		/*
 		 * All sensors receives all (local) client messages since a
@@ -110,6 +110,11 @@ public class LocalInteractionHandler extends EventLoop<LocalRequest> {
 		 * Received
 		 */
 		this.localInteractionProcessor.process(request);
+	}
+
+	public void disable() {
+		super.disable();
+		this.localInteractionProcessor.disable();
 
 	}
 

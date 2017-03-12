@@ -136,13 +136,15 @@ public class ClientUtils {
 	 */
 	public void searchPark() {
 
+		this.isLocatingCar = false;
+
 		if (!this.isSearchingNearestPark) {
 			this.isSearchingNearestPark = true;
 			this.searchParkProcedure();
 		} else {
 			this.isSearchingNearestPark = false;
 			this.ui.setNearestParkPath(new LinkedList<>());
-			this.ui.setNearestParkPositionString("");
+			this.ui.setQueriedPosition("");
 		}
 
 		this.ui.repaintMap();
@@ -181,12 +183,15 @@ public class ClientUtils {
 	 */
 	public void locateCar() {
 
+		this.isSearchingNearestPark = false;
+
 		if (!this.isLocatingCar && this.storage.getCarPosition().isPresent()) {
 			this.isLocatingCar = true;
 			this.locateCarProcedure();
 		} else {
 			this.isLocatingCar = false;
 			this.ui.setShortestPathToCar(new LinkedList<>());
+			this.ui.setQueriedPosition("");
 		}
 
 		this.ui.repaintMap();

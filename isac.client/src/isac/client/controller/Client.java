@@ -4,7 +4,7 @@ import isac.client.listeners.UserListener;
 import isac.client.utils.ClientUtils;
 import isac.client.view.UserInterface;
 import isac.core.constructs.ActiveEntity;
-import isac.core.log.ILogger;
+import isac.core.log.Logger;
 
 /**
  * 
@@ -29,14 +29,13 @@ public class Client extends ActiveEntity {
 		UserListener userListener = new UserListener(this);
 		this.ui = new UserInterface(userListener);
 
-		ILogger gLog = this.ui.getGraphicalLogger();
-
 		this.utils = new ClientUtils(this.ui);
 
-		this.subscriberDaemon = new SubscriberDaemon(utils, gLog);
+		this.subscriberDaemon = new SubscriberDaemon(utils);
 		this.serverDaemon = new ServerDaemon();
 		this.serverChecker = new ServerChecker(this);
 
+		Logger.getInstance().info("working ...");
 	}
 
 	@Override

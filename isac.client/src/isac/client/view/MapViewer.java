@@ -67,7 +67,12 @@ public class MapViewer extends JPanel {
 	}
 
 	private void displayInfo(Graphics g) {
-		g.drawString(":: OFFLINE INFORMATION ::", 20, 20);
+		
+		this.setBackground(Color.DARK_GRAY);
+		
+		g.setColor(Color.yellow);
+		
+		g.drawString(":: OFFLINE INFORMATION ::", this.getWidth()/2-75, 20);
 		g.drawString("Current position: " + this.storage.getUserPosition(), 20, 40);
 
 		this.storage.getCarPosition().ifPresent(p -> {
@@ -79,7 +84,7 @@ public class MapViewer extends JPanel {
 		if (!this.queriedPosition.isEmpty()) {
 			g.drawString("Response: " + this.queriedPosition, 20, 80);
 			g.drawString("Air distance: " + this.airDistance, 20, 100);
-			g.drawString("Air path:" + this.airPath, 20, 120);
+			g.drawString("Air path: " + this.airPath, 20, 120);
 		}
 
 	}

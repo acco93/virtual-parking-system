@@ -83,7 +83,7 @@ public class AdHocCustomerHandler {
 	 * @return the local reply
 	 */
 	private LocalReply translateReply(InternalReply iReply) {
-		return new LocalReply(replyId, iReply.getDestination(), iReply.getHops());
+		return new LocalReply(replyId, iReply.getResultDestination(), iReply.getHops());
 	}
 
 }

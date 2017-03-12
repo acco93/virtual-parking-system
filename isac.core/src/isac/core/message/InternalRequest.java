@@ -32,4 +32,11 @@ public class InternalRequest {
 		return hops;
 	}
 
+	@Override
+	public String toString() {
+		return "InternalRequest [from=" + from + ", request=" + request + ", id=" + id + ", hops=" + hops + "]";
+	}
+
+	
+	
 }

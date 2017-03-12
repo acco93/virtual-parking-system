@@ -1,6 +1,6 @@
 package isac.environment.main;
 
-import acco.isac.configurator.Configurator;
+import isac.environment.configurator.Configurator;
 
 /**
  * Environment entry point.

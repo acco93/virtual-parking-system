@@ -83,7 +83,7 @@ public class ServerDaemon {
 			e.printStackTrace();
 		}
 
-		Logger.getInstance().info("waiting for server heartbeat ...");
+
 	}
 
 }

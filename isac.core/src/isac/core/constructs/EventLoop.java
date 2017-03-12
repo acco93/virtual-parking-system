@@ -15,9 +15,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 public abstract class EventLoop<T> extends Thread {
 
 	private BlockingQueue<T> queue;
+	private volatile boolean stopped;
 
 	public EventLoop() {
 		this.queue = new LinkedBlockingQueue<>();
+		this.stopped = false;
 	}
 
 	/**
@@ -45,7 +47,7 @@ public abstract class EventLoop<T> extends Thread {
 			event = this.queue.take();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 
 		return event;
@@ -54,9 +56,14 @@ public abstract class EventLoop<T> extends Thread {
 	@Override
 	public void run() {
 
-		while (true) {
+		while (!stopped) {
 
 			T event = this.get();
+
+			if (stopped) {
+				break;
+			}
+
 			process(event);
 		}
 
@@ -68,5 +75,11 @@ public abstract class EventLoop<T> extends Thread {
 	 * @param event
 	 */
 	protected abstract void process(T event);
+
+	public void disable() {
+		this.stopped = true;
+		this.interrupt();
+
+	}
 
 }

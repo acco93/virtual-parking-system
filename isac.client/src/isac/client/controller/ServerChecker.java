@@ -3,6 +3,7 @@ package isac.client.controller;
 import java.util.Date;
 
 import isac.client.model.Storage;
+import isac.core.log.Logger;
 
 public class ServerChecker extends Thread {
 
@@ -18,6 +19,8 @@ public class ServerChecker extends Thread {
 	@Override
 	public void run() {
 
+		Logger.getInstance().info("started");
+		
 		while (true) {
 
 			long time = Storage.getInstance().getServerHeartbeat();
