@@ -4,13 +4,14 @@
 \pagestyle{fancy}
 \usepackage[final]{graphicx}
 \usepackage{subcaption}
+\usepackage{hyperref}
 
 
 
 %Gummi|065|=)
 \title{\textbf{Virtual Parking System}}
-\author{Luca Accorsi}
-\date{}
+\author{Luca Accorsi 0000763821}
+\date{\today}
 \begin{document}
 
 \maketitle
@@ -146,7 +147,7 @@ The UML diagrams in Figure 7 describe the structure dimension of a client. The m
 The UML diagrams in Figure 8 describe the structure dimension of the server application. The main elements are:
 \begin{figure}
   \centering
-	\includegraphics[scale=0.8]{serverUML}
+	\includegraphics[scale=0.65]{serverUML}
   \caption{Server UML structure diagram}
 \end{figure}
 \begin{itemize}
@@ -162,7 +163,7 @@ The UML diagrams in Figure 8 describe the structure dimension of the server appl
 The system lives in a virtual world, the environment should represent this world. The UML diagrams in Figure 9 describe the structure dimension of the environment. The main elements are:
 \begin{figure}
   \centering
-	\includegraphics[scale=0.8]{environmentUML}
+	\includegraphics[scale=0.65]{environmentUML}
   \caption{Environment UML structure diagram}
 \end{figure}
 \begin{itemize}
@@ -174,6 +175,80 @@ The system lives in a virtual world, the environment should represent this world
 The environment could be easily defined from a textual file using the \emph{Configurator} class (not displayed in the above UML diagram). The environment software layer provides also a simple command line interpreter that could be used to replace broken sensors.
 
 \subsection{Facing complexity aspects}
-A message oriented middleware MOM (RabbitMQ) has been adopted to solve the application integration problems, it provides space-temporal-referential decoupling thanks to the channel abstraction. Each sub-system knows which channel will be used and for which purpose. The messages has been defined in JSON that is a standard format for defining the syntax of a message, this way applications interoperability should be granted independently from the programming language adopted. One of the drawbacks of message oriented programming consists in the definition of callbacks to handle messages reception. To avoid concurrency problems when it was necessary to update shared data structures an event loop structure has been adopted to handle one message at a time in a FIFO fashion. The local interactions between sensors give rise to the emergent properties of searching for a position in a distributed system. Components may fail, if a sensor broke the system allows to easily replace it without stopping the whole system. Also the server may fail, if it happens clients could use local interactions with sensor until a new server instance is online. A broken server could be replace with a working one in every moment without having to reboot the whole system. This is possible thanks the indirection layer provided by channels of the MOM.
+A message oriented middleware MOM (RabbitMQ) has been adopted to solve the application integration problems, it provides space-temporal-referential decoupling thanks to the channel abstraction. It is assumed that each sub-system knows which channel will be used and for which purpose. The messages has been defined in JSON that is a standard format for defining the syntax of a message, this way applications interoperability should be granted independently from the programming language adopted. It is also assumed that sub-systems know the protocols (message sequences) to be used to interact with each other. One of the drawbacks of message oriented programming consists in the definition of callbacks to handle messages reception (polling could be used as alternative but it has been immediately discarded due to poor efficiency). To avoid concurrency problems when it was necessary to update shared data structures an event loop structure has been adopted to handle one message at a time in a FIFO fashion. Components may fail, if a sensor broke, the system allows to easily replace it without stopping others. Also the server may fail, if it happens clients could use local interactions with sensor until a new server instance is online. A broken server could be replace with a working one in every moment without having to reboot the whole system. This is possible thanks the indirection layer provided by the channel abstraction provided by the MOM. Local interactions between sensors give rise to the emergent properties of searching for a position in a distributed system.
+
+\section{Running the system}
+First of all to run the system it is required a machine with RabbitMQ installed. The system source code is available at \url{https://bitbucket.org/acco93/virtual-parking-system}, it is composed of four eclipse projects:
+\begin{itemize}
+\item \emph{isac.environment}: it provides the environment and sersors layers.
+\item \emph{isac.server}: it provides the server application.
+\item \emph{isac.client}: it provides the client application.
+\item \emph{isac.core}: it provides some cross-projects features, for eg. data structures, algorithms, messages definition, etc... .
+\end{itemize}
+
+\subsection{How to set up the projects (in Eclipse) ?}
+\begin{enumerate}
+\item Download the above projects and \emph{isac.libs}.
+\item Import them in the Eclipse workspace.
+\item Run \emph{gradle eclipse} in isac.client, isac.server, isac.environment to set up dependencies.
+\item Run \emph{gradle build} in isac.client, isac.server, isac.environment if you want to create runnable jars (they will be created in isac.XXX/build/distributions).
+\end{enumerate}
+
+\section{Running example}
+Once runnable jars has been created (or projects has been correctly imported in Eclipse) it is possible to run the system. The order in which sub-systems are executed is not important. 
+\subsection{Running the environment}
+To run the environment it must be provided two additional parameters: the map that has to be loaded and the MOM infrastructure ip. The map is a textual file that contains a grid of \emph{x} (street block) or \emph{s} (sensor block) characters separated by a blank space. For example the following is a feasible map file that could be found in isac.environment/maps/example.txt:
+\begin{verbatim}
+x x x x x x x x x x s
+s s s s s x s s s x s
+s x s s s x s x s x s
+s x x x x x s x s x s
+s x s s s s s x s x s
+s s s s s s s x s x x
+x x x x x x x x s s x
+s s s s s s s x x x x
+\end{verbatim}
+Figure 10 shows a correctly started environment. It is possible to add a (or replace a broken) sensor runtime using the \emph{add} command with the following signature:
+\begin{verbatim}
+add sensorUniqueName rowPosition columnPosition
+\end{verbatim}
+For example:
+\begin{verbatim}
+add S1 7 5
+\end{verbatim}
+If a broken sensor is replaced, \emph{sensorUniqueName} should take the previous sensor name.
+\begin{figure}
+  \centering
+	\includegraphics[scale=0.5]{envScreen}
+  \caption{Environment sub-system}
+\end{figure}
+
+\subsection{Running the server}
+To run the server it must be provided an additional parameter, that is the MOM infrastructure ip. The server, once started, begins to receive sensor messages that will be used to build the park view as could be seen in Figure 11. Parking places could assume three different colors: green (free parking place), orange (busy parking place), red (broken sensor).
+\begin{figure}
+  \centering
+	\includegraphics[scale=0.45]{serverParkScreen}
+  \caption{Server park}
+\end{figure}
+The graph tab displayed in Figure 12 shows the connections between street nodes and sensor nodes. This is the same graph where client applications will run breadth-first search and the Dijkstra algorithm to satisfy their needs. It shows also the sensors server representation refresh rates. A bright green circle means that a sensor message has been recently received, while a bright red one means that a lot of time has passed since the last message has arrived. Intermediate shades means intermediate time spans. A broken sensor has an always red circle. 
+\begin{figure}
+  \centering
+	\includegraphics[scale=0.45]{serverGraphScreen}
+  \caption{Server graph}
+\end{figure}
+The server application could be interrupted (closed) and restarted in any moment.
+\subsection{Running the client}
+To run a client it must be provided an additional parameter, that is the MOM infrastructure ip. The client shows the park map if there exists an available server, see Figure 13. The map shows available parking places in green and busy ones in orange. The white circle represents the driver. If the server is not available, a simple textual panel is displayed, as could be seen in Figure 14. It shows the air distance between the user position and the required service result.
+\begin{figure}
+  \centering
+	\includegraphics[scale=0.6]{clientServerOn}
+  \caption{Car location in a client application when complete information are available}
+\end{figure}
+
+\begin{figure}
+  \centering
+	\includegraphics[scale=0.6]{clientServerOff}
+  \caption{Car location in a client application when just partial information are available}
+\end{figure}
 
 \end{document}

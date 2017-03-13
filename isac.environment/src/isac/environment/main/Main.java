@@ -1,6 +1,7 @@
 package isac.environment.main;
 
 import isac.core.log.Logger;
+import isac.environment.cli.CommandLineInterpreter;
 import isac.environment.configurator.Configurator;
 
 /**
@@ -29,6 +30,9 @@ public class Main {
 
 		if (!ok) {
 			Logger.getInstance().error("Something has gone wrong ...");
+		} else {
+			CommandLineInterpreter cli = new CommandLineInterpreter();
+			cli.start();
 		}
 
 	}

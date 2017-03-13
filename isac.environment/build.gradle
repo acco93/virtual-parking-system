@@ -56,3 +56,24 @@ distributions {
         baseName = "$mainClassName"
     }
 }
+/*
+---------------------------------------------------------
+PREPARE DISTRIBUTION
+---------------------------------------------------------
+*/
+task copyInfoForDist << {
+	copy {
+		from 'maps'
+		into 'src/dist/maps/'
+		include '**/*.*'
+ 	}
+}
+
+task cleanDistDir(type: Delete) {
+	  delete 'src/dist'
+      
+  }
+
+jar.dependsOn cleanDistDir
+jar.dependsOn copyInfoForDist
+

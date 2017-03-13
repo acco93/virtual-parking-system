@@ -1,7 +1,6 @@
 package isac.environment;
 
 import isac.core.data.Position;
-import isac.environment.cli.CommandLineInterpreter;
 import isac.environment.resources.ER;
 import isac.environment.sensor.ParkingSensor;
 
@@ -22,8 +21,6 @@ public class Environment {
 	private boolean[][] carsLayer;
 
 	private EnvironmentDaemon daemon;
-
-	private CommandLineInterpreter cli;
 
 	/**
 	 * 
@@ -52,9 +49,6 @@ public class Environment {
 		 */
 		this.daemon = new EnvironmentDaemon();
 		this.daemon.start();
-
-		this.cli = new CommandLineInterpreter();
-		this.cli.start();
 	}
 
 	/**

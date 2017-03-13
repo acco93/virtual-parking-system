@@ -37,7 +37,7 @@ public class Configurator {
 		this.lineNumber = 0;
 		this.lineDimension = 0;
 
-		Logger.getInstance().info("file path setted: " + filePath);
+		Logger.getInstance().info("file path set: " + filePath);
 
 	}
 
