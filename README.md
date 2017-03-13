@@ -44,8 +44,6 @@ The system should face the following aspects:
 
 * the components are situated in a (virtual) world
 
-* there are some reactivity requirements
-
 How to deal with the previous aspects?
 
 * strong modularity, rigid boundaries definition
@@ -59,13 +57,15 @@ How to deal with the previous aspects?
 
 ### How do I get set up? ###
 
+0. Install and start RabbitMQ services
+
 1. Download the [source](https://bitbucket.org/acco93/virtual-parking-system/src)
  
 2. Import the projects in Eclipse
 
 3. Run gradle eclipse in isac.client, isac.server, isac.environment to set up dependencies
 
-4. Add isac.core as project dependency on each of the previous mentioned projects
+4. Run gradle build in isac.client, isac.server, isac.environment if you want to create a runnable jar
 
 ## Technologies ##
 
