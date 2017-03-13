@@ -57,6 +57,8 @@ How to deal with the previous aspects?
 
 ### How do I get set up? ###
 
+0. Install and start RabbitMQ services
+
 1. Download the [source](https://bitbucket.org/acco93/virtual-parking-system/src)
  
 2. Import the projects in Eclipse
