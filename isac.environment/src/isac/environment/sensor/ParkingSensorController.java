@@ -13,6 +13,7 @@ import isac.core.log.Logger;
 import isac.core.message.SensorMessage;
 import isac.core.sharedknowledge.R;
 import isac.environment.Environment;
+import isac.environment.resources.ER;
 
 /**
  * 
@@ -81,7 +82,7 @@ public class ParkingSensorController extends AbstractSensorController {
 		try {
 
 			ConnectionFactory factory = new ConnectionFactory();
-			factory.setHost("localhost");
+			factory.setHost(ER.MOM_IP);
 			Connection connection;
 			connection = factory.newConnection();
 			channel = connection.createChannel();

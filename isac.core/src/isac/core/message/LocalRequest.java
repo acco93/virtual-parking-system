@@ -2,6 +2,13 @@ package isac.core.message;
 
 import isac.core.data.Position;
 
+/**
+ * 
+ * Client to sensor request.
+ * 
+ * @author acco
+ *
+ */
 public class LocalRequest {
 
 	private LocalRequestType type;

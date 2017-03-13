@@ -25,9 +25,11 @@ public class PublisherDaemon extends Thread {
 	private static final int EVENT_SEMAPHORE = 0;
 	private Channel channel;
 	private Semaphore semaphore;
+	private String momIp;
 
-	public PublisherDaemon() {
+	public PublisherDaemon(String momIp) {
 
+		this.momIp = momIp;
 		Logger.getInstance().info("started");
 
 		this.semaphore = new Semaphore(EVENT_SEMAPHORE);
@@ -39,10 +41,10 @@ public class PublisherDaemon extends Thread {
 
 		try {
 			ConnectionFactory factory = new ConnectionFactory();
-			factory.setHost("localhost");
+			factory.setHost(momIp);
 			Connection connection = factory.newConnection();
 			channel = connection.createChannel();
-			channel.exchangeDeclare(R.EXCHANGE_NAME, "fanout");
+			channel.exchangeDeclare(R.SERVER_TO_CLIENTS_CHANNEL, "fanout");
 		} catch (IOException | TimeoutException e) {
 			Logger.getInstance().error(e.getMessage());
 		}
@@ -78,7 +80,7 @@ public class PublisherDaemon extends Thread {
 
 			String json = gson.toJson(Storage.getInstance().getSensors());
 
-			channel.basicPublish(R.EXCHANGE_NAME, "", null, json.getBytes());
+			channel.basicPublish(R.SERVER_TO_CLIENTS_CHANNEL, "", null, json.getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

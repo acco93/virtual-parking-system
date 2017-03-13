@@ -4,12 +4,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import acco.isac.algorithms.DijkstraAlgorithm;
-import acco.isac.algorithms.NearestFreePark;
 import isac.client.controller.EnvironmentInteraction;
 import isac.client.controller.LocalInteraction;
 import isac.client.model.Storage;
 import isac.client.view.UserInterface;
+import isac.core.algorithms.DijkstraAlgorithm;
+import isac.core.algorithms.NearestFreePark;
 import isac.core.data.Position;
 import isac.core.datastructures.Graph;
 import isac.core.datastructures.Vertex;
@@ -30,7 +30,7 @@ public class ClientUtils {
 	private UserInterface ui;
 	private LocalInteraction localInteraction;
 
-	public ClientUtils(UserInterface ui) {
+	public ClientUtils(UserInterface ui, String momIp) {
 
 		this.ui = ui;
 
@@ -46,9 +46,9 @@ public class ClientUtils {
 		/*
 		 * Environment interaction "simulator"
 		 */
-		this.envInteraction = new EnvironmentInteraction();
+		this.envInteraction = new EnvironmentInteraction(momIp);
 
-		this.localInteraction = new LocalInteraction(this.ui);
+		this.localInteraction = new LocalInteraction(this.ui, momIp);
 	}
 
 	/**
@@ -87,8 +87,6 @@ public class ClientUtils {
 		boolean alreadyParked = this.storage.getCarPosition().isPresent();
 
 		if (!alreadyParked) {
-
-			// please park in parking place <.<
 
 			envInteraction.park(this.storage.getUserPosition());
 

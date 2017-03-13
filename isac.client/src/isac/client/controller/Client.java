@@ -21,7 +21,7 @@ public class Client extends ActiveEntity {
 	private ServerChecker serverChecker;
 	private ClientUtils utils;
 
-	public Client() {
+	public Client(String momIp) {
 
 		/*
 		 * User key listener.
@@ -29,10 +29,10 @@ public class Client extends ActiveEntity {
 		UserListener userListener = new UserListener(this);
 		this.ui = new UserInterface(userListener);
 
-		this.utils = new ClientUtils(this.ui);
+		this.utils = new ClientUtils(this.ui, momIp);
 
-		this.subscriberDaemon = new SubscriberDaemon(utils);
-		this.serverDaemon = new ServerDaemon();
+		this.subscriberDaemon = new SubscriberDaemon(utils, momIp);
+		this.serverDaemon = new ServerDaemon(momIp);
 		this.serverChecker = new ServerChecker(this);
 
 		Logger.getInstance().info("working ...");
@@ -111,6 +111,9 @@ public class Client extends ActiveEntity {
 		utils.locateCar();
 	}
 
+	/**
+	 * Repaint the map.
+	 */
 	public void repaintMap() {
 		this.ui.repaintMap();
 	}

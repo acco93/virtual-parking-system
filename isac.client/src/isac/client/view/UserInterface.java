@@ -110,20 +110,40 @@ public class UserInterface extends JFrame {
 
 	}
 
+	/**
+	 * Set the destination position in local interactions.
+	 * 
+	 * @param queriedPosition
+	 */
 	public void setQueriedPosition(String queriedPosition) {
 		this.mapViewer.setQueriedPosition(queriedPosition);
 		this.repaintMap();
 	}
 
+	/**
+	 * Set the air distance value in local interactions.
+	 * 
+	 * @param queriedPosition
+	 */
 	public void setAirDistanceString(String airDistanceString) {
 		this.mapViewer.setAirDistanceString(airDistanceString);
 		this.repaintMap();
 	}
 
+	/**
+	 * Set the air distance path in local interactions.
+	 * 
+	 * @param queriedPosition
+	 */
 	public void setAirPath(String airPath) {
 		this.mapViewer.setAirPath(airPath);
 	}
 
+	/**
+	 * Reset the local interactions display.
+	 * 
+	 * @param queriedPosition
+	 */
 	public void resetDisplay() {
 		this.mapViewer.resetDisplay();
 

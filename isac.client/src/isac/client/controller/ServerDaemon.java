@@ -16,12 +16,21 @@ import isac.client.model.Storage;
 import isac.core.log.Logger;
 import isac.core.sharedknowledge.R;
 
+/**
+ * It receives pings from the server when the latter is correctly working and
+ * updates a variables that maintains the last reception time.
+ * 
+ * @author acco
+ *
+ */
 public class ServerDaemon {
 
 	private Channel channel;
 	private String queueName;
+	private String momIp;
 
-	public ServerDaemon() {
+	public ServerDaemon(String momIp) {
+		this.momIp = momIp;
 		Logger.getInstance().info("started");
 		this.setupRabbitMQ();
 		this.requestParkInfo();
@@ -31,7 +40,7 @@ public class ServerDaemon {
 		try {
 
 			ConnectionFactory factory = new ConnectionFactory();
-			factory.setHost("localhost");
+			factory.setHost(momIp);
 			Connection connection;
 			connection = factory.newConnection();
 			Channel requestChannel = connection.createChannel();
@@ -48,7 +57,7 @@ public class ServerDaemon {
 
 		try {
 			ConnectionFactory factory = new ConnectionFactory();
-			factory.setHost("localhost");
+			factory.setHost(momIp);
 			Connection connection;
 			connection = factory.newConnection();
 			channel = connection.createChannel();
@@ -82,7 +91,6 @@ public class ServerDaemon {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 
 	}
 

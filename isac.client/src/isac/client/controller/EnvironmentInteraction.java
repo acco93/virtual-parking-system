@@ -13,12 +13,20 @@ import isac.core.data.Position;
 import isac.core.message.EnvironmentMessage;
 import isac.core.sharedknowledge.R;
 
+/**
+ * 
+ * It handles the interaction with the virtual environment.
+ * 
+ * @author acco
+ *
+ */
 public class EnvironmentInteraction {
 
 	private Channel channel;
+	private String momIp;
 
-	public EnvironmentInteraction() {
-
+	public EnvironmentInteraction(String momIp) {
+		this.momIp = momIp;
 		this.setupRabbitMQ();
 
 	}
@@ -28,7 +36,7 @@ public class EnvironmentInteraction {
 		try {
 
 			ConnectionFactory factory = new ConnectionFactory();
-			factory.setHost("localhost");
+			factory.setHost(momIp);
 			Connection connection;
 			connection = factory.newConnection();
 			channel = connection.createChannel();
@@ -40,10 +48,20 @@ public class EnvironmentInteraction {
 
 	}
 
+	/**
+	 * Occupy a physical parking position.
+	 * 
+	 * @param position
+	 */
 	public void park(Position position) {
 		this.messageToEnvironment(position, true);
 	}
 
+	/**
+	 * Release a previously occupied parking position.
+	 * 
+	 * @param position
+	 */
 	public void remove(Position position) {
 		this.messageToEnvironment(position, false);
 	}

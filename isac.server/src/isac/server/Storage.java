@@ -7,6 +7,13 @@ import isac.core.data.SensorRepresentation;
 import isac.core.datastructures.Graph;
 import isac.core.datastructures.Vertex;
 
+/**
+ * 
+ * Server internal knowledge.
+ * 
+ * @author acco
+ *
+ */
 public class Storage {
 
 	private static Storage instance = new Storage();

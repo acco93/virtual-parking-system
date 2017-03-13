@@ -1,5 +1,11 @@
 package isac.core.constructs;
 
+/**
+ * Thread wrapper.
+ * 
+ * @author acco
+ *
+ */
 public abstract class ActiveEntity extends Thread {
 
 	public ActiveEntity() {
@@ -13,6 +19,4 @@ public abstract class ActiveEntity extends Thread {
 
 	protected abstract void work();
 
-	
-	
 }

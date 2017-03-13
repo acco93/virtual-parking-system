@@ -17,6 +17,7 @@ import isac.core.constructs.EventLoop;
 import isac.core.data.Position;
 import isac.core.message.LocalRequest;
 import isac.core.sharedknowledge.R;
+import isac.environment.resources.ER;
 
 /**
  * 
@@ -47,7 +48,7 @@ public class LocalInteractionHandler extends EventLoop<LocalRequest> {
 
 		try {
 			ConnectionFactory factory = new ConnectionFactory();
-			factory.setHost("localhost");
+			factory.setHost(ER.MOM_IP);
 			Connection connection;
 			connection = factory.newConnection();
 			channel = connection.createChannel();

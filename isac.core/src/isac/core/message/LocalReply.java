@@ -2,6 +2,13 @@ package isac.core.message;
 
 import isac.core.data.Position;
 
+/**
+ * 
+ * Sensor to client reply.
+ * 
+ * @author acco
+ *
+ */
 public class LocalReply {
 
 	private Position destination;

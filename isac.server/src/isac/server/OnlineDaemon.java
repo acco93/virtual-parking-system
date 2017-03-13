@@ -20,9 +20,11 @@ import isac.core.sharedknowledge.R;
 public class OnlineDaemon extends Thread {
 
 	private Channel channel;
+	private String momIp;
 
-	public OnlineDaemon() {
-
+	public OnlineDaemon(String momIp) {
+		
+		this.momIp = momIp;
 		Logger.getInstance().info("started");
 
 		this.setupMqtt();
@@ -32,7 +34,7 @@ public class OnlineDaemon extends Thread {
 
 		try {
 			ConnectionFactory factory = new ConnectionFactory();
-			factory.setHost("localhost");
+			factory.setHost(momIp);
 			Connection connection = factory.newConnection();
 			channel = connection.createChannel();
 			channel.exchangeDeclare(R.SERVER_HEARTBEAT_CHANNEL, "fanout");

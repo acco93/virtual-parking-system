@@ -162,10 +162,20 @@ public class Storage {
 
 	}
 
+	/**
+	 * Set the serverOn flag.
+	 * 
+	 * @param isOn
+	 */
 	public synchronized void setServerOn(boolean isOn) {
 		this.serverOn = isOn;
 	}
 
+	/**
+	 * Retrieve the serverOn flag.
+	 * 
+	 * @return
+	 */
 	public synchronized boolean isServerOn() {
 		return this.serverOn;
 	}

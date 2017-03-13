@@ -13,6 +13,13 @@ import javax.swing.SwingUtilities;
 import isac.core.data.SensorRepresentation;
 import isac.server.Storage;
 
+/**
+ * 
+ * Show the park status in terms of busy/free places and broken sensors.
+ * 
+ * @author acco
+ *
+ */
 public class ParkViewer extends JPanel {
 
 	private static final int OFFSET = 5;

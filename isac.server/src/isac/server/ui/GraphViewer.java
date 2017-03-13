@@ -17,6 +17,13 @@ import isac.core.datastructures.Vertex;
 import isac.core.sharedknowledge.R;
 import isac.server.Storage;
 
+/**
+ * 
+ * Shows the interconnections graph between sensors and street nodes. It also shows the sensors refresh time.
+ * 
+ * @author acco
+ *
+ */
 public class GraphViewer extends JPanel {
 
 	private static final long serialVersionUID = 1L;

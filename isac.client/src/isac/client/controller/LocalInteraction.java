@@ -24,6 +24,13 @@ import isac.core.message.LocalRequest;
 import isac.core.message.LocalRequestType;
 import isac.core.sharedknowledge.R;
 
+/**
+ * It sends and receives messages to and from sensors when the server is not
+ * available.
+ * 
+ * @author acco
+ *
+ */
 public class LocalInteraction {
 
 	private UserInterface ui;
@@ -31,13 +38,14 @@ public class LocalInteraction {
 	private String privateReplyChannel;
 	private int requestIndex;
 	private HashMap<String, Integer> requestsId;
+	private String momIp;
 
-	public LocalInteraction(UserInterface ui) {
-
+	public LocalInteraction(UserInterface ui, String momIp) {
+		this.momIp = momIp;
 		this.ui = ui;
 		this.requestIndex = 0;
 		this.privateReplyChannel = UUID.randomUUID().toString();
-		this.requestsId = new HashMap<String, Integer>();
+		this.requestsId = new HashMap<>();
 		this.setupRabbitMQ();
 	}
 
@@ -45,7 +53,7 @@ public class LocalInteraction {
 
 		try {
 			ConnectionFactory factory = new ConnectionFactory();
-			factory.setHost("localhost");
+			factory.setHost(momIp);
 			Connection connection = factory.newConnection();
 			channel = connection.createChannel();
 			channel.exchangeDeclare(R.LOCAL_INTERACTIONS_CHANNEL, "fanout");
@@ -88,6 +96,9 @@ public class LocalInteraction {
 
 			}
 
+			/*
+			 * Define a string of steps to reach the destination (air path).
+			 */
 			private String computeAirPath(Position source, Position destination) {
 
 				boolean toRight = false;
@@ -142,10 +153,16 @@ public class LocalInteraction {
 
 	}
 
+	/**
+	 * Send a search near free parking place request.
+	 */
 	public void searchNearFreePark() {
 		this.generalRequest(LocalRequestType.PARK);
 	}
 
+	/**
+	 * Send a locate my car request.
+	 */
 	public void locateParkedCar() {
 		this.generalRequest(LocalRequestType.LOCATE);
 	}

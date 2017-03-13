@@ -1,8 +1,8 @@
 package isac.environment;
 
 import isac.core.data.Position;
-import isac.core.sharedknowledge.R;
-import isac.environment.interpreter.CommandLineInterpreter;
+import isac.environment.cli.CommandLineInterpreter;
+import isac.environment.resources.ER;
 import isac.environment.sensor.ParkingSensor;
 
 /**
@@ -33,8 +33,8 @@ public class Environment {
 	 * @param rows
 	 */
 	public Environment() {
-		this.columns = R.ENV_COLUMNS;
-		this.rows = R.ENV_ROWS;
+		this.columns = ER.ENV_COLUMNS;
+		this.rows = ER.ENV_ROWS;
 
 		this.sensorsLayer = new Cell[this.rows][this.columns];
 		this.carsLayer = new boolean[this.rows][this.columns];

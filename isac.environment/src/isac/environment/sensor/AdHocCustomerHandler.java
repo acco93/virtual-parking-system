@@ -11,6 +11,7 @@ import com.rabbitmq.client.ConnectionFactory;
 
 import isac.core.message.InternalReply;
 import isac.core.message.LocalReply;
+import isac.environment.resources.ER;
 
 /**
  * 
@@ -41,7 +42,7 @@ public class AdHocCustomerHandler {
 		try {
 
 			ConnectionFactory factory = new ConnectionFactory();
-			factory.setHost("localhost");
+			factory.setHost(ER.MOM_IP);
 			Connection connection;
 			connection = factory.newConnection();
 			channel = connection.createChannel();

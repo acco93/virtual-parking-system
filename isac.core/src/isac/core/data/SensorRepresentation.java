@@ -6,7 +6,7 @@ import isac.core.sharedknowledge.R;
 
 /**
  * 
- * A simple server-side sensor representation.
+ * A simple sensor representation.
  * 
  * @author acco
  *

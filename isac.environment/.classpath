@@ -3,10 +3,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/home/acco/.gradle/caches/modules-2/files-2.1/com.rabbitmq/amqp-client/4.1.0/e38f47dbf708dfdb310288efe2e4c41a8bf7462f/amqp-client-4.1.0.jar" sourcepath="/home/acco/.gradle/caches/modules-2/files-2.1/com.rabbitmq/amqp-client/4.1.0/185e3ab3c4a52093a16a74a93c997181f39bfa4b/amqp-client-4.1.0-sources.jar"/>
-	<classpathentry kind="lib" path="/home/acco/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/1.7.2/112366d8158749e25532ebce162232c6e0fb20a5/gson-1.7.2.jar" sourcepath="/home/acco/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/1.7.2/a6fe3006df46174a9c1c56b3c51357b9bfde5874/gson-1.7.2-sources.jar"/>
-	<classpathentry kind="lib" path="/home/acco/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-simple/1.6.2/95bfd2d7c46bca76886989fcbb1d1b58dfbfd0a6/slf4j-simple-1.6.2.jar" sourcepath="/home/acco/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-simple/1.6.2/5521f3d67a16e9df9c136fa44f8167f01b817388/slf4j-simple-1.6.2-sources.jar"/>
-	<classpathentry kind="lib" path="/home/acco/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.21/139535a69a4239db087de9bab0bee568bf8e0b70/slf4j-api-1.7.21.jar" sourcepath="/home/acco/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.21/f285ac123f201fb4b028bac556928d7cf527ef48/slf4j-api-1.7.21-sources.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/isac.core"/>
 	<classpathentry kind="output" path="bin"/>
+	<classpathentry sourcepath="/home/acco/.gradle/caches/modules-2/files-2.1/com.rabbitmq/amqp-client/4.1.0/185e3ab3c4a52093a16a74a93c997181f39bfa4b/amqp-client-4.1.0-sources.jar" kind="lib" path="/home/acco/.gradle/caches/modules-2/files-2.1/com.rabbitmq/amqp-client/4.1.0/e38f47dbf708dfdb310288efe2e4c41a8bf7462f/amqp-client-4.1.0.jar"/>
+	<classpathentry sourcepath="/home/acco/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/1.7.2/a6fe3006df46174a9c1c56b3c51357b9bfde5874/gson-1.7.2-sources.jar" kind="lib" path="/home/acco/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/1.7.2/112366d8158749e25532ebce162232c6e0fb20a5/gson-1.7.2.jar"/>
+	<classpathentry sourcepath="/home/acco/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-simple/1.6.2/5521f3d67a16e9df9c136fa44f8167f01b817388/slf4j-simple-1.6.2-sources.jar" kind="lib" path="/home/acco/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-simple/1.6.2/95bfd2d7c46bca76886989fcbb1d1b58dfbfd0a6/slf4j-simple-1.6.2.jar"/>
+	<classpathentry sourcepath="/home/acco/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.21/f285ac123f201fb4b028bac556928d7cf527ef48/slf4j-api-1.7.21-sources.jar" kind="lib" path="/home/acco/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.21/139535a69a4239db087de9bab0bee568bf8e0b70/slf4j-api-1.7.21.jar"/>
+	<classpathentry kind="lib" path="/home/acco/Desktop/isac workspace/isac.libs/isac.core.jar"/>
 </classpath>

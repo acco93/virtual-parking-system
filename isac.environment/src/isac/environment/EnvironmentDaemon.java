@@ -17,6 +17,7 @@ import com.rabbitmq.client.Envelope;
 import isac.core.constructs.EventLoop;
 import isac.core.message.EnvironmentMessage;
 import isac.core.sharedknowledge.R;
+import isac.environment.resources.ER;
 import isac.environment.sensor.ParkingSensor;
 
 /**
@@ -37,7 +38,7 @@ public class EnvironmentDaemon extends EventLoop<EnvironmentMessage> {
 	private void setupRabbitMQ() {
 		try {
 			ConnectionFactory factory = new ConnectionFactory();
-			factory.setHost("localhost");
+			factory.setHost(ER.MOM_IP);
 			Connection connection;
 			connection = factory.newConnection();
 			channel = connection.createChannel();

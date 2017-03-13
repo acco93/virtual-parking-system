@@ -2,13 +2,20 @@ package isac.core.message;
 
 import isac.core.data.Position;
 
+/**
+ * 
+ * Sensor to server message.
+ * 
+ * @author acco
+ *
+ */
 public class SensorMessage {
 
 	private String sensorId;
 	private Position position;
 	private boolean free;
 
-	public SensorMessage(String sensorId, Position position, boolean free){
+	public SensorMessage(String sensorId, Position position, boolean free) {
 		this.sensorId = sensorId;
 		this.position = position;
 		this.free = free;
@@ -25,7 +32,5 @@ public class SensorMessage {
 	public boolean isFree() {
 		return free;
 	}
-	
-	
-	
+
 }

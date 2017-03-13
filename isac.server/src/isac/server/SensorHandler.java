@@ -28,8 +28,11 @@ public class SensorHandler {
 
 	private Channel channel;
 	private SensorMessageProcessor msgProcessor;
+	private String momIp;
 
-	public SensorHandler(PublisherDaemon publisherDaemon) {
+	public SensorHandler(PublisherDaemon publisherDaemon, String momIp) {
+
+		this.momIp = momIp;
 
 		Logger.getInstance().info("started");
 
@@ -44,7 +47,7 @@ public class SensorHandler {
 
 		try {
 			ConnectionFactory factory = new ConnectionFactory();
-			factory.setHost("localhost");
+			factory.setHost(momIp);
 			Connection connection;
 			connection = factory.newConnection();
 			channel = connection.createChannel();

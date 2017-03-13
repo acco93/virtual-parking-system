@@ -18,14 +18,14 @@ public class Server extends ActiveEntity {
 	private PublisherDaemon publisherDaemon;
 	private OnlineDaemon onlineDaemon;
 
-	public Server() {
+	public Server(String momIp) {
 
 		Logger.getInstance().info("started");
 
-		this.onlineDaemon = new OnlineDaemon();
-		this.publisherDaemon = new PublisherDaemon();
-		this.sensorsHandler = new SensorHandler(this.publisherDaemon);
-		this.requestsHandler = new RequestsHandler(this.publisherDaemon);
+		this.onlineDaemon = new OnlineDaemon(momIp);
+		this.publisherDaemon = new PublisherDaemon(momIp);
+		this.sensorsHandler = new SensorHandler(this.publisherDaemon, momIp);
+		this.requestsHandler = new RequestsHandler(this.publisherDaemon, momIp);
 
 		@SuppressWarnings("unused")
 		ServerUserInterface ui = new ServerUserInterface();

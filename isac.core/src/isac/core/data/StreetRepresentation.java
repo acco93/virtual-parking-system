@@ -1,5 +1,12 @@
 package isac.core.data;
 
+/**
+ * 
+ * Simple street representation.
+ * 
+ * @author acco
+ *
+ */
 public class StreetRepresentation implements EnvironmentInfo {
 
 	private Position position;

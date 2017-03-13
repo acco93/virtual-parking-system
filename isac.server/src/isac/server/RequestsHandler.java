@@ -29,8 +29,10 @@ public class RequestsHandler extends EventLoop<Boolean> {
 
 	private PublisherDaemon publisherDaemon;
 	private Channel channel;
+	private String momIp;
 
-	public RequestsHandler(PublisherDaemon publisherDaemon) {
+	public RequestsHandler(PublisherDaemon publisherDaemon, String momIp) {
+		this.momIp = momIp;
 		Logger.getInstance().info("started");
 		this.publisherDaemon = publisherDaemon;
 
@@ -41,7 +43,7 @@ public class RequestsHandler extends EventLoop<Boolean> {
 
 		try {
 			ConnectionFactory factory = new ConnectionFactory();
-			factory.setHost("localhost");
+			factory.setHost(momIp);
 			Connection connection;
 			connection = factory.newConnection();
 			channel = connection.createChannel();

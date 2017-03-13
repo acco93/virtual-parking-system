@@ -8,15 +8,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 import isac.core.log.Logger;
-import isac.core.sharedknowledge.R;
 import isac.environment.Environment;
+import isac.environment.resources.ER;
 import isac.environment.sensor.ParkingSensor;
 import isac.environment.sensor.ParkingSensorController;
 
 /**
  * 
  * Define the environment from a file. The file should contain an (m x n) matrix
- * of symbols: - s: for a parking sensor element - x: for a street element
+ * of symbols: s: for a parking sensor element, x: for a street element
  * 
  * @author acco
  *
@@ -27,11 +27,12 @@ public class Configurator {
 	private int lineNumber;
 	private int lineDimension;
 
-	public Configurator(String filePath) {
+	public Configurator(String filePath, String momIp) {
 
 		Logger.getInstance().info("started");
 
 		this.filePath = filePath;
+		ER.MOM_IP = momIp;
 
 		this.lineNumber = 0;
 		this.lineDimension = 0;
@@ -49,15 +50,19 @@ public class Configurator {
 
 		Logger.getInstance().info("trying to load " + this.filePath);
 
-		char[][] charMatrix = this.readFromFile();
+		Character[][] charMatrix = this.readFromFile();
+
+		if (charMatrix == null) {
+			return false;
+		}
 
 		if (lineNumber == 0 || lineDimension == -1) {
 			Logger.getInstance().error("are you trying to load an empty file?");
-			System.exit(1);
+			return false;
 		}
 
-		R.ENV_COLUMNS = lineDimension;
-		R.ENV_ROWS = lineNumber;
+		ER.ENV_COLUMNS = lineDimension;
+		ER.ENV_ROWS = lineNumber;
 
 		char letter = 'A';
 		int inc = 0;
@@ -73,12 +78,13 @@ public class Configurator {
 						inc = 0;
 					}
 					ParkingSensor s = new ParkingSensor(i, j, Character.toString(letter) + "" + inc);
-					new ParkingSensorController(s).start();
+
 					boolean ok = Environment.getInstance().inject(s);
 
 					if (!ok) {
 						Logger.getInstance().error("failed to inject sensor " + i + "," + j);
-
+					} else {
+						new ParkingSensorController(s).start();
 					}
 
 				}
@@ -98,7 +104,7 @@ public class Configurator {
 	 * 
 	 * @return the char matrix
 	 */
-	private char[][] readFromFile() {
+	private Character[][] readFromFile() {
 
 		BufferedReader reader = null;
 
@@ -127,7 +133,7 @@ public class Configurator {
 					// malformed file
 					Logger.getInstance().error("malformed file. Line " + lineNumber + " has " + splittedLine.length
 							+ " characters instead of " + lineDimension);
-					System.exit(1);
+					return null;
 				}
 
 				temporaryStorage.add(splittedLine);
@@ -137,19 +143,23 @@ public class Configurator {
 
 		} catch (IOException e) {
 
-			e.printStackTrace();
+			Logger.getInstance().error(e.getMessage());
+			return null;
 		} finally {
 			try {
-				reader.close();
+				if (reader != null) {
+					reader.close();
+				}
 			} catch (IOException e) {
 
-				e.printStackTrace();
+				Logger.getInstance().error(e.getMessage());
+
 			}
 		}
 
 		// map this strange structure to a char matrix
 
-		char[][] matrix = new char[lineNumber + 1][lineDimension + 1];
+		Character[][] matrix = new Character[lineNumber + 1][lineDimension + 1];
 		for (int i = 0; i < lineNumber; i++) {
 			for (int j = 0; j < lineDimension; j++) {
 				matrix[i][j] = temporaryStorage.get(i)[j].charAt(0);

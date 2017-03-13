@@ -4,6 +4,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * 
+ * Console log implementation.
+ * 
+ * @author acco
+ *
+ */
 public class Logger implements ILogger {
 
 	private static Logger logger = new Logger();
@@ -24,7 +31,7 @@ public class Logger implements ILogger {
 	public void info(String message) {
 		String className = this.retrieveClassName();
 		String date = this.getDate();
-		System.out.println("["+ date + "] [" + className + "] " + message);
+		System.out.println("[" + date + "] [" + className + "] " + message);
 	}
 
 	private String getDate() {
@@ -40,7 +47,7 @@ public class Logger implements ILogger {
 	public void error(String message) {
 		String className = this.retrieveClassName();
 		String date = this.getDate();
-		System.err.println("["+ date + "] [" + className + "] " + message);
+		System.err.println("[" + date + "] [" + className + "] " + message);
 
 	}
 

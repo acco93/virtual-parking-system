@@ -67,12 +67,12 @@ public class MapViewer extends JPanel {
 	}
 
 	private void displayInfo(Graphics g) {
-		
+
 		this.setBackground(Color.DARK_GRAY);
-		
+
 		g.setColor(Color.yellow);
-		
-		g.drawString(":: OFFLINE INFORMATION ::", this.getWidth()/2-75, 20);
+
+		g.drawString(":: OFFLINE INFORMATION ::", this.getWidth() / 2 - 75, 20);
 		g.drawString("Current position: " + this.storage.getUserPosition(), 20, 40);
 
 		this.storage.getCarPosition().ifPresent(p -> {
@@ -204,18 +204,38 @@ public class MapViewer extends JPanel {
 
 	}
 
+	/**
+	 * Set the destination position in local interactions.
+	 * 
+	 * @param queriedPosition
+	 */
 	public void setQueriedPosition(String queriedPosition) {
 		this.queriedPosition = queriedPosition;
 	}
 
+	/**
+	 * Set the air distance value in local interactions.
+	 * 
+	 * @param queriedPosition
+	 */
 	public void setAirDistanceString(String airDistanceString) {
 		this.airDistance = airDistanceString;
 	}
 
+	/**
+	 * Set the air distance path in local interactions.
+	 * 
+	 * @param queriedPosition
+	 */
 	public void setAirPath(String airPath) {
 		this.airPath = airPath;
 	}
 
+	/**
+	 * Reset the local interactions display.
+	 * 
+	 * @param queriedPosition
+	 */
 	public void resetDisplay() {
 		this.setAirDistanceString("");
 		this.setAirPath("");

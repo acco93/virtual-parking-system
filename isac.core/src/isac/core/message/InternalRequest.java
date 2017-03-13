@@ -2,6 +2,13 @@ package isac.core.message;
 
 import isac.core.data.Position;
 
+/**
+ * 
+ * Sensor to sensor internal request.
+ * 
+ * @author acco
+ *
+ */
 public class InternalRequest {
 
 	private Position from;

@@ -3,8 +3,6 @@ package isac.client.controller;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
@@ -21,26 +19,31 @@ import com.rabbitmq.client.Envelope;
 
 import isac.client.model.Storage;
 import isac.client.utils.ClientUtils;
-import isac.core.data.InfoType;
-import isac.core.data.Position;
+import isac.core.algorithms.GraphFromMap;
 import isac.core.data.SensorRepresentation;
-import isac.core.data.StreetRepresentation;
 import isac.core.datastructures.Graph;
-import isac.core.datastructures.Vertex;
 import isac.core.log.Logger;
 import isac.core.sharedknowledge.R;
 
+/**
+ * It receives raw world information (a map of sensor names to sensor states)
+ * from the server and build the internal client world representation as a graph
+ * of sensor and street nodes .
+ * 
+ * @author acco
+ *
+ */
 public class SubscriberDaemon {
-
-	private static final int SENSOR_WEIGHT = 100;
-	private static final int STREET_WEIGHT = 1;
 
 	private Channel channel;
 	private String queueName;
 	private ClientUtils utils;
+	private String momIp;
 
-	public SubscriberDaemon(ClientUtils utils) {
+	public SubscriberDaemon(ClientUtils utils, String momIp) {
+
 		this.utils = utils;
+		this.momIp = momIp;
 
 		Logger.getInstance().info("started");
 
@@ -52,14 +55,14 @@ public class SubscriberDaemon {
 
 		try {
 			ConnectionFactory factory = new ConnectionFactory();
-			factory.setHost("localhost");
+			factory.setHost(momIp);
 			Connection connection;
 			connection = factory.newConnection();
 			channel = connection.createChannel();
 
-			channel.exchangeDeclare(R.EXCHANGE_NAME, "fanout");
+			channel.exchangeDeclare(R.SERVER_TO_CLIENTS_CHANNEL, "fanout");
 			queueName = channel.queueDeclare().getQueue();
-			channel.queueBind(queueName, R.EXCHANGE_NAME, "");
+			channel.queueBind(queueName, R.SERVER_TO_CLIENTS_CHANNEL, "");
 		} catch (IOException | TimeoutException e) {
 			e.printStackTrace();
 		}
@@ -109,96 +112,15 @@ public class SubscriberDaemon {
 		}
 	}
 
+	/**
+	 * Build a graph from the sensors representation.
+	 */
 	private void rebuildMap(HashMap<String, SensorRepresentation> sensors) {
 
 		Storage storage = Storage.getInstance();
-
-		int rows = storage.getWorldRows() + 1;
-		int columns = storage.getWorldColumns() + 1;
-		// +1 because the count starts from 0
-
-		// define a matrix of vertices
-		Vertex[][] matrix = new Vertex[rows][columns];
-
-		// first:
-		// set street everywhere
-		for (int r = 0; r < rows; r++) {
-			for (int c = 0; c < columns; c++) {
-				StreetRepresentation street = new StreetRepresentation(new Position(r, c));
-				matrix[r][c] = new Vertex("v_" + r + "_" + c, street);
-			}
-		}
-
-		// then:
-		// set the sensors in the correct position
-		for (SensorRepresentation sensor : sensors.values()) {
-			int row = sensor.getPosition().getRow();
-			int column = sensor.getPosition().getColumn();
-			matrix[row][column] = new Vertex("v_" + row + "_" + column, sensor);
-		}
-
-		List<Vertex> nodes = new LinkedList<>();
-
-		// build the graph from the matrix
-		for (int r = 0; r < rows; r++) {
-			for (int c = 0; c < columns; c++) {
-				nodes.add(matrix[r][c]);
-
-				// street nodes are connected everywhere (within 1-grid block)
-				if (matrix[r][c].getInfo().getType() == InfoType.STREET) {
-					connectLeft(matrix, rows, columns, r, c);
-					connectRight(matrix, rows, columns, r, c);
-					connectUp(matrix, rows, columns, r, c);
-					connectBottom(matrix, rows, columns, r, c);
-				} else {
-					// sensor nodes are connected just to street nodes
-				}
-
-			}
-		}
-
-		Graph map = new Graph(nodes);
+		Graph map = GraphFromMap.build(sensors, storage.getWorldRows(), storage.getWorldColumns());
 
 		storage.setMap(map);
-
-	}
-
-	private void connectBottom(Vertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow, int sourceColumn) {
-
-		this.connect(matrix, matrixRows, matrixColumns, sourceRow, sourceColumn, sourceRow - 1, sourceColumn);
-
-	}
-
-	private void connectUp(Vertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow, int sourceColumn) {
-
-		this.connect(matrix, matrixRows, matrixColumns, sourceRow, sourceColumn, sourceRow + 1, sourceColumn);
-
-	}
-
-	private void connectRight(Vertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow, int sourceColumn) {
-		this.connect(matrix, matrixRows, matrixColumns, sourceRow, sourceColumn, sourceRow, sourceColumn + 1);
-
-	}
-
-	private void connectLeft(Vertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow, int sourceColumn) {
-		this.connect(matrix, matrixRows, matrixColumns, sourceRow, sourceColumn, sourceRow, sourceColumn - 1);
-
-	}
-
-	private void connect(Vertex[][] matrix, int matrixRows, int matrixColumns, int sourceRow, int sourceColumn,
-			int destinationRow, int destinationColumn) {
-
-		if (destinationRow < 0 || destinationRow >= matrixRows || destinationColumn < 0
-				|| destinationColumn >= matrixColumns) {
-			return;
-		}
-
-		int weight = STREET_WEIGHT;
-		if (matrix[destinationRow][destinationColumn].getInfo().getType() == InfoType.SENSOR) {
-			weight = SENSOR_WEIGHT;
-		}
-
-		matrix[sourceRow][sourceColumn].addAdjacent(matrix[destinationRow][destinationColumn], weight);
 
 	}
 

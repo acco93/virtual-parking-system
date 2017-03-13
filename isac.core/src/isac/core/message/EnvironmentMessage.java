@@ -2,6 +2,12 @@ package isac.core.message;
 
 import isac.core.data.Position;
 
+/**
+ * Client to environment message.
+ * 
+ * @author acco
+ *
+ */
 public class EnvironmentMessage {
 
 	private Position position;
